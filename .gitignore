@@ -1,0 +1,7 @@
+### Miscellaneous
+.DS_Store
+Thumbs.db
+/htdocs/pinf.php
+
+### NodeJS
+node_modules/

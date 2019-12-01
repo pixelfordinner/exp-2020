@@ -2,11 +2,11 @@ import * as PIXI from 'pixi.js'
 
 export class GeometryTools {
   static move2 (graphic, point) {
-    graphic.moveTo(point[0], point[1])
+    graphic.moveTo(point.x, point.y)
   }
 
   static line2 (graphic, point) {
-    graphic.lineTo(point[0], point[1])
+    graphic.lineTo(point.x, point.y)
   }
 
   static mix1 (a, b, di) {

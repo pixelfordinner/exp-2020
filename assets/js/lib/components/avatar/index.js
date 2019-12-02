@@ -30,6 +30,7 @@ export class AvatarComponent {
       new PIXI.Point(-0.07,0.3),
   ];
 
+
     this.vertices = []
     this.time = 0.1
     this.centerx = windowWidth/2
@@ -57,7 +58,6 @@ export class AvatarComponent {
       const vertex = {
         point: new PIXI.Point(point.x * this.config.scale ,
                               point.y * -this.config.scale),
-
         strokeWeight : 23
       }
 
@@ -68,7 +68,7 @@ export class AvatarComponent {
   }
   distord( amp ){
     this.vertices.forEach((vertex, index) => {
-      this.vertices[index].point.x += Math.cos(this.time + index*.8)* amp
+      this.vertices[index].point.y += Math.cos(this.time + index*.8)* amp
       //console.log( Math.cos(index * this.time))
 
     })
@@ -151,17 +151,24 @@ export class AvatarComponent {
   }
 
 transform(){
-  this.buffers.outline.position.x =  this.centerx
-  this.buffers.outline.position.y =  this.centery
-  console.log(this.buffers.outline.position.z)
+  this.buffers.outline.position.x = this.centerx
+  this.buffers.outline.position.y = this.centery
+  //console.log(this.buffers.outline.position.z)
   //this.buffers.outline.position.z = Math.cos(this.time)*40
-  this.buffers.outline_mask.position.x =   this.centerx
-  this.buffers.outline_mask.position.y =   this.centery
+  this.buffers.outline_mask.position.x = this.centerx
+  this.buffers.outline_mask.position.y = this.centery
 
   //this.buffers.outline.rotation = this.time*.1
   //this.buffers.outline_mask.rotation = this.time*.1
 }
 shape(){
+    //this.buffers.outline.rotation = this.time*.1
+    this.buffers.outline_mask._mask = this.buffers.outline
+    this.drawRStroke()
+    this.drawStroke()
+  }
+
+  shape2(){
     //this.buffers.outline.rotation = this.time*.1
     this.buffers.outline_mask._mask = this.buffers.outline
     this.drawRStroke()
@@ -174,8 +181,9 @@ shape(){
 
 
   onTick (delta) {
+
     this.time += 0.1
-    this.distord(1)
+    this.distord(0.4)
     this.transform()
     this.shape()
 

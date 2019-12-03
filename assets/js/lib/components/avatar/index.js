@@ -68,7 +68,6 @@ export class AvatarComponent {
   distord (amp) {
     this.vertices.forEach((vertex, index) => {
       vertex.point.y += Math.cos(this.time + index * 0.8) * amp
-      // console.log( Math.cos(index * this.time))
     })
   }
 
@@ -97,12 +96,9 @@ export class AvatarComponent {
   drawStroke () {
     const p0 = this.vertices[0].point
     this.buffers.outline_mask.clear()
-    // GeometryTools.move2(this.buffers.outline_mask, p0)
     GeometryTools.move2(this.buffers.outline_mask, p0)
-    this.buffers.outline_mask.lineStyle(this.vertices[0].strokeWeight + 1, 0xff0000, 1, 1)
+    this.buffers.outline_mask.lineStyle(this.vertices[0].strokeWeight + 1, 0xffffff, 1, 1)
     this.vertices.forEach((vertex, index) => {
-      // const p = this.vertices[index].point
-
       if (index < this.vertices.length - 1) {
         GeometryTools.line2(
           this.buffers.outline_mask,
@@ -123,9 +119,9 @@ export class AvatarComponent {
 
     this.vertices.forEach((vertex, index) => {
       const p = this.vertices[index].point
-      this.buffers.outline.lineStyle(this.vertices[index].strokeWeight, 0x0000ff, 1, 0)
+      this.buffers.outline.lineStyle(this.vertices[index].strokeWeight, 0xffffff, 1, 0)
       this.buffers.outline.drawCircle(p.x, p.y, this.vertices[index].strokeWeight)
-      this.buffers.outline.lineStyle(this.vertices[index].strokeWeight, 0x0000ff, 1, 1)
+      this.buffers.outline.lineStyle(this.vertices[index].strokeWeight, 0xffffff, 1, 1)
 
       if (index < this.vertices.length - 1) {
         GeometryTools.move2(
@@ -146,33 +142,28 @@ export class AvatarComponent {
   transform () {
     this.buffers.outline.position.x = this.centerx
     this.buffers.outline.position.y = this.centery
-    // console.log(this.buffers.outline.position.z)
-    // this.buffers.outline.position.z = Math.cos(this.time)*40
+    this.buffers.fill.position.x = this.centerx
+    this.buffers.fill.position.y = this.centery
     this.buffers.outline_mask.position.x = this.centerx
     this.buffers.outline_mask.position.y = this.centery
-
-  // this.buffers.outline.rotation = this.time*.1
-  // this.buffers.outline_mask.rotation = this.time*.1
   }
 
   shape () {
-    // this.buffers.outline.rotation = this.time*.1
     this.buffers.outline_mask._mask = this.buffers.outline
     this.drawRStroke()
     this.drawStroke()
   }
 
-  shape2 () {
-    // this.buffers.outline.rotation = this.time*.1
-    this.buffers.outline_mask._mask = this.buffers.outline
-    this.drawRStroke()
-    this.drawStroke()
+  col () {
+    this.buffers.outline_mask.tint = 0xff00ff
+    // this.buffers.outline.tint = 0xff0000
   }
 
   onTick (delta) {
     this.time += 0.1
     this.distord(0.4)
     this.transform()
+    this.col()
     this.shape()
   }
 }

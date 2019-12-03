@@ -26,10 +26,13 @@ export class CameraComponent {
     return this.camera
   }
 
-  onTick (delta) {
-    this.time += 0.05
+  animate () {
     // this.camera.position3d.z = Math.cos(this.time) * 30
     // this.camera.euler.y = Math.cos(this.time / 20) * Math.PI
     // console.log(this.camera.position3d.z)
+  }
+
+  onTick (delta) {
+    this.time += 0.05
   }
 }

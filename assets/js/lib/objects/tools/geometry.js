@@ -1,5 +1,3 @@
-import * as PIXI from 'pixi.js'
-
 export class GeometryTools {
   static move2 (graphic, point) {
     graphic.moveTo(point.x, point.y)
@@ -14,13 +12,13 @@ export class GeometryTools {
   }
 
   static mix2 (a, b, d) {
-    let x1 = a.x
-    let y1 = a.y
-    let x2 = b.x
-    let y2 = b.y
+    const x1 = a.x
+    const y1 = a.y
+    const x2 = b.x
+    const y2 = b.y
 
-    let x = x1 * (1 - d) + x2 * d
-    let y = y1 * (1 - d) + y2 * d
+    const x = x1 * (1 - d) + x2 * d
+    const y = y1 * (1 - d) + y2 * d
     return new PIXI.Point(x, y)
   }
 }

@@ -16,8 +16,6 @@
     "> 2%"
   ],
   "devDependencies": {
-    "cross-env": "^6.0.3",
-    "laravel-mix": "^5.0.0",
     "@babel/plugin-proposal-class-properties": "^7.5.5",
     "@babel/plugin-transform-runtime": "^7.6.2",
     "@babel/polyfill": "^7.6.0",
@@ -30,6 +28,11 @@
     "browser-sync": "^2.26.7",
     "browser-sync-webpack-plugin": "^2.2.2",
     "browserslist": "^4.7.0",
+    "cross-env": "^6.0.3",
+    "laravel-mix": "^5.0.0",
+    "pixi-filters": "^3.0.3",
+    "pixi-layers": "^0.2.3",
+    "pixi-projection": "^0.3.6",
     "postcss-flexibility": "^2.0.0",
     "postcss-svg": "^3.0.0",
     "postcss-syntax": "^0.36.2",

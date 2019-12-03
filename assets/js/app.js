@@ -18,18 +18,27 @@ const app = new PIXI.Application({
   heigth: canvas.offsetHeight,
   resizeTo: canvas,
   antialias: true,
-  backgroundColor: 0x000000
+  backgroundColor: 0xffffff
 })
 
 // Components
 const camera = new CameraComponent(app)
+// const avatar = new AvatarComponent(app)
 
-new StarFieldComponent(app, {
+// console.log(mask)
+const avatar = new AvatarComponent(app, {
   camera: camera
 })
 
 new CardComponent(app, {
-  camera: camera
+  camera: camera,
+  parent: avatar
 })
 
-new AvatarComponent(app)
+new StarFieldComponent(app, {
+  camera: camera,
+  shape: avatar,
+  mask: avatar.getmask()
+})
+
+// new AvatarComponent(app)

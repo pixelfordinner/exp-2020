@@ -1,7 +1,7 @@
 import * as PIXI from 'pixi.js'
 import { AvatarComponent } from 'components/avatar'
 import { CameraComponent } from 'components/camera'
-import { CardComponent } from 'components/card'
+import { displacementFilter } from 'components/displacement'
 import { MouseComponent } from 'components/mouse'
 
 import { StarFieldComponent } from 'components/starfield3d'
@@ -29,6 +29,11 @@ const app = new PIXI.Application({
 const mouse = new MouseComponent(app)
 
 const camera = new CameraComponent(app)
+// const disp_filter = new disp_filter(app)
+
+const disp_filter = new displacementFilter(app, {
+  mouse: mouse
+})
 // const avatar = new AvatarComponent(app)
 
 // console.log(mask)
@@ -50,7 +55,9 @@ new StarFieldComponent(app, {
   camera: camera,
   shapemask: avatar,
   mouse: mouse,
-  mask: avatar.getmask()
+  mask: avatar.getmask(),
+  filter: disp_filter
+
 })
 
 // const points = [

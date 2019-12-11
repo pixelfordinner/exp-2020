@@ -38,7 +38,9 @@ export class MouseComponent {
     const py = this.pos.y - refPoint.y
     const op = new PIXI.Point(px, py)
     const lgth = Tools.getPolarlength(op)
-    return Tools.map(lgth, minD, maxD, maxF, minF)
+    // console.log(lgth)
+
+    return Tools.map(lgth, minD, maxD, minF, maxF)
   }
 
   onTick (delta) {

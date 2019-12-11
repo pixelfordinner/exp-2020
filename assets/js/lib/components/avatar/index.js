@@ -32,7 +32,12 @@ export class AvatarComponent {
 
     this.vertices = []
     this.sprite = new PIXI.projection.Sprite3d()
+    this.sprite.position3d.z = 1
+
     this.container = new PIXI.projection.Container3d()
+    // this.container.position3d.x = this.app.width / 2
+    /// this.container.position3d.y = this.app.height / 2
+
     this.container.interactive = true
     this.container.on('pointerdown', this.onDragStart)
     this.container.on('pointerup', this.onDragEnd)
@@ -41,8 +46,8 @@ export class AvatarComponent {
     this.tetha = 0.0
     this.angle = 0
     this.camera = this.config.camera.getCamera()
-    this.centerx = this.app.width / 2
-    this.centery = this.app.height / 2
+    // this.centerx = this.app.width / 2
+    // this.centery = this.app.height / 2
     this.centerz = 0
     this.buffers = {
       fill: new PIXI.Graphics(),
@@ -189,18 +194,18 @@ export class AvatarComponent {
   }
 
   animate () {
-    this.container.position3d.z = 200 + Math.cos(this.time / 6) * 500
+    this.container.position3d.z += Math.cos(this.time / 6) * 1
   }
 
-  distord (amp) {
+  morph (amp) {
     this.vertices.forEach((vertex, index) => {
       vertex.point.y += Math.cos(this.time + index * 0.8) * amp
     })
   }
 
-  flip (sprite, angle) {
-    sprite.euler.y = angle
-    sprite.position3d.z -= Math.cos(angle * 2) * 50
+  flip (object, angle) {
+    object.euler.y = angle
+    object.position3d.z = -100 + Math.cos(angle * 2) * 100
   }
 
   onDragStart () {
@@ -220,14 +225,16 @@ export class AvatarComponent {
 
   onTick (delta) {
     this.time += 0.05
-    this.animate()
+    // this.animate()
+    // this.morph(0.2)
 
     if (this.container.dragging) {
-      this.tetha += 0.01
+      this.tetha += 0.05
+      const angle = (0.5 + Math.cos(this.tetha) * 0.5) * Math.PI
+      // const angle = Math.cos(this.tetha) * Math.PI
+      this.flip(this.container, angle)
     }
 
-    const angle = (0.5 + Math.cos(this.tetha) * 0.5) * Math.PI
-    this.flip(this.container, angle)
     this.makeShape()
   }
 }

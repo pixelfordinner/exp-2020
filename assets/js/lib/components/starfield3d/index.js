@@ -3,6 +3,7 @@ export class StarFieldComponent {
   constructor (app, config = {}) {
     this.defaults = {
       numStars: 1000,
+
       applyFilter: true,
       applyMask: true
     }
@@ -41,14 +42,8 @@ export class StarFieldComponent {
     if (this.config.applyMask) this.container.mask = this.mask
 
     if (this.config.applyFilter) {
-      this.displacementSprite = new PIXI.Sprite.from('/dist/images/cloud.jpg')
-      this.displacementSprite.texture.baseTexture.wrapMode = PIXI.WRAP_MODES.REPEAT
-      this.displacementSprite.scale.x = 0.3
-      this.displacementSprite.scale.y = 0.3
-      this.app.stage.addChild(this.displacementSprite)
-      this.filter = new PIXI.filters.DisplacementFilter(this.displacementSprite)
-      this.filter.scale = new PIXI.Point(0.1, 0.1)
-      this.container.filters = [this.filter]
+      this.filter = this.config.filter
+      this.container.filters = [this.filter.filter]
     }
 
     this.camera = this.config.camera.getCamera()
@@ -98,23 +93,16 @@ export class StarFieldComponent {
     this.app.ticker.add(delta => this.onTick(delta))
   }
 
-  distord (amp) {
-    this.vertices.forEach((vertex, index) => {
-      vertex.point.y += Math.cos(this.time + index * 0.8) * amp
-    })
-  }
-
   animateFilter () {
-    this.finallgth = this.mouse.getmouseInfluenceMap(new PIXI.Point(this.container.x, this.container.y), 20, 500, 0, 20)
-    this.displacementSprite.x += this.finallgth / 7
-    this.filter.scale = new PIXI.Point(this.finallgth / 2, 0)
+    this.finallgth = this.mouse.getmouseInfluenceMap(new PIXI.Point(this.container.x, this.container.y), 50, 500, 20, 0)
+    this.filter.displacementSprite.x += this.finallgth / 7
+    this.filter.filter.scale = new PIXI.Point(this.finallgth / 2, this.finallgth / 2)
   }
 
   onTick (delta) {
-    this.cond = this.mouse.isIn()
-    console.log(this.cond)
+    this.mouseReady = this.mouse.isIn()
 
-    if (this.config.applyFilter && this.cond) {
+    if (this.config.applyFilter && this.mouseReady) {
       this.animateFilter()
     }
     this.time += 0.01

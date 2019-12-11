@@ -1,39 +1,58 @@
-
+import { Tools } from 'objects/tools/geometry'
 export class StarFieldComponent {
   constructor (app, config = {}) {
     this.defaults = {
-      numStars: 10000
+      numStars: 1000,
+      applyFilter: true,
+      applyMask: true
     }
+
+    this.finallgth = 0
+    this.dy = 0
+    this.time = 0
     this.app = app
+    this.config = Object.assign(this.defaults, config)
     this.width = this.app.screen.width
     this.height = this.app.screen.height
-    this.time = 0
-    this.config = Object.assign(this.defaults, config)
-    this.mask = this.config.mask
-    // console.log(this.mask)
 
-    this.shape = this.config.avatar
-    this.stars = []
+    this.mask = this.config.shapemask.getmask()
 
     this.field = new PIXI.projection.Container3d()
+    this.field.anchor = new PIXI.Point(0.5, 0.5)
+    this.field.x = -this.width * 1.5
+    this.field.y = -this.height * 1.5
+    this.field.scale.x = 2
+    this.field.scale.y = 2
+    this.stars = []
 
-    this.field.mask = this.mask
+    this.container = new PIXI.projection.Container3d()
+    this.container.anchor = new PIXI.Point(0.5, 0.5)
+    this.container.x = this.width / 2
+    this.container.y = this.height / 2
+    this.container.addChild(this.field)
 
-    // this.field.tint = 0x0000ff
-    // this.field.isSprite = true
-    // this.field.tint = 0x0000ff
+    this.app.stage.addChild(this.container)
 
-    this.filter = new PIXI.filters.BlurFilter()
-    this.filter2 = new PIXI.filters.NoiseFilter()
-    this.filter.blur = 3
-    this.filter.noise = 0.2
+    this.px = this.app.width / 2
+    this.py = this.app.height / 2
+    this.mouse = this.config.mouse
+    this.mouse.pos = new PIXI.Point(0, 0)
 
-    this.field.filters = [this.filter, this.filter2]
+    if (this.config.applyMask) this.container.mask = this.mask
 
-    this.field.position.x = -this.width
-    this.field.position.y = -this.height
+    if (this.config.applyFilter) {
+      this.displacementSprite = new PIXI.Sprite.from('/dist/images/cloud.jpg')
+      this.displacementSprite.texture.baseTexture.wrapMode = PIXI.WRAP_MODES.REPEAT
+      this.displacementSprite.scale.x = 0.3
+      this.displacementSprite.scale.y = 0.3
+      this.app.stage.addChild(this.displacementSprite)
+      this.filter = new PIXI.filters.DisplacementFilter(this.displacementSprite)
+      this.filter.scale = new PIXI.Point(0.1, 0.1)
+      this.container.filters = [this.filter]
+    }
 
     this.camera = this.config.camera.getCamera()
+    this.camera.addChild(this.container)
     this.wtex = new PIXI.Texture(PIXI.Texture.WHITE)
     this.setup()
     this.init()
@@ -41,13 +60,12 @@ export class StarFieldComponent {
 
   init () {
     const bg = new PIXI.projection.Sprite3d(PIXI.Texture.WHITE)
-
     bg.tint = 0x000000
-    bg.position3d.z = 20
-    bg.position.x = this.width / 2
-    bg.position.y = this.height / 2
-    bg.width = this.width
-    bg.height = this.height
+    bg.position3d.z = 2
+    bg.position.x = 0
+    bg.position.y = 0
+    bg.width = this.width * 2
+    bg.height = this.height * 2
     this.field.addChild(bg)
 
     for (let i = 0; i < this.config.numStars; i++) {
@@ -56,30 +74,24 @@ export class StarFieldComponent {
       part.width = 5
       part.height = 5
 
-      part.position.x = Math.random() * this.app.screen.width * 2
-      part.position.y = Math.random() * this.app.screen.height * 2
-      part.position3d.z = -200 + Math.random() * 1000
-      // part.tint = 0x0000ff
-      // this.filter.blur = 30 / part.position3d.z
-      // part.filters = [this.filter]
+      part.position.x = Math.random() * this.app.screen.width
+      part.position.y = Math.random() * this.app.screen.height
+      part.position3d.z = 20 + Math.random() * 1000
+
       this.stars.push(part)
-      // part.filter = this.filter
       this.field.addChild(part)
     }
     this.field.isSprite = true
-    console.log(this.field)
+  }
 
-    // console.log(this.filter)
-
-    this.camera.addChild(this.field)
+  getTexture () {
+    const tex = this.field.Texture
   }
 
   drawfield () {
-    // this.field.
     this.stars.forEach((star, index) => {
-      // this.stars[index].position3d.y += Math.cos(0.0001 * this.time * index) * 10
     })
-    this.field.position3d.y += Math.cos(this.time)
+    this.field.position3d.z += Math.cos(this.time)
   }
 
   setup () {
@@ -88,15 +100,24 @@ export class StarFieldComponent {
 
   distord (amp) {
     this.vertices.forEach((vertex, index) => {
-      // vertex.point.y += Math.cos(this.time + index * 0.8) * amp
+      vertex.point.y += Math.cos(this.time + index * 0.8) * amp
     })
   }
 
-  onTick (delta) {
-    this.time += 0.01
-    // this.field.tint = 0xff00ff
-    // console.log(this.field)
+  animateFilter () {
+    this.finallgth = this.mouse.getmouseInfluenceMap(new PIXI.Point(this.container.x, this.container.y), 20, 500, 0, 20)
+    this.displacementSprite.x += this.finallgth / 7
+    this.filter.scale = new PIXI.Point(this.finallgth / 2, 0)
+  }
 
+  onTick (delta) {
+    this.cond = this.mouse.isIn()
+    console.log(this.cond)
+
+    if (this.config.applyFilter && this.cond) {
+      this.animateFilter()
+    }
+    this.time += 0.01
     this.drawfield()
   }
 }

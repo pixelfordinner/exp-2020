@@ -32,30 +32,25 @@ export class AvatarComponent {
     this.sprite.position3d.z = 1
 
     this.container = new PIXI.projection.Container3d()
-    // this.container.position3d.x = this.app.width / 2
-    /// this.container.position3d.y = this.app.height / 2
-
     this.container.interactive = true
     this.container.on('pointerdown', this.onDragStart)
     this.container.on('pointerup', this.onDragEnd)
 
-    this.time = 0.0
-    this.tetha = 0.0
+    this.time = 0
+    this.tetha = 0
     this.angle = 0
     this.camera = this.config.camera.getCamera()
-    // this.centerx = this.app.width / 2
-    // this.centery = this.app.height / 2
-    this.centerz = 0
+
     this.buffers = {
       fill: new PIXI.Graphics(),
       outline: new PIXI.Graphics(),
       outline_mask: new PIXI.Graphics()
     }
     this.setup()
+
     this.container.addChild(this.buffers.fill)
     this.container.addChild(this.buffers.outline_mask)
     this.container.addChild(this.buffers.outline)
-
     this.camera.addChild(this.container)
   }
 

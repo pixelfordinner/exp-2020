@@ -17,6 +17,7 @@ export class StarFieldComponent {
     this.height = this.app.screen.height
 
     this.mask = this.config.shapemask.getmask()
+    // this.mask.position.x = 600
 
     this.field = new PIXI.projection.Container3d()
     this.field.anchor = new PIXI.Point(0.5, 0.5)
@@ -31,7 +32,6 @@ export class StarFieldComponent {
     this.container.x = this.width / 2
     this.container.y = this.height / 2
     this.container.addChild(this.field)
-
     this.app.stage.addChild(this.container)
 
     this.px = this.app.width / 2
@@ -43,9 +43,9 @@ export class StarFieldComponent {
 
     if (this.config.applyFilter) {
       this.filter = this.config.filter
+      // this.filter .scale
       this.container.filters = [this.filter.filter]
     }
-
     this.camera = this.config.camera.getCamera()
     this.camera.addChild(this.container)
     this.wtex = new PIXI.Texture(PIXI.Texture.WHITE)
@@ -68,7 +68,6 @@ export class StarFieldComponent {
       part.anchor = new PIXI.Point(0.5, 0.5)
       part.width = 5
       part.height = 5
-
       part.position.x = Math.random() * this.app.screen.width
       part.position.y = Math.random() * this.app.screen.height
       part.position3d.z = 20 + Math.random() * 1000
@@ -77,10 +76,6 @@ export class StarFieldComponent {
       this.field.addChild(part)
     }
     this.field.isSprite = true
-  }
-
-  getTexture () {
-    const tex = this.field.Texture
   }
 
   drawfield () {
@@ -95,13 +90,15 @@ export class StarFieldComponent {
 
   animateFilter () {
     this.finallgth = this.mouse.getmouseInfluenceMap(new PIXI.Point(this.container.x, this.container.y), 50, 500, 20, 0)
-    this.filter.displacementSprite.x += this.finallgth / 7
+    if (this.finallgth < 0) this.finallgth = 0.1
+    console.log(this.finallgth)
+
+    this.filter.displacementSprite.x += this.finallgth / 10
     this.filter.filter.scale = new PIXI.Point(this.finallgth / 2, this.finallgth / 2)
   }
 
   onTick (delta) {
     this.mouseReady = this.mouse.isIn()
-
     if (this.config.applyFilter && this.mouseReady) {
       this.animateFilter()
     }

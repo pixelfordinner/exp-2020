@@ -226,7 +226,7 @@ export class AvatarComponent {
   onTick (delta) {
     this.time += 0.05
     // this.animate()
-    // this.morph(0.2)
+    this.morph(0.2)
 
     if (this.container.dragging) {
       this.tetha += 0.05

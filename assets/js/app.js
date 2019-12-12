@@ -25,52 +25,25 @@ const app = new PIXI.Application({
   backgroundColor: 0x0000ff
 })
 
-// Components
 const mouse = new MouseComponent(app)
 
 const camera = new CameraComponent(app)
-// const disp_filter = new disp_filter(app)
 
 const disp_filter = new displacementFilter(app, {
   mouse: mouse
 })
-// const avatar = new AvatarComponent(app)
 
-// console.log(mask)
 const avatar = new AvatarComponent(app, {
-  camera: camera
+  camera: camera,
+  filter: disp_filter
 })
 
-// console.log(container.camera)
-
-//
-// console.log(app)
-
-// new CardComponent(app, {
-//   camera: camera,
-//   parent: avatar
-// })
-
 new StarFieldComponent(app, {
+  numStars: 300,
+  applyFilter: true,
+  applyMask: true,
   camera: camera,
   shapemask: avatar,
   mouse: mouse,
-  mask: avatar.getmask(),
   filter: disp_filter
-
 })
-
-// const points = [
-//   [0.07, 0.30, 0.35, 0.50, 0.35, 0.19, 0.50, 0.01, 0.41, -0.23, 0.00, -0.50, -0.41, -0.23, -0.50, 0.01, -0.35, 0.19, 0.35, 0.50, -0.07, 0.30]
-// ]
-// const buffer = new PIXI.Buffer.from(points[0])
-// const geometry = new PIXI.Geometry(buffer)
-// const material = new PIXI.MeshMaterial(1, 0x0000FF)
-// const mesh = new PIXI.Mesh(geometry, material)
-
-// console.log(mesh.geometry)
-// app.stage.addChild(mesh)
-
-// })
-
-// new AvatarComponent(app)

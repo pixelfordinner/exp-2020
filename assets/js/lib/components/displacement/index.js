@@ -22,15 +22,6 @@ export class displacementFilter {
   }
 
   setup () {
-    this.app.ticker.add(delta => this.onTick(delta))
-  }
 
-  animateFilter (finallgth) {
-    // this.amp = finallgth
-  }
-
-  onTick (delta) {
-    // this.displacementSprite.x += Math.cos(this.amp / 3)
-    // this.displacementSprite.scale = new PIXI.Point(5 / this.amp, 5 / this.amp)
   }
 }

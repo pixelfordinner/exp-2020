@@ -1,11 +1,11 @@
 import { Tools } from 'objects/tools/geometry'
+
 export class StarFieldComponent {
   constructor (app, config = {}) {
     this.defaults = {
-      numStars: 1000,
-
-      applyFilter: true,
-      applyMask: true
+      numStars: 100,
+      applyFilter: false,
+      applyMask: false
     }
 
     this.finallgth = 0
@@ -15,10 +15,15 @@ export class StarFieldComponent {
     this.config = Object.assign(this.defaults, config)
     this.width = this.app.screen.width
     this.height = this.app.screen.height
+    this.wtex = new PIXI.Texture(PIXI.Texture.WHITE)
+    this.setup()
+  }
 
+  initMask () {
     this.mask = this.config.shapemask.getmask()
-    // this.mask.position.x = 600
+  }
 
+  initField () {
     this.field = new PIXI.projection.Container3d()
     this.field.anchor = new PIXI.Point(0.5, 0.5)
     this.field.x = -this.width * 1.5
@@ -26,35 +31,38 @@ export class StarFieldComponent {
     this.field.scale.x = 2
     this.field.scale.y = 2
     this.stars = []
+  }
 
+  initContainer () {
     this.container = new PIXI.projection.Container3d()
     this.container.anchor = new PIXI.Point(0.5, 0.5)
     this.container.x = this.width / 2
     this.container.y = this.height / 2
     this.container.addChild(this.field)
     this.app.stage.addChild(this.container)
+  }
 
-    this.px = this.app.width / 2
-    this.py = this.app.height / 2
-    this.mouse = this.config.mouse
-    this.mouse.pos = new PIXI.Point(0, 0)
-
+  initFilter () {
     if (this.config.applyMask) this.container.mask = this.mask
 
     if (this.config.applyFilter) {
       this.filter = this.config.filter
-      // this.filter .scale
       this.container.filters = [this.filter.filter]
     }
-    this.camera = this.config.camera.getCamera()
-    this.camera.addChild(this.container)
-    this.wtex = new PIXI.Texture(PIXI.Texture.WHITE)
-    this.setup()
-    this.init()
   }
 
-  init () {
-    const bg = new PIXI.projection.Sprite3d(PIXI.Texture.WHITE)
+  initMouse () {
+    this.mouse = this.config.mouse
+    this.mouse.pos = new PIXI.Point(0, 0)
+  }
+
+  initCamera () {
+    this.camera = this.config.camera.getCamera()
+    this.camera.addChild(this.container)
+  }
+
+  initStars () {
+    const bg = new PIXI.projection.Sprite3d(this.wtex)
     bg.tint = 0x000000
     bg.position3d.z = 2
     bg.position.x = 0
@@ -71,11 +79,21 @@ export class StarFieldComponent {
       part.position.x = Math.random() * this.app.screen.width
       part.position.y = Math.random() * this.app.screen.height
       part.position3d.z = 20 + Math.random() * 1000
-
       this.stars.push(part)
       this.field.addChild(part)
     }
     this.field.isSprite = true
+  }
+
+  setup () {
+    this.app.ticker.add(delta => this.onTick(delta))
+    this.initMask()
+    this.initField()
+    this.initStars()
+    this.initContainer()
+    this.initMouse()
+    this.initFilter()
+    this.initCamera()
   }
 
   drawfield () {
@@ -84,16 +102,10 @@ export class StarFieldComponent {
     this.field.position3d.z += Math.cos(this.time)
   }
 
-  setup () {
-    this.app.ticker.add(delta => this.onTick(delta))
-  }
-
   animateFilter () {
     this.finallgth = this.mouse.getmouseInfluenceMap(new PIXI.Point(this.container.x, this.container.y), 50, 500, 20, 0)
     if (this.finallgth < 0) this.finallgth = 0.1
-    console.log(this.finallgth)
-
-    this.filter.displacementSprite.x += this.finallgth / 10
+    this.filter.displacementSprite.x += this.finallgth / 7
     this.filter.filter.scale = new PIXI.Point(this.finallgth / 2, this.finallgth / 2)
   }
 

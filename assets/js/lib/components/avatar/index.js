@@ -1,8 +1,5 @@
 import { Tools } from 'objects/tools/geometry'
 
-// const windowWidth = window.innerWidth
-// const windowHeight = window.innerHeight
-
 export class AvatarComponent {
   constructor (app, config = {}) {
     this.defaults = {
@@ -225,13 +222,11 @@ export class AvatarComponent {
 
   onTick (delta) {
     this.time += 0.05
-    // this.animate()
     this.morph(0.2)
 
     if (this.container.dragging) {
       this.tetha += 0.05
       const angle = (0.5 + Math.cos(this.tetha) * 0.5) * Math.PI
-      // const angle = Math.cos(this.tetha) * Math.PI
       this.flip(this.container, angle)
     }
 

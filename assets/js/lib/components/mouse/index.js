@@ -40,7 +40,7 @@ export class MouseComponent {
     this.shape.clear()
     this.shape.anchor = new PIXI.Point(0.5, 0.5)
     // if (this.amp <= 0) this.amp = 0
-    this.shape.lineStyle(Tools.map(this.amp, 0, 200, 6, 2) + 10, 0xffffff)
+    this.shape.lineStyle(4, 0xffffff)
     this.shape.drawCircle(0, 0, Tools.map(this.amp, 0, 200, 50, 10) + 40)
     this.app.stage.addChild(this.shape)
   }

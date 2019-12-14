@@ -70,7 +70,9 @@ export class AvatarComponent {
     this.container.goToRigth = 0
     this.container.tempAngle = 0
     this.container.dragOrigin = new PIXI.projection.Point3d()
-    this.container.currentPosition == new PIXI.projection.Point3d()
+    this.container.currentPosition = new PIXI.projection.Point3d()
+    this.container.totalSpeed = 0
+    this.container.beginDrag = false
   }
 
   distord (amp) {
@@ -208,32 +210,35 @@ export class AvatarComponent {
     this.data = event.data
     this.alpha = 0.5
     this.dragging = true
-    this.tempAngle = 0
+    this.beginDrag = true
+    this.tempAngle++
     this.dragOrigin = new PIXI.projection.Point3d(
       this.data.getLocalPosition(this.parent).x,
       this.data.getLocalPosition(this.parent).y,
       this.data.getLocalPosition(this.parent).z
     )
+    this.currentPosition = this.dragOrigin
+    console.log(this.tempAngle)
   }
 
   onDragEnd () {
     this.alpha = 1
     this.dragging = false
-    // const newPosition = this.data.getLocalPosition(this.parent)
+    this.beginDrag = false
     this.newDistance = Tools.getPolarlength(this.currentPosition, this.dragOrigin)
-    console.log(this.newDistance)
-    if (this.newDistance > 150) {
+    if (this.newDistance > 100) {
       this.startRotation = true
-      console.log('Rotation Start')
     } else {
       this.dragging = false
+
       this.startRotation = false
       this.newDistance = 0
     }
-    console.log('controls_Drop')
   }
 
   onDragMove () {
+    this.beginDrag = false
+
     if (this.dragging) {
       const newPosition = this.data.getLocalPosition(this.parent)
       if (newPosition.x < this.dragOrigin.x) {
@@ -242,6 +247,10 @@ export class AvatarComponent {
         this.goToRigth = true
       }
       this.currentPosition = newPosition
+      this.distanceFromPrev = Tools.getPolarlength(newPosition, this.currentPosition)
+
+      this.totalSpeed = Tools.map(this.distanceFromPrev, 5, 100, 0, 0.02)
+      // this.totalSpeed = 0.02
     }
   }
 
@@ -256,18 +265,19 @@ export class AvatarComponent {
       this.container.isflipped = false
     }
     if (this.container.dragging) {
-      this.speed = 0.03
-      if (Math.abs(Math.cos(this.container.euler.y)) > 0.3) {
-      }
+      this.speed = this.container.totalSpeed
+      // this.container.totalSpeed += this.container.goToRigth ? 0.03 : -0.03
     }
     if (this.container.startRotation) {
-      this.speed = 0.03
-      console.log('yoyoy')
+      this.speed = this.container.totalSpeed
       if (Math.abs(Math.cos(this.container.euler.y)) >= 0.99) {
         this.container.startRotation = false
       }
     }
-    this.flip(this.container, this.speed)
+    // this.flip(this.container, this.speed)
+    if (!this.container.beginDrag) {
+      this.flip(this.container, this.speed)
+    }
     this.makeShape()
   }
 }

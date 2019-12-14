@@ -1,5 +1,6 @@
 
 import { Tools } from 'objects/tools/geometry'
+
 export class MouseComponent {
   constructor (app) {
     this.app = app
@@ -39,20 +40,21 @@ export class MouseComponent {
   drawShape () {
     this.shape.clear()
     this.shape.anchor = new PIXI.Point(0.5, 0.5)
-    // if (this.amp <= 0) this.amp = 0
     this.shape.lineStyle(4, 0xffffff)
-    this.shape.drawCircle(0, 0, Tools.map(this.amp, 0, 200, 50, 10) + 40)
+    this.shape.drawCircle(0, 0, 50)
     this.app.stage.addChild(this.shape)
   }
 
-  getmouseInfluenceMap (refPoint, minD, maxD, minF, maxF) {
+  getMouseInfluenceMap (refPoint, minD, maxD, minF, maxF) {
     const px = this.pos.x - refPoint.x
     const py = this.pos.y - refPoint.y
     const op = new PIXI.Point(px, py)
     const lgth = Tools.getPolarlength(op)
-    this.amp = lgth
+    // this.amp = lgth
 
-    return Tools.map(lgth, minD, maxD, minF, maxF)
+    this.val = Tools.map(lgth, minD, maxD, minF, maxF)
+    if (this.val < 0) this.val = 0
+    return this.val
   }
 
   onTick (delta) {
@@ -60,6 +62,6 @@ export class MouseComponent {
     this.getpos()
     this.shape.x = this.pos.x
     this.shape.y = this.pos.y
-    this.drawShape(Math.cos(this.time))
+    this.drawShape()
   }
 }

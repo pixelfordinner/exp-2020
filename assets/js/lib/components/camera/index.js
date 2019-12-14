@@ -1,3 +1,5 @@
+import { timingSafeEqual } from 'crypto'
+
 export class CameraComponent {
   constructor (app, config = {}) {
     this.defaults = {
@@ -11,7 +13,6 @@ export class CameraComponent {
     this.camera = new PIXI.projection.Camera3d()
     this.camera.position.set(this.app.screen.width / 2, this.app.screen.height / 2)
     this.camera.position3d.z = 0
-
     this.camera.setPlanes(350, 130, 1000)
     this.camera.euler.x = 0
     this.app.stage.addChild(this.camera)
@@ -33,6 +34,7 @@ export class CameraComponent {
   }
 
   onTick (delta) {
-    this.time += 0.05
+    this.time += 0.01
+    // this.camera.euler.y = Math.cos(this.time)*
   }
 }

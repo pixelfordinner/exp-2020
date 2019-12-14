@@ -19,8 +19,21 @@ export class StarFieldComponent {
     this.setup()
   }
 
+  setup () {
+    this.app.ticker.add(delta => this.onTick(delta))
+    this.initMask()
+    this.initField()
+    this.initStars()
+    this.initVerso()
+    this.initContainer()
+    this.initMouse()
+    this.initFilter()
+    this.initCamera()
+  }
+
   initMask () {
-    this.mask = this.config.shapemask.getmask()
+    this.shape = this.config.shapemask
+    this.mask = this.shape.getmask()
   }
 
   initField () {
@@ -33,12 +46,27 @@ export class StarFieldComponent {
     this.stars = []
   }
 
+  initVerso () {
+    this.verso = new PIXI.projection.Sprite3d(this.wtex)
+    this.verso.tint = 0xff0000
+    this.verso.anchor = new PIXI.Point(0.5, 0.5)
+    this.verso.width = 4000
+    this.verso.height = 4000
+    this.verso.euler.y = 0
+    this.verso.position3d.x = 0
+    // this.verso.y = -this.app.height / 2
+    this.verso.position3d.z = 100
+    // this.container.addChild(this.verso)
+  }
+
   initContainer () {
     this.container = new PIXI.projection.Container3d()
     this.container.anchor = new PIXI.Point(0.5, 0.5)
     this.container.x = this.width / 2
     this.container.y = this.height / 2
+    this.container.addChild(this.verso)
     this.container.addChild(this.field)
+
     this.app.stage.addChild(this.container)
   }
 
@@ -85,17 +113,6 @@ export class StarFieldComponent {
     this.field.isSprite = true
   }
 
-  setup () {
-    this.app.ticker.add(delta => this.onTick(delta))
-    this.initMask()
-    this.initField()
-    this.initStars()
-    this.initContainer()
-    this.initMouse()
-    this.initFilter()
-    this.initCamera()
-  }
-
   drawfield () {
     this.stars.forEach((star, index) => {
     })
@@ -103,13 +120,20 @@ export class StarFieldComponent {
   }
 
   animateFilter () {
-    this.finallgth = this.mouse.getmouseInfluenceMap(new PIXI.Point(this.container.x, this.container.y), 50, 500, 20, 0)
-    if (this.finallgth < 0) this.finallgth = 0.1
+    this.finallgth = this.mouse.getMouseInfluenceMap(new PIXI.Point(this.container.x, this.container.y), 50, 500, 20, 0)
     this.filter.displacementSprite.x += this.finallgth / 7
     this.filter.filter.scale = new PIXI.Point(this.finallgth / 2, this.finallgth / 2)
   }
 
   onTick (delta) {
+    const isOn = this.shape.container.isflipped
+    // console.log(isOn)
+    if (this.shape.container.isflipped != 0) {
+      this.field.renderable = false
+    } else {
+      this.field.renderable = true
+    }
+
     this.mouseReady = this.mouse.isIn()
     if (this.config.applyFilter && this.mouseReady) {
       this.animateFilter()

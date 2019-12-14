@@ -31,4 +31,8 @@ export class Tools {
     const length = Math.sqrt(Math.pow(p.x, 2.0) + Math.pow(p.y, 2.0))
     return length
   }
+
+  // static distToVector (v1, v2) {
+  //   return Math.sqrt(Math.pow(v1.x - v1.y, 2) + Math.pow(v2.x - v2.y, 2))
+  // }
 }

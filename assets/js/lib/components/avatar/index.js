@@ -8,11 +8,12 @@ export class AvatarComponent {
       fill: false
     }
 
+    this.time = 0
+    this.tetha = 0
+    this.angle = 0
     this.config = Object.assign(this.defaults, config)
-
     this.app = app
-    this.texture = 0
-
+    this.mouse = this.config.mouse
     this.points = [
       new PIXI.Point(0.07, 0.3),
       new PIXI.Point(0.35, 0.5),
@@ -26,37 +27,19 @@ export class AvatarComponent {
       new PIXI.Point(-0.35, 0.5),
       new PIXI.Point(-0.07, 0.3)
     ]
-
     this.vertices = []
     this.sprite = new PIXI.projection.Sprite3d()
-    this.sprite.position3d.z = 1
-
-    this.container = new PIXI.projection.Container3d()
-    this.container.interactive = true
-    this.container.on('pointerdown', this.onDragStart)
-    this.container.on('pointerup', this.onDragEnd)
-
-    this.time = 0
-    this.tetha = 0
-    this.angle = 0
     this.camera = this.config.camera.getCamera()
-
     this.buffers = {
       fill: new PIXI.Graphics(),
       outline: new PIXI.Graphics(),
       outline_mask: new PIXI.Graphics()
     }
     this.setup()
-
-    this.container.addChild(this.buffers.fill)
-    this.container.addChild(this.buffers.outline_mask)
-    this.container.addChild(this.buffers.outline)
-    this.camera.addChild(this.container)
   }
 
   setup () {
     Reflect.ownKeys(this.buffers).forEach(buffer => this.app.stage.addChild(this.buffers[buffer]))
-
     this.points.forEach((point, index) => {
       const vertex = {
         point: new PIXI.Point(point.x * this.config.scale,
@@ -65,8 +48,29 @@ export class AvatarComponent {
       }
       this.vertices.push(vertex)
     })
-
     this.app.ticker.add(delta => this.onTick(delta))
+    this.initContainer()
+  }
+
+  initContainer () {
+    this.container = new PIXI.projection.Container3d()
+    this.container.interactive = true
+    this.container.on('pointerdown', this.onDragStart)
+      .on('pointerup', this.onDragEnd)
+      .on('pointermove', this.onDragMove)
+      .on('pointerupoutside', this.onDragEnd)
+    this.container.addChild(this.buffers.fill)
+    this.container.addChild(this.buffers.outline_mask)
+    this.container.addChild(this.buffers.outline)
+    this.camera.addChild(this.container)
+    this.container.tetha = 0
+    this.container.startRotation = false
+    this.container.endRotation = false
+    this.container.isflipped = false
+    this.container.goToRigth = 0
+    this.container.tempAngle = 0
+    this.container.dragOrigin = new PIXI.projection.Point3d()
+    this.container.currentPosition == new PIXI.projection.Point3d()
   }
 
   distord (amp) {
@@ -195,36 +199,75 @@ export class AvatarComponent {
     })
   }
 
-  flip (object, angle) {
-    object.euler.y = angle
-    object.position3d.z = -100 + Math.cos(angle * 2) * 100
+  flip (object, speed) {
+    object.euler.y += this.container.goToRigth ? speed : -speed
+    object.position3d.z = 100 * (Math.cos(object.euler.y * 2))
   }
 
-  onDragStart () {
-    console.log('hello')
-
+  onDragStart (event) {
     this.data = event.data
     this.alpha = 0.5
     this.dragging = true
+    this.tempAngle = 0
+    this.dragOrigin = new PIXI.projection.Point3d(
+      this.data.getLocalPosition(this.parent).x,
+      this.data.getLocalPosition(this.parent).y,
+      this.data.getLocalPosition(this.parent).z
+    )
   }
 
   onDragEnd () {
     this.alpha = 1
     this.dragging = false
-    this.data = null
-    console.log('end')
+    // const newPosition = this.data.getLocalPosition(this.parent)
+    this.newDistance = Tools.getPolarlength(this.currentPosition, this.dragOrigin)
+    console.log(this.newDistance)
+    if (this.newDistance > 150) {
+      this.startRotation = true
+      console.log('Rotation Start')
+    } else {
+      this.dragging = false
+      this.startRotation = false
+      this.newDistance = 0
+    }
+    console.log('controls_Drop')
+  }
+
+  onDragMove () {
+    if (this.dragging) {
+      const newPosition = this.data.getLocalPosition(this.parent)
+      if (newPosition.x < this.dragOrigin.x) {
+        this.goToRigth = false
+      } else {
+        this.goToRigth = true
+      }
+      this.currentPosition = newPosition
+    }
   }
 
   onTick (delta) {
     this.time += 0.05
     this.morph(0.2)
+    this.speed = 0.0
 
-    if (this.container.dragging) {
-      this.tetha += 0.05
-      const angle = (0.5 + Math.cos(this.tetha) * 0.5) * Math.PI
-      this.flip(this.container, angle)
+    if (Math.cos(this.container.euler.y) > 0) {
+      this.container.isflipped = true
+    } else {
+      this.container.isflipped = false
     }
-
+    if (this.container.dragging) {
+      this.speed = 0.03
+      if (Math.abs(Math.cos(this.container.euler.y)) > 0.3) {
+      }
+    }
+    if (this.container.startRotation) {
+      this.speed = 0.03
+      console.log('yoyoy')
+      if (Math.abs(Math.cos(this.container.euler.y)) >= 0.99) {
+        this.container.startRotation = false
+      }
+    }
+    this.flip(this.container, this.speed)
     this.makeShape()
   }
 }

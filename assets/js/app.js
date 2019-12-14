@@ -27,23 +27,26 @@ const app = new PIXI.Application({
 
 const mouse = new MouseComponent(app)
 
-const camera = new CameraComponent(app)
+const camera = new CameraComponent(app, {
+  mouse: mouse
+})
 
-const disp_filter = new displacementFilter(app, {
+const dispFilter = new displacementFilter(app, {
   mouse: mouse
 })
 
 const avatar = new AvatarComponent(app, {
+  mouse: mouse,
   camera: camera,
-  filter: disp_filter
+  filter: dispFilter
 })
 
-new StarFieldComponent(app, {
+const starField = new StarFieldComponent(app, {
   numStars: 300,
   applyFilter: true,
   applyMask: true,
   camera: camera,
   shapemask: avatar,
   mouse: mouse,
-  filter: disp_filter
+  filter: dispFilter
 })

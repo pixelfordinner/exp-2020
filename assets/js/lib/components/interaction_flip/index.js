@@ -18,7 +18,6 @@ export class FlipInteraction {
 
   initContainer () {
     this.container = this.config.object.container
-    // console.log('hello', this.iObject)
     this.container.tetha = 0
     this.container.auto_Rotation = false
     this.container.endRotation = false
@@ -111,12 +110,12 @@ export class FlipInteraction {
     }
   }
 
-  flip (object, speed) {
+  makeFlipAnimation (object, speed) {
     object.euler.y += this.container.goToRigth ? speed : -speed
     object.position3d.z = 100 * (Math.cos(object.euler.y * 2))
   }
 
-  makeFlip () {
+  makeFlipInteraction () {
     // reset animation speed
     this.speed = 0.0
     // check container angle to see if we switch texture rendering
@@ -147,11 +146,11 @@ export class FlipInteraction {
     }
     // make flip animation
     if (!this.container.beginDrag) {
-      this.flip(this.container, this.speed)
+      this.makeFlipAnimation(this.container, this.speed)
     }
   }
 
   onTick (delta) {
-    this.makeFlip()
+    this.makeFlipInteraction()
   }
 }

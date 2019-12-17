@@ -127,10 +127,7 @@ export class FlipInteraction {
     // check if we are dragging or if we already completed the drag moove
     if (this.container.mooving || this.container.auto_Rotation) {
       this.speed = this.container.totalSpeed
-      // this.container.totAngle += this.container.totalSpeed
-
-      // console.log(this.container.totAngle)
-      this.container.totAngle += this.container.goToRigth ? this.container.totalSpeed : -this.container.totalSpeed
+      this.container.totAngle += this.container.totalSpeed
     }
     // check container angle to see if we completed the rotation
     if (Math.abs(Math.cos(this.container.euler.y)) > 0.99) {
@@ -151,20 +148,11 @@ export class FlipInteraction {
     // check container angle to see if we didn't completed the rotation nether actived the auto_rotation behavior
     // reset the rotation to start
     if (Math.abs(Math.cos(this.container.euler.y)) <= 0.99) {
-      if (this.logdebuger) {
-        if (this.container.auto_Rotation) {
-          console.log('%c ROTATION = ', 'color: white; background : green; font-size : 14px', Math.abs(Math.cos(this.container.euler.y)))
-        } else {
-          if (this.container.mooving) {
-            console.log('%c ROTATION = ', 'color: white; background : blue; font-size : 14px', Math.abs(Math.cos(this.container.euler.y)))
-          } else {
-            console.log('%c ROTATION = ', 'color: white; background : red; font-size : 14px', Math.abs(Math.cos(this.container.euler.y)))
-          }
-        }
-      }
+      console.log(Math.abs(Math.cos(this.container.euler.y)))
       if (!this.container.auto_Rotation && !this.container.endRotation) {
         this.speed = -0.02
-        // this.container.totAngle = -0.02
+        this.container.totAngle -= 0.2
+        console.log('<<<<')
       }
     }
     // make flip animation

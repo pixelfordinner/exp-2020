@@ -14,7 +14,7 @@ export class FlipInteraction {
     this.mouse = this.config.mouse
     this.initContainer()
     this.app.ticker.add(delta => this.onTick(delta))
-    this.logdebuger = true
+    this.logdebuger = false
   }
 
   initContainer () {
@@ -45,7 +45,7 @@ export class FlipInteraction {
     this.totAngle = 0
     this.dragging = true
     this.beginDrag = true
-    this.endRotation = false
+    this.endRotation = true
     this.numclicks++
     this.dragOrigin = new PIXI.projection.Point3d(
       this.data.getLocalPosition(this.parent).x,
@@ -77,12 +77,14 @@ export class FlipInteraction {
       this.auto_Rotation = true
     } else {
       this.dragging = false
+      this.auto_Rotation = false
     }
   }
 
   onDragOut () {
     this.beginDrag = true
     this.mooving = false
+    // this.totAngle = 0
   }
 
   onDragMove () {
@@ -123,21 +125,29 @@ export class FlipInteraction {
     this.container.isflipped = Math.cos(this.container.euler.y) > 0
 
     // check if we are dragging or if we already completed the drag moove
-    if (this.container.dragging && this.container.mooving || this.container.auto_Rotation) {
+    if (this.container.mooving || this.container.auto_Rotation) {
       this.speed = this.container.totalSpeed
+      // this.container.totAngle += this.container.totalSpeed
+
+      // console.log(this.container.totAngle)
       this.container.totAngle += this.container.goToRigth ? this.container.totalSpeed : -this.container.totalSpeed
     }
     // check container angle to see if we completed the rotation
-    if (this.container.totAngle > Math.PI || Math.abs(Math.cos(this.container.euler.y)) > 0.99) {
+    if (Math.abs(Math.cos(this.container.euler.y)) > 0.99) {
       this.container.auto_Rotation = false
       this.container.endRotation = true
+
+      // this.speed = 0
+
+      if (this.container.totAngle > Math.PI) this.speed = 0
+
+      // console.log('angle ', this.container.totAngle)
+
       if (this.logdebuger) {
         console.log('%c !! YOYOYO !! ', 'color: white; background : BLACK; font-size : 16px')
       }
-      if (this.container.totAngle > Math.PI) {
-        this.speed = 0
-      }
     }
+
     // check container angle to see if we didn't completed the rotation nether actived the auto_rotation behavior
     // reset the rotation to start
     if (Math.abs(Math.cos(this.container.euler.y)) <= 0.99) {
@@ -154,6 +164,7 @@ export class FlipInteraction {
       }
       if (!this.container.auto_Rotation && !this.container.endRotation) {
         this.speed = -0.02
+        // this.container.totAngle = -0.02
       }
     }
     // make flip animation
@@ -164,6 +175,6 @@ export class FlipInteraction {
 
   onTick (delta) {
     this.makeFlipInteraction()
-    // console.log(this.container.endRotation)
+    console.log(this.container.endRotation)
   }
 }

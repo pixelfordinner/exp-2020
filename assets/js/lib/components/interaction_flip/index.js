@@ -20,7 +20,7 @@ export class FlipInteraction {
     this.container = this.config.object.container
     // console.log('hello', this.iObject)
     this.container.tetha = 0
-    this.container.startRotation = false
+    this.container.auto_Rotation = false
     this.container.endRotation = false
     this.container.euler.y = 0
     this.container.isflipped = false
@@ -65,7 +65,7 @@ export class FlipInteraction {
     console.log(this.newDistance)
 
     if (this.newDistance > 130) {
-      this.startRotation = true
+      this.auto_Rotation = true
     } else {
       this.dragging = false
     }
@@ -74,7 +74,7 @@ export class FlipInteraction {
     console.log(this.newDistance)
 
     if (this.newDistance > 130) {
-      this.startRotation = true
+      this.auto_Rotation = true
     } else {
       this.dragging = false
     }
@@ -121,27 +121,31 @@ export class FlipInteraction {
     this.speed = 0.0
     // check container angle to see if we switch texture rendering
     this.container.isflipped = Math.cos(this.container.euler.y) > 0
+    if (Math.cos(this.container.euler.y) > 0) {
+      this.container.auto_Rotation = true
+    }
     // check if we are dragging or if we already completed the drag moove
-    if (this.container.dragging && this.container.mooving || this.container.startRotation) {
+    if (this.container.dragging && this.container.mooving || this.container.auto_Rotation) {
       this.speed = this.container.totalSpeed
       this.container.totAngle += this.container.totalSpeed
     }
     // check container angle to see if we completed the rotation
     if (this.container.totAngle > Math.PI || Math.abs(Math.cos(this.container.euler.y)) > 0.99) {
-      this.container.startRotation = false
+      this.container.auto_Rotation = false
       this.container.endRotation = true
       if (this.container.totAngle > Math.PI) this.speed = 0
     }
-
+    // check container angle to see if we didn't completed the rotation nether actived the auto_rotation behavior
+    // reset the rotation to start
     if (Math.abs(Math.cos(this.container.euler.y)) <= 0.99) {
       console.log(Math.abs(Math.cos(this.container.euler.y)))
-      if (!this.container.mooving && !this.container.startRotation && !this.container.endRotation) {
+      if (!this.container.mooving && !this.container.auto_Rotation && !this.container.endRotation) {
         this.speed = -0.02
         this.container.totAngle -= 0.2
         console.log('<<<<')
       }
     }
-
+    // make flip animation
     if (!this.container.beginDrag) {
       this.flip(this.container, this.speed)
     }

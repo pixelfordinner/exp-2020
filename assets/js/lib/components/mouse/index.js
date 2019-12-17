@@ -60,6 +60,21 @@ export class MouseComponent {
     return this.val
   }
 
+  getMouseInfluenceX (refPoint, minD, maxD, minF, maxF) {
+    const mpx = this.pos.x - this.app.screen.width / 2
+    const mpy = this.pos.y - this.app.screen.height / 2
+
+    const px = mpx - refPoint.x
+    const py = mpy - refPoint.y
+    const op = new PIXI.Point(px, py)
+    const lgth = Tools.getXlength(op)
+    // this.amp = lgth
+
+    this.val = Tools.map(lgth, minD, maxD, minF, maxF)
+    if (this.val < 0) this.val = 0
+    return this.val
+  }
+
   onTick (delta) {
     this.time += 0.1
     this.getpos()

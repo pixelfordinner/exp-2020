@@ -54,21 +54,11 @@ export class FlipInteraction {
   onDragEnd () {
     this.alpha = 1
     this.dragging = false
-    this.beginDrag = false
     this.newDistance = Tools.getPolarlength(this.currentPosition, this.dragOrigin)
-    if (this.newDistance > 100) {
-      this.startRotation = true
-    } else {
-      this.dragging = false
-
-      this.startRotation = false
-      this.newDistance = 0
-    }
   }
 
   onDragMove () {
     this.beginDrag = false
-
     if (this.dragging) {
       const newPosition = this.data.getLocalPosition(this.parent)
       if (newPosition.x < this.dragOrigin.x) {
@@ -77,7 +67,6 @@ export class FlipInteraction {
         this.goToRigth = true
       }
       this.currentPosition = newPosition
-      // this.distanceFromPrev = Tools.getXlength(newPosition, this.currentPosition)
       if (this.both) {
         this.distanceFromPrev = Tools.getPolarlength(newPosition, this.currentPosition)
       }
@@ -86,10 +75,7 @@ export class FlipInteraction {
       } else {
         this.distanceFromPrev = Tools.getXlength(newPosition, this.currentPosition)
       }
-
-      this.totalSpeed = Tools.map(this.distanceFromPrev, 5, 100, 0, 0.02)
-
-      // this.totalSpeed = 0.02
+      this.totalSpeed = 0.05
     }
   }
 
@@ -100,6 +86,7 @@ export class FlipInteraction {
 
   makeFlip () {
     this.speed = 0.0
+    console.log(Math.abs(Math.cos(this.container.euler.y)))
 
     if (Math.cos(this.container.euler.y) > 0) {
       this.container.isflipped = true
@@ -108,11 +95,20 @@ export class FlipInteraction {
     }
     if (this.container.dragging) {
       this.speed = this.container.totalSpeed
+
+      this.dist = this.mouse.getMouseInfluenceX(this.container.dragOrigin, 0, 300, 0, 10)
+      console.log('yoyoy ', this.dist)
+      if (this.dist > 2) {
+        this.container.startRotation = true
+        this.container.dragging = false
+      }
+      this.dist = Tools.getPolarlength(this.mouse.pos, this.container.dragOrigin)
     }
     if (this.container.startRotation) {
       this.speed = this.container.totalSpeed
-      if (Math.abs(Math.cos(this.container.euler.y)) >= 0.99) {
+      if (Math.abs(Math.cos(this.container.euler.y)) >= 0.999) {
         this.container.startRotation = false
+        this.container.dragging = false
       }
     }
     if (!this.container.beginDrag) {

@@ -19,19 +19,22 @@ export class FlipInteraction {
 
   initContainer () {
     this.container = this.config.object.container
-    this.container.tetha = 0
-    this.container.auto_Rotation = false
-    this.container.endRotation = false
-    this.container.euler.y = 0
-    this.container.isflipped = false
-    this.container.goToRigth = 0
-    this.container.numclicks = 0
     this.container.dragOrigin = new PIXI.projection.Point3d()
     this.container.currentPosition = new PIXI.projection.Point3d()
+
+    this.container.beginDrag = false
+    this.container.mooving = false
+    this.container.goToRigth = false
+    this.container.auto_Rotation = false
+    this.container.endRotation = false
+    this.container.isflipped = false
+
+    this.container.tetha = 0
+    this.container.euler.y = 0
     this.container.totalSpeed = 0
     this.container.totAngle = 0
-    this.container.mooving = false
-    this.container.beginDrag = false
+    this.container.resistance = 100
+
     this.container.on('pointerdown', this.onDragStart)
       .on('pointerup', this.onDragEnd)
       .on('pointermove', this.onDragMove)
@@ -41,12 +44,11 @@ export class FlipInteraction {
 
   onDragStart (event) {
     this.data = event.data
-    this.alpha = 0.5
     this.totAngle = 0
     this.dragging = true
     this.beginDrag = true
     this.endRotation = true
-    this.numclicks++
+
     this.dragOrigin = new PIXI.projection.Point3d(
       this.data.getLocalPosition(this.parent).x,
       this.data.getLocalPosition(this.parent).y,
@@ -56,24 +58,20 @@ export class FlipInteraction {
   }
 
   onDragEnd () {
-    this.alpha = 1
     this.dragging = false
     this.beginDrag = false
     this.endRotation = false
     this.mooving = false
     this.newDistance = Tools.getXlength(this.currentPosition, this.dragOrigin)
-    console.log(this.newDistance)
-
-    if (this.newDistance > 130) {
+    if (this.newDistance > this.resistance) {
       this.auto_Rotation = true
     } else {
       this.dragging = false
     }
 
     this.newDistance = Tools.getXlength(this.currentPosition, this.dragOrigin)
-    console.log(this.newDistance)
 
-    if (this.newDistance > 130) {
+    if (this.newDistance > this.resistance) {
       this.auto_Rotation = true
     } else {
       this.dragging = false
@@ -84,32 +82,17 @@ export class FlipInteraction {
   onDragOut () {
     this.beginDrag = true
     this.mooving = false
-    // this.totAngle = 0
   }
 
   onDragMove () {
     this.beginDrag = false
-
     if (this.dragging) {
-      this.mooving = true
       const newPosition = this.data.getLocalPosition(this.parent)
-      if (newPosition.x < this.dragOrigin.x) {
-        this.goToRigth = false
-      } else {
-        this.goToRigth = true
-      }
+      this.goToRigth = !(newPosition.x < this.dragOrigin.x)
       this.currentPosition = newPosition
-
-      if (this.both) {
-        this.distanceFromPrev = Tools.getPolarlength(newPosition, this.currentPosition)
-      }
-      if (this.horizontal) {
-        this.distanceFromPrev = Tools.getYlength(newPosition, this.currentPosition)
-      } else {
-        this.distanceFromPrev = Tools.getXlength(newPosition, this.currentPosition)
-      }
-      // this.totalSpeed = Tools.map(this.distanceFromPrev, 5, 100, 0, 0.03)
+      this.distanceFromPrev = Tools.getXlength(newPosition, this.currentPosition)
       this.totalSpeed = 0.03
+      this.mooving = true
     }
   }
 
@@ -119,7 +102,6 @@ export class FlipInteraction {
   }
 
   makeFlipInteraction () {
-    // reset animation speed
     this.speed = 0.0
     // check container angle to see if we switch texture rendering
     this.container.isflipped = Math.cos(this.container.euler.y) > 0
@@ -130,31 +112,20 @@ export class FlipInteraction {
       this.container.totAngle += this.container.totalSpeed
     }
     // check container angle to see if we completed the rotation
-    if (Math.abs(Math.cos(this.container.euler.y)) > 0.99) {
-      this.container.auto_Rotation = false
+    if (Math.abs(Math.cos(this.container.euler.y)) >= 0.99) {
       this.container.endRotation = true
-
-      // this.speed = 0
-
       if (this.container.totAngle > Math.PI) this.speed = 0
-
-      // console.log('angle ', this.container.totAngle)
-
-      if (this.logdebuger) {
-        console.log('%c !! YOYOYO !! ', 'color: white; background : BLACK; font-size : 16px')
-      }
     }
 
     // check container angle to see if we didn't completed the rotation nether actived the auto_rotation behavior
-    // reset the rotation to start
+    // then rewind the rotation
     if (Math.abs(Math.cos(this.container.euler.y)) <= 0.99) {
-      console.log(Math.abs(Math.cos(this.container.euler.y)))
       if (!this.container.auto_Rotation && !this.container.endRotation) {
         this.speed = -0.02
         this.container.totAngle -= 0.2
-        console.log('<<<<')
       }
     }
+
     // make flip animation
     if (!this.container.beginDrag) {
       this.makeFlipAnimation(this.container, this.speed)

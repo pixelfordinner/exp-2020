@@ -36,6 +36,7 @@ export class FlipInteraction {
       .on('pointerup', this.onDragEnd)
       .on('pointermove', this.onDragMove)
       .on('pointerupoutside', this.onDragEnd)
+      .on('pointerout', this.onDragOut)
   }
 
   onDragStart (event) {
@@ -68,6 +69,21 @@ export class FlipInteraction {
     } else {
       this.dragging = false
     }
+
+    this.newDistance = Tools.getXlength(this.currentPosition, this.dragOrigin)
+    console.log(this.newDistance)
+
+    if (this.newDistance > 130) {
+      this.startRotation = true
+    } else {
+      this.dragging = false
+    }
+  }
+
+  onDragOut () {
+    this.beginDrag = true
+    this.endRotation = false
+    this.mooving = false
   }
 
   onDragMove () {

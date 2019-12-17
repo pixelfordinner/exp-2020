@@ -81,7 +81,6 @@ export class FlipInteraction {
 
   onDragOut () {
     this.beginDrag = true
-    this.endRotation = false
     this.mooving = false
   }
 
@@ -121,9 +120,7 @@ export class FlipInteraction {
     this.speed = 0.0
     // check container angle to see if we switch texture rendering
     this.container.isflipped = Math.cos(this.container.euler.y) > 0
-    if (Math.cos(this.container.euler.y) > 0) {
-      this.container.auto_Rotation = true
-    }
+
     // check if we are dragging or if we already completed the drag moove
     if (this.container.dragging && this.container.mooving || this.container.auto_Rotation) {
       this.speed = this.container.totalSpeed
@@ -139,7 +136,7 @@ export class FlipInteraction {
     // reset the rotation to start
     if (Math.abs(Math.cos(this.container.euler.y)) <= 0.99) {
       console.log(Math.abs(Math.cos(this.container.euler.y)))
-      if (!this.container.mooving && !this.container.auto_Rotation && !this.container.endRotation) {
+      if (!this.container.auto_Rotation && !this.container.endRotation) {
         this.speed = -0.02
         this.container.totAngle -= 0.2
         console.log('<<<<')

@@ -106,7 +106,8 @@ export class FlipInteraction {
       } else {
         this.distanceFromPrev = Tools.getXlength(newPosition, this.currentPosition)
       }
-      this.totalSpeed = Tools.map(this.distanceFromPrev, 5, 100, 0, 0.03)
+      // this.totalSpeed = Tools.map(this.distanceFromPrev, 5, 100, 0, 0.03)
+      this.totalSpeed = 0.03
     }
   }
 

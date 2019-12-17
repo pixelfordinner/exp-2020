@@ -5,6 +5,7 @@ import { displacementFilter } from 'components/displacement'
 import { MouseComponent } from 'components/mouse'
 
 import { StarFieldComponent } from 'components/starfield3d'
+import { FlipInteraction } from 'components/interaction_flip'
 
 global.PIXI = PIXI
 window.PIXI = PIXI
@@ -41,6 +42,11 @@ const avatar = new AvatarComponent(app, {
   filter: dispFilter
 })
 
+const flipIt = new FlipInteraction(app, {
+  mouse: mouse,
+  object: avatar
+})
+
 const starField = new StarFieldComponent(app, {
   numStars: 300,
   applyFilter: true,
@@ -50,3 +56,6 @@ const starField = new StarFieldComponent(app, {
   mouse: mouse,
   filter: dispFilter
 })
+
+// const interactions = new PIXI.interaction.InteractionManager()
+/// console.log(this.interactions)

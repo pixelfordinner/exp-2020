@@ -120,7 +120,10 @@ export class StarFieldComponent {
   }
 
   animateFilter () {
-    this.finallgth = this.mouse.getMouseInfluenceMap(new PIXI.Point(this.container.x, this.container.y), 50, 500, 20, 0)
+    this.xp = this.shape.container.position3d.x
+    this.yp = this.shape.container.position3d.y
+
+    this.finallgth = this.mouse.getMouseInfluenceMap(new PIXI.Point(this.xp, this.yp), 50, 500, 20, 0)
     this.filter.displacementSprite.x += this.finallgth / 7
     this.filter.filter.scale = new PIXI.Point(this.finallgth / 2, this.finallgth / 2)
   }
@@ -128,7 +131,7 @@ export class StarFieldComponent {
   onTick (delta) {
     const isOn = this.shape.container.isflipped
     // console.log(isOn)
-    if (this.shape.container.isflipped != 0) {
+    if (!this.shape.container.isflipped) {
       this.field.renderable = false
     } else {
       this.field.renderable = true

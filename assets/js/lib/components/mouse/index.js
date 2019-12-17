@@ -46,8 +46,11 @@ export class MouseComponent {
   }
 
   getMouseInfluenceMap (refPoint, minD, maxD, minF, maxF) {
-    const px = this.pos.x - refPoint.x
-    const py = this.pos.y - refPoint.y
+    const mpx = this.pos.x - this.app.screen.width / 2
+    const mpy = this.pos.y - this.app.screen.height / 2
+
+    const px = mpx - refPoint.x
+    const py = mpy - refPoint.y
     const op = new PIXI.Point(px, py)
     const lgth = Tools.getPolarlength(op)
     // this.amp = lgth

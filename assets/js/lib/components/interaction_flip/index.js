@@ -14,6 +14,7 @@ export class FlipInteraction {
     this.mouse = this.config.mouse
     this.initContainer()
     this.app.ticker.add(delta => this.onTick(delta))
+    this.logdebuger = true
   }
 
   initContainer () {
@@ -130,17 +131,29 @@ export class FlipInteraction {
     if (this.container.totAngle > Math.PI || Math.abs(Math.cos(this.container.euler.y)) > 0.99) {
       this.container.auto_Rotation = false
       this.container.endRotation = true
-      if (this.container.totAngle > Math.PI) this.speed = 0
+      if (this.logdebuger) {
+        console.log('%c !! YOYOYO !! ', 'color: white; background : BLACK; font-size : 16px')
+      }
+      if (this.container.totAngle > Math.PI) {
+        this.speed = 0
+      }
     }
     // check container angle to see if we didn't completed the rotation nether actived the auto_rotation behavior
     // reset the rotation to start
     if (Math.abs(Math.cos(this.container.euler.y)) <= 0.99) {
-      console.log(Math.abs(Math.cos(this.container.euler.y)))
-      console.log(this.container.totAngle)
+      if (this.logdebuger) {
+        if (this.container.auto_Rotation) {
+          console.log('%c ROTATION = ', 'color: white; background : green; font-size : 14px', Math.abs(Math.cos(this.container.euler.y)))
+        } else {
+          if (this.container.mooving) {
+            console.log('%c ROTATION = ', 'color: white; background : blue; font-size : 14px', Math.abs(Math.cos(this.container.euler.y)))
+          } else {
+            console.log('%c ROTATION = ', 'color: white; background : red; font-size : 14px', Math.abs(Math.cos(this.container.euler.y)))
+          }
+        }
+      }
       if (!this.container.auto_Rotation && !this.container.endRotation) {
         this.speed = -0.02
-        // this.container.totAngle -= 0.2
-        console.log('<<<<')
       }
     }
     // make flip animation
@@ -151,5 +164,6 @@ export class FlipInteraction {
 
   onTick (delta) {
     this.makeFlipInteraction()
+    // console.log(this.container.endRotation)
   }
 }

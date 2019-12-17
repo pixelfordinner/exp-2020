@@ -124,7 +124,7 @@ export class FlipInteraction {
     // check if we are dragging or if we already completed the drag moove
     if (this.container.dragging && this.container.mooving || this.container.auto_Rotation) {
       this.speed = this.container.totalSpeed
-      this.container.totAngle += this.container.totalSpeed
+      this.container.totAngle += this.container.goToRigth ? this.container.totalSpeed : -this.container.totalSpeed
     }
     // check container angle to see if we completed the rotation
     if (this.container.totAngle > Math.PI || Math.abs(Math.cos(this.container.euler.y)) > 0.99) {
@@ -136,9 +136,10 @@ export class FlipInteraction {
     // reset the rotation to start
     if (Math.abs(Math.cos(this.container.euler.y)) <= 0.99) {
       console.log(Math.abs(Math.cos(this.container.euler.y)))
+      console.log(this.container.totAngle)
       if (!this.container.auto_Rotation && !this.container.endRotation) {
         this.speed = -0.02
-        this.container.totAngle -= 0.2
+        // this.container.totAngle -= 0.2
         console.log('<<<<')
       }
     }

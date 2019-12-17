@@ -59,8 +59,11 @@ export class FlipInteraction {
     this.dragging = false
     this.beginDrag = false
     this.endRotation = false
-    this.newDistance = Tools.getPolarlength(this.currentPosition, this.dragOrigin)
-    if (this.newDistance > 100) {
+    this.mooving = false
+    this.newDistance = Tools.getXlength(this.currentPosition, this.dragOrigin)
+    console.log(this.newDistance)
+
+    if (this.newDistance > 130) {
       this.startRotation = true
     } else {
       this.dragging = false
@@ -110,12 +113,17 @@ export class FlipInteraction {
     // check container angle to see if we completed the rotation
     if (this.container.totAngle > Math.PI || Math.abs(Math.cos(this.container.euler.y)) > 0.99) {
       this.container.startRotation = false
+      this.container.endRotation = true
       if (this.container.totAngle > Math.PI) this.speed = 0
-    } else if (this.container.totAngle > 0 && !this.dragging) {
-      console.log(this.container.totAngle)
-      // this.speed = -this.speed
-      // this.container.totAngle -= this.speed
-      // this.speed = -this.speed
+    }
+
+    if (Math.abs(Math.cos(this.container.euler.y)) <= 0.99) {
+      console.log(Math.abs(Math.cos(this.container.euler.y)))
+      if (!this.container.mooving && !this.container.startRotation && !this.container.endRotation) {
+        this.speed = -0.02
+        this.container.totAngle -= 0.2
+        console.log('<<<<')
+      }
     }
 
     if (!this.container.beginDrag) {

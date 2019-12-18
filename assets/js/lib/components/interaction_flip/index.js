@@ -35,7 +35,7 @@ export class FlipInteraction {
     this.container.tetha = 0
     this.container.euler.y = 0
     this.container.totalSpeed = 0
-    this.container.totAngle = Math.PI
+    this.container.totAngle = 0
     this.container.blur = 0
     this.container.resistance = 160
     this.container.velocity = 0.03
@@ -49,12 +49,11 @@ export class FlipInteraction {
 
   onDragStart (event) {
     this.data = event.data
-    this.totAngle = 0
     this.dragging = true
     this.beginDrag = true
     this.endRotation = true
     this.isOut = false
-
+    this.mooving = true
     this.dragOrigin = new PIXI.projection.Point3d(
       this.data.getLocalPosition(this.parent).x,
       this.data.getLocalPosition(this.parent).y,
@@ -68,7 +67,6 @@ export class FlipInteraction {
     this.beginDrag = false
     this.endRotation = false
     this.mooving = false
-
     this.newDistance = Tools.getXlength(this.currentPosition, this.dragOrigin)
 
     if (this.newDistance > this.resistance) {
@@ -95,7 +93,6 @@ export class FlipInteraction {
 
   applyAngle (object, angle) {
     object.euler.y = this.container.goToRigth ? angle : -angle
-
     object.position3d.z = 40 * (Math.cos(object.euler.y * 2))
   }
 
@@ -105,23 +102,24 @@ export class FlipInteraction {
     // check witch face we show
     this.container.isflipped = Math.cos(this.container.euler.y) > 0
 
-    if (this.container.totAngle >= -Math.PI && this.container.totAngle <= Math.PI) {
+    // add velocity if we drag or with the auto rotate mode activated
+    if (this.container.mooving || this.container.auto_Rotation) {
       this.speed = this.container.velocity
-
-      if (!this.container.auto_Rotation && !this.container.endRotation) {
-        this.speed = -this.container.velocity / 1.5
-      }
-
-      if (Math.cos(this.container.totAngle) === 1 && !this.container.dragging) {
-        console.log('step')
-        this.speed = 0
-        this.container.endRotation = true
-      }
-    } else {
+    }
+    // rewind if we didn't actived the auto rotate
+    if (!this.container.mooving && !this.container.auto_Rotation && !this.container.endRotation) {
+      this.speed = -this.container.velocity / 1.5
+    }
+    // check if we complete a rotation ( tricky part! getting a small portion of the cos(angle) to check bounds)
+    // do not work on the first drag input
+    // reset parameters
+    if (Math.cos(this.container.totAngle * 2) > 0.99 && Math.cos(this.container.totAngle * 2) < 1.01 && !this.container.dragging) {
+      console.log('step')
       this.speed = 0
       this.container.endRotation = true
+      this.totAngle = 0
     }
-    //
+    // cumulate angle
     this.container.totAngle += this.container.goToRigth ? this.speed : -this.speed
 
     // make flip animation
@@ -131,6 +129,8 @@ export class FlipInteraction {
   }
 
   onTick (delta) {
+    console.log(this.container.mooving)
+
     this.makeFlipInteraction()
   }
 }

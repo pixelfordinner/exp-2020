@@ -28,6 +28,7 @@ export class FlipInteraction {
     this.container.auto_Rotation = false
     this.container.endRotation = false
     this.container.isflipped = false
+    this.container.changeState = false
 
     this.container.tetha = 0
     this.container.euler.y = 0
@@ -75,6 +76,7 @@ export class FlipInteraction {
       this.auto_Rotation = true
     } else {
       this.dragging = false
+
       this.auto_Rotation = false
     }
   }
@@ -104,17 +106,27 @@ export class FlipInteraction {
   makeFlipInteraction () {
     this.speed = 0.0
     // check container angle to see if we switch texture rendering
-    this.container.isflipped = Math.cos(this.container.euler.y) > 0
+    // this.container.isflipped = Math.cos(this.container.euler.y) > 0
+
+    this.container.changeState
+    if (Math.cos(this.container.euler.y) > 0) {
+      this.container.isflipped = true
+      this.container.changeState = true
+    }
+
+    console.log(this.container.changeState)
 
     // check if we are dragging or if we already completed the drag moove
     if (this.container.mooving || this.container.auto_Rotation) {
       this.speed = this.container.totalSpeed
-      this.container.totAngle += this.container.totalSpeed
+      // this.container.totAngle += this.container.totalSpeed
+      this.container.totAngle += this.container.goToRigth ? this.container.totalSpeed : -this.container.totalSpeed
     }
     // check container angle to see if we completed the rotation
     if (Math.abs(Math.cos(this.container.euler.y)) >= 0.99) {
       this.container.endRotation = true
-      if (this.container.totAngle > Math.PI) this.speed = 0
+      this.container.changeState = false
+      if (this.container.totAngle >= Math.PI || this.container.totAngle <= -Math.PI) this.speed = 0
     }
 
     // check container angle to see if we didn't completed the rotation nether actived the auto_rotation behavior
@@ -122,7 +134,7 @@ export class FlipInteraction {
     if (Math.abs(Math.cos(this.container.euler.y)) <= 0.99) {
       if (!this.container.auto_Rotation && !this.container.endRotation) {
         this.speed = -0.02
-        this.container.totAngle -= 0.2
+        // this.container.totAngle -= 0.2
       }
     }
 
@@ -134,6 +146,6 @@ export class FlipInteraction {
 
   onTick (delta) {
     this.makeFlipInteraction()
-    console.log(this.container.endRotation)
+    // console.log(this.container.endRotation)
   }
 }

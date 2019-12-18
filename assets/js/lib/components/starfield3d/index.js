@@ -66,6 +66,7 @@ export class StarFieldComponent {
     this.container.y = this.height / 2
     this.container.addChild(this.verso)
     this.container.addChild(this.field)
+    // this.container.addChild(this.field)
 
     this.app.stage.addChild(this.container)
   }
@@ -87,26 +88,30 @@ export class StarFieldComponent {
   initCamera () {
     this.camera = this.config.camera.getCamera()
     this.camera.addChild(this.container)
+    // this.camera.addChild(this.verso)
+    // this.camera.addChild(this.bg)
+    // this.camera.addChild(this.field)
   }
 
   initStars () {
-    const bg = new PIXI.projection.Sprite3d(this.wtex)
-    bg.tint = 0x000000
-    bg.position3d.z = 2
-    bg.position.x = 0
-    bg.position.y = 0
-    bg.width = this.width * 2
-    bg.height = this.height * 2
-    this.field.addChild(bg)
+    this.bg = new PIXI.projection.Sprite3d(this.wtex)
+    this.bg.tint = 0x000000
+    this.bg.position3d.z = 2
+    this.bg.position.x = 0
+    this.bg.position.y = 0
+    this.bg.position3d.z = 200
+    this.bg.width = this.width * 2
+    this.bg.height = this.height * 2
+    this.field.addChild(this.bg)
 
     for (let i = 0; i < this.config.numStars; i++) {
       const part = new PIXI.projection.Sprite3d(this.wtex)
       part.anchor = new PIXI.Point(0.5, 0.5)
       part.width = 5
       part.height = 5
-      part.position.x = Math.random() * this.app.screen.width
-      part.position.y = Math.random() * this.app.screen.height
-      part.position3d.z = 20 + Math.random() * 1000
+      part.position.x = Math.random() * this.app.screen.width * 2 - this.app.screen.width / 2
+      part.position.y = Math.random() * this.app.screen.height * 2 - this.app.screen.height / 2
+      part.position3d.z = 20 + Math.random() * 3000
       this.stars.push(part)
       this.field.addChild(part)
     }
@@ -115,8 +120,13 @@ export class StarFieldComponent {
 
   drawfield () {
     this.stars.forEach((star, index) => {
+      if (star.position3d.z < 3000 && star.position3d.z > 0) {
+        star.position3d.z--
+      } else {
+        star.position3d.z = 3000
+      }
     })
-    this.field.position3d.z += Math.cos(this.time)
+    // this.field.position3d.z += Math.cos(this.time)
   }
 
   animateFilter () {

@@ -56,7 +56,6 @@ export class FlipInteraction {
     this.isOut = false
     this.mooving = false
     this.force = 100
-    console.log('reset force')
 
     this.dragOrigin = new PIXI.projection.Point3d(
       this.data.getLocalPosition(this.parent).x,
@@ -113,7 +112,7 @@ export class FlipInteraction {
 
   applyAngle (object, angle) {
     object.euler.y = this.container.goToRigth ? angle : -angle
-    object.position3d.z = 40 * (Math.cos(object.euler.y * 2))
+    object.position3d.z = -300 + 40 * (Math.cos(object.euler.y * 2))
   }
 
   makeFlipInteraction () {
@@ -152,5 +151,6 @@ export class FlipInteraction {
 
   onTick (delta) {
     this.makeFlipInteraction()
+    // console.log(this.container.isflipped)
   }
 }

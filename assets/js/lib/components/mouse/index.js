@@ -5,6 +5,7 @@ export class MouseComponent {
   constructor (app) {
     this.app = app
     this.pos = new PIXI.Point()
+    this.WorldPos = new PIXI.Point()
     this.initShape()
     this.amp = 100
     this.setup()
@@ -16,6 +17,16 @@ export class MouseComponent {
 
   getpos () {
     this.pos = this.app.renderer.plugins.interaction.mouse.global
+  }
+
+  getWorldpos () {
+    const wpx = this.pos.x - this.app.screen.width / 2
+
+    const wpy = this.pos.y - this.app.screen.height / 2
+
+    this.worldPos = new PIXI.Point(wpx, wpy)
+    // console.log(new PIXI.Point(this.pos.x, this.pos.y))
+    // return new PIXI.Point(this.pos.x, this.pos.y)
   }
 
   isIn () {
@@ -78,6 +89,7 @@ export class MouseComponent {
   onTick (delta) {
     this.time += 0.1
     this.getpos()
+    this.getWorldpos()
     this.shape.x = this.pos.x
     this.shape.y = this.pos.y
     this.drawShape()

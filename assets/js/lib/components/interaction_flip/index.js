@@ -112,7 +112,7 @@ export class FlipInteraction {
 
   applyAngle (object, angle) {
     object.euler.y = this.container.goToRigth ? angle : -angle
-    object.position3d.z = -300 + 40 * (Math.cos(object.euler.y * 2))
+    object.position3d.z = -35 + 70 * (Math.cos(object.euler.y * 2))
   }
 
   makeFlipInteraction () {

@@ -13,7 +13,7 @@ export class CameraComponent {
     this.config = Object.assign(this.defaults, config)
     this.camera = new PIXI.projection.Camera3d()
     this.camera.position.set(this.app.screen.width / 2, this.app.screen.height / 2)
-    this.camera.position3d.z = -100
+    this.camera.position3d.z = 100
     this.camera.setPlanes(450, 330, 1000)
     // this.camera.euler.x = Math.PI / 2
     this.app.stage.addChild(this.camera)

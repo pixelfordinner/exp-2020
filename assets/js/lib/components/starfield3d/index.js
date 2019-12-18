@@ -120,9 +120,10 @@ export class StarFieldComponent {
 
   drawfield () {
     this.stars.forEach((star, index) => {
-      if (star.position3d.z < 3000 && star.position3d.z > 0) {
-        star.position3d.z--
-      } else {
+      if (star.position3d.z <= 3000 && star.position3d.z >= 0) {
+        star.position3d.z -= 30
+      }
+      if (star.position3d.z <= 0) {
         star.position3d.z = 3000
       }
     })

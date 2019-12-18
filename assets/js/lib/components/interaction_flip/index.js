@@ -28,8 +28,8 @@ export class FlipInteraction {
     this.container.auto_Rotation = false
     this.container.endRotation = false
     this.container.isflipped = false
-    this.container.changeState = false
-    this.container.lastState = false
+    // this.container.changeState = false
+    //  this.container.lastState = false
     this.container.isOut = false
 
     this.container.tetha = 0
@@ -39,6 +39,7 @@ export class FlipInteraction {
     this.container.blur = 0
     this.container.resistance = 160
     this.container.velocity = 0.03
+    this.container.sensible = 10
 
     this.container.on('pointerdown', this.onDragStart)
       .on('pointerup', this.onDragCancel)
@@ -94,12 +95,13 @@ export class FlipInteraction {
       this.goToRigth = !(newPosition.x < this.dragOrigin.x)
       this.currentPosition = newPosition
       this.distanceFromPrev = Tools.getXlength(newPosition, this.currentPosition)
-      this.mooving = true
+      // this.mooving = true
       if (this.distanceFromPrev > this.resistance) {
         this.auto_Rotation = true
         this.dragging = false
-      } else {
-        this.auto_Rotation = false
+      }
+      if (this.distanceFromPrev > this.sensible) {
+        this.mooving = true
       }
     }
   }
@@ -116,10 +118,8 @@ export class FlipInteraction {
 
   makeFlipInteraction () {
     this.speed = 0.0
-    console.log(this.container.totAngle)
-    console.log(this.container.mooving)
 
-    // easing: slowly reduce interaction force
+    // easing: slowly reduce interaction influence NB not to 0 because we won't freez
     if (this.container.force > 0 && this.container.isOut) this.container.force -= 1.5
     this.container.velocity = Tools.map(this.container.force, 0, 100, 0.02, 0.05)
     // check witch face we show
@@ -137,7 +137,6 @@ export class FlipInteraction {
     // do not work on the first drag input
     // reset parameters
     if (Math.cos(this.container.totAngle * 2) > 0.99 && Math.cos(this.container.totAngle * 2) < 1.01 && !this.container.dragging) {
-      console.log('step')
       this.speed = 0
       this.container.endRotation = true
       this.totAngle = 0
@@ -152,8 +151,6 @@ export class FlipInteraction {
   }
 
   onTick (delta) {
-    console.log(this.container.mooving)
-
     this.makeFlipInteraction()
   }
 }

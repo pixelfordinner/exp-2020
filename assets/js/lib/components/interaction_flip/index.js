@@ -53,7 +53,7 @@ export class FlipInteraction {
     this.beginDrag = true
     this.endRotation = true
     this.isOut = false
-    this.mooving = true
+    this.mooving = false
     this.force = 100
     console.log('reset force')
 
@@ -70,17 +70,6 @@ export class FlipInteraction {
     this.beginDrag = false
     this.endRotation = false
     this.mooving = false
-  }
-
-  onDragMove () {
-    this.beginDrag = false
-    if (this.dragging) {
-      const newPosition = this.data.getLocalPosition(this.parent)
-      this.goToRigth = !(newPosition.x < this.dragOrigin.x)
-      this.currentPosition = newPosition
-      this.distanceFromPrev = Tools.getXlength(newPosition, this.currentPosition)
-      this.mooving = true
-    }
     this.newDistance = Tools.getXlength(this.currentPosition, this.dragOrigin)
     if (this.newDistance > this.resistance) {
       this.auto_Rotation = true
@@ -90,8 +79,21 @@ export class FlipInteraction {
     }
   }
 
+  onDragMove () {
+    // this.mooving = false
+    if (this.dragging) {
+      this.beginDrag = false
+      const newPosition = this.data.getLocalPosition(this.parent)
+      this.goToRigth = !(newPosition.x < this.dragOrigin.x)
+      this.currentPosition = newPosition
+      this.distanceFromPrev = Tools.getXlength(newPosition, this.currentPosition)
+      this.mooving = true
+    }
+  }
+
   onDragOut () {
     this.isOut = true
+    // this.mooving = true
   }
 
   applyAngle (object, angle) {
@@ -101,6 +103,9 @@ export class FlipInteraction {
 
   makeFlipInteraction () {
     this.speed = 0.0
+    console.log(this.container.totAngle)
+    console.log(this.container.mooving)
+
     // easing: slowly reduce interaction force
     if (this.container.force > 0 && this.container.isOut) this.container.force -= 1.5
     this.container.velocity = Tools.map(this.container.force, 0, 100, 0.01, 0.06)

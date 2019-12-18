@@ -63,6 +63,8 @@ export class FlipInteraction {
     this.beginDrag = false
     this.endRotation = false
     this.mooving = false
+    // this.totalSpeed = 0
+    // this.mooving = false
     this.newDistance = Tools.getXlength(this.currentPosition, this.dragOrigin)
     if (this.newDistance > this.resistance) {
       this.auto_Rotation = true
@@ -82,7 +84,7 @@ export class FlipInteraction {
   }
 
   onDragOut () {
-    this.beginDrag = true
+    // this.beginDrag = true
     this.mooving = false
   }
 
@@ -108,10 +110,10 @@ export class FlipInteraction {
     // check container angle to see if we switch texture rendering
     // this.container.isflipped = Math.cos(this.container.euler.y) > 0
 
-    this.container.changeState
-    if (Math.cos(this.container.euler.y) > 0) {
+    // this.container.changeState
+    if (Math.abs(Math.cos(this.container.euler.y)) > 0) {
       this.container.isflipped = true
-      this.container.changeState = true
+      // this.container.changeState = true
     }
 
     console.log(this.container.changeState)
@@ -120,6 +122,8 @@ export class FlipInteraction {
     if (this.container.mooving || this.container.auto_Rotation) {
       this.speed = this.container.totalSpeed
       // this.container.totAngle += this.container.totalSpeed
+
+      // console.log(this.container.totAngle)
       this.container.totAngle += this.container.goToRigth ? this.container.totalSpeed : -this.container.totalSpeed
     }
     // check container angle to see if we completed the rotation
@@ -132,9 +136,20 @@ export class FlipInteraction {
     // check container angle to see if we didn't completed the rotation nether actived the auto_rotation behavior
     // then rewind the rotation
     if (Math.abs(Math.cos(this.container.euler.y)) <= 0.99) {
+      if (this.logdebuger) {
+        if (this.container.auto_Rotation) {
+          console.log('%c ROTATION = ', 'color: white; background : green; font-size : 14px', Math.abs(Math.cos(this.container.euler.y)))
+        } else {
+          if (this.container.mooving) {
+            console.log('%c ROTATION = ', 'color: white; background : blue; font-size : 14px', Math.abs(Math.cos(this.container.euler.y)))
+          } else {
+            console.log('%c ROTATION = ', 'color: white; background : red; font-size : 14px', Math.abs(Math.cos(this.container.euler.y)))
+          }
+        }
+      }
       if (!this.container.auto_Rotation && !this.container.endRotation) {
         this.speed = -0.02
-        // this.container.totAngle -= 0.2
+        // this.container.totAngle = -0.02
       }
     }
 

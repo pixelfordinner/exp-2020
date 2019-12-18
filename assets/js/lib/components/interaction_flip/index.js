@@ -41,7 +41,7 @@ export class FlipInteraction {
     this.container.velocity = 0.03
 
     this.container.on('pointerdown', this.onDragStart)
-      .on('pointerup', this.onDragEnd)
+      .on('pointerup', this.onDragCancel)
       .on('pointermove', this.onDragMove)
       .on('pointerupoutside', this.onDragEnd)
       .on('pointerout', this.onDragOut)
@@ -79,6 +79,13 @@ export class FlipInteraction {
     }
   }
 
+  onDragCancel () {
+    this.dragging = false
+    this.endRotation = false
+    this.mooving = false
+    this.auto_Rotation = false
+  }
+
   onDragMove () {
     // this.mooving = false
     if (this.dragging) {
@@ -114,7 +121,7 @@ export class FlipInteraction {
 
     // easing: slowly reduce interaction force
     if (this.container.force > 0 && this.container.isOut) this.container.force -= 1.5
-    this.container.velocity = Tools.map(this.container.force, 0, 100, 0.01, 0.06)
+    this.container.velocity = Tools.map(this.container.force, 0, 100, 0.02, 0.05)
     // check witch face we show
     this.container.isflipped = Math.cos(this.container.euler.y) > 0
 

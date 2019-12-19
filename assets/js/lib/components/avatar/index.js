@@ -35,7 +35,9 @@ export class AvatarComponent {
       outline: new PIXI.Graphics(),
       outline_mask: new PIXI.Graphics()
     }
+
     this.setup()
+    this.initContainer()
   }
 
   setup () {
@@ -49,16 +51,16 @@ export class AvatarComponent {
       this.vertices.push(vertex)
     })
     this.app.ticker.add(delta => this.onTick(delta))
-    this.initContainer()
   }
 
   initContainer () {
     this.container = new PIXI.projection.Container3d()
     this.container.interactive = true
 
-    this.container.addChild(this.buffers.fill)
-    this.container.addChild(this.buffers.outline_mask)
+    // this.container.addChild(this.buffers.fill)
+    // this.container.addChild(this.buffers.outline_mask)
     this.container.addChild(this.buffers.outline)
+    // this.buffers.outline.visible = false
     this.camera.addChild(this.container)
   }
 

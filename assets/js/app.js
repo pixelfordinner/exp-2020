@@ -4,8 +4,9 @@ import { CameraComponent } from 'components/camera'
 import { displacementFilter } from 'components/displacement'
 import { MouseComponent } from 'components/mouse'
 
-import { StarFieldComponent } from 'components/starfield3d'
+import { FlipboardComponent } from 'components/flipboard'
 import { FlipInteraction } from 'components/interaction_flip'
+import { CosmosComponent, MaskComponent } from 'components/cosmos'
 
 global.PIXI = PIXI
 window.PIXI = PIXI
@@ -47,15 +48,19 @@ const flipIt = new FlipInteraction(app, {
   object: avatar
 })
 
-const starField = new StarFieldComponent(app, {
+const cosmos = new CosmosComponent(app, {
+  mouse: mouse,
+  camera: camera
+})
+
+const flipboard = new FlipboardComponent(app, {
   numStars: 300,
   applyFilter: true,
   applyMask: true,
+  recto_scene: cosmos,
+  avatar: avatar,
   camera: camera,
-  shapemask: avatar,
   mouse: mouse,
   filter: dispFilter
-})
 
-// const interactions = new PIXI.interaction.InteractionManager()
-/// console.log(this.interactions)
+})

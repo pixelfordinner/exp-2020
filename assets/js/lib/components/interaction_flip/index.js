@@ -15,6 +15,10 @@ export class FlipInteraction {
     this.initContainer()
     this.app.ticker.add(delta => this.onTick(delta))
     this.logdebuger = false
+
+    this.flip = false
+    this.last_state = false
+    this.current_state = false
   }
 
   initContainer () {
@@ -53,6 +57,7 @@ export class FlipInteraction {
     this.dragging = true
     this.beginDrag = true
     this.endRotation = true
+    this.auto_Rotation = false
     this.isOut = false
     this.mooving = false
     this.force = 100
@@ -70,6 +75,7 @@ export class FlipInteraction {
     this.beginDrag = false
     this.endRotation = false
     this.mooving = false
+
     this.newDistance = Tools.getXlength(this.currentPosition, this.dragOrigin)
     if (this.newDistance > this.resistance) {
       this.auto_Rotation = true
@@ -112,7 +118,7 @@ export class FlipInteraction {
 
   applyAngle (object, angle) {
     object.euler.y = this.container.goToRigth ? angle : -angle
-    object.position3d.z = -35 + 70 * (Math.cos(object.euler.y * 2))
+    object.position3d.z = 35 + 70 * (Math.cos(object.euler.y * 2))
   }
 
   makeFlipInteraction () {
@@ -122,7 +128,26 @@ export class FlipInteraction {
     if (this.container.force > 0 && this.container.isOut) this.container.force -= 1.5
     this.container.velocity = Tools.map(this.container.force, 0, 100, 0.02, 0.05)
     // check witch face we show
+
     this.container.isflipped = Math.cos(this.container.euler.y) > 0
+    // if (Math.cos(this.container.euler.y) > 0) {
+    //   this.container.isflipped = true
+    // } else {
+    //   this.container.isflipped = false
+    // }
+    this.current_state = this.container.isflipped
+
+    if (this.current_state !== this.last_state) {
+      this.flip = true
+      this.last_state = this.current_state
+    } else {
+      this.flip = false
+    }
+    // console.log(this.flip)
+
+    // console.log(this.fl);
+    if (this.flip) this.container.auto_Rotation = true
+    console.log(this.container.auto_Rotation)
 
     // add velocity if we drag or with the auto rotate mode activated
     if (this.container.mooving || this.container.auto_Rotation) {
@@ -139,6 +164,7 @@ export class FlipInteraction {
       this.speed = 0
       this.container.endRotation = true
       this.totAngle = 0
+      this.container.auto_Rotation = false
     }
     // cumulate angle
     this.container.totAngle += this.container.goToRigth ? this.speed : -this.speed

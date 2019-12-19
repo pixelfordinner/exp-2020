@@ -21,12 +21,20 @@ export class MouseComponent {
 
   getWorldpos () {
     const wpx = this.pos.x - this.app.screen.width / 2
-
     const wpy = this.pos.y - this.app.screen.height / 2
-
     this.worldPos = new PIXI.Point(wpx, wpy)
-    // console.log(new PIXI.Point(this.pos.x, this.pos.y))
-    // return new PIXI.Point(this.pos.x, this.pos.y)
+  }
+
+  getParallax () {
+    const parallaxH = Tools.map(this.pos.x, -this.app.screen.width / 2.5, this.app.screen.width / 2.5, -Math.PI, Math.PI)
+    const parallaxV = Tools.map(this.pos.y, -this.app.screen.height / 2.5, this.app.screen.height / 2.5, -Math.PI, Math.PI)
+    return new PIXI.Point(parallaxH, parallaxV)
+  }
+
+  getParallax2 () {
+    const parallaxH = Tools.map(this.worldPos.x, -this.app.screen.width / 2, this.app.screen.width / 2, -Math.PI, Math.PI)
+    const parallaxV = Tools.map(this.worldPos.y, -this.app.screen.height / 2, this.app.screen.height / 2, -Math.PI, Math.PI)
+    return new PIXI.Point(parallaxH, parallaxV)
   }
 
   isIn () {

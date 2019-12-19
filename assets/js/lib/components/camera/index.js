@@ -38,8 +38,8 @@ export class CameraComponent {
     const parallaxV = Tools.map(this.mp.y, -this.app.screen.height / 2.5, this.app.screen.height / 2.5, -Math.PI, Math.PI)
     // console.log([parallaxH, parallaxV])
 
-    this.camera.euler.y = (parallaxH) / 60
-    this.camera.euler.x = (parallaxV) / 60
+    // this.camera.euler.y = (parallaxH) / 60
+    // this.camera.euler.x = (parallaxV) / 60
   }
 
   onTick (delta) {

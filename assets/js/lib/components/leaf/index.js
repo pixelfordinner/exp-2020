@@ -51,20 +51,20 @@ export class LeafComponent {
     this.gradient = new Gradient(this.app, { colorStart: this.cs, colorEnd: this.ce, width: 400, height: 150 })
     const program = new basicShader(this.app)
 
-    this.sTex = new ShaderTexture(this.app, { program: program, width: this.svg.width, height: this.svg.height + 10 })
+    this.sTex = new ShaderTexture(this.app, { program: program, width: this.svg.width, height: this.svg.height + 10, zindex: this.leaf.position3d.z })
 
     this.texture = new PIXI.Graphics()
     this.texture.beginTextureFill(this.sTex)
-    this.texture.drawRect(0, 0, this.svg.width, this.svg.height)
+    this.texture.drawRect(0, 0, this.svg.width * 50.0, this.svg.height)
     this.texture.endFill()
 
     this.texture.pivot.x = this.texture.width / 2
-    this.texture.angle = 5 + ((190 / 9) * this.config.index)
+    // this.texture.angle = 5 + ((190 / 9) * this.config.index)
 
     for (let i = 0; i < this.num; i++) {
       this.petal[i] = this.svg.clone()
       this.petal[i].pivot.x = this.svg.width / 2
-      this.petal[i].angle = 5 + ((190 / this.num) * i)
+      // this.petal[i].angle = 5 + ((190 / this.num) * i)
       if (i === this.config.index) {
         if (this.config.index === 2) {
           // this.texture.filters = !this.palette.nightMode ? [this.AAFilter, this.filter] : [this.filter, this.AAFilter]
@@ -105,8 +105,8 @@ export class LeafComponent {
   }
 
   animateLeaf () {
-    const angle = Math.cos(this.time) * 10
-    this.leaf.angle = angle / 20
+    const angle = Math.cos(this.time)
+    this.leaf.angle = angle / 2
     this.texture.angle = this.tetha + (((190 - angle) / this.num) * this.config.index)
     this.leaf.skew = new PIXI.Point(Math.cos(this.rd * this.time * 7) * 0.06, 0)
     this.leaf.position3d.z += Math.cos((this.rd * 400) + this.time * 3.0) * 2

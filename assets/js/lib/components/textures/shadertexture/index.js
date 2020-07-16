@@ -54,13 +54,6 @@ export class ShaderTexture {
       1, -1,
       1, 1
     ]), this.gl.STATIC_DRAW)
-
-    this.resolutionLocation = this.gl.getUniformLocation(this.shader, 'u_resolution')
-    this.timeLocation = this.gl.getUniformLocation(this.shader, 'u_time')
-    // requestAnimationFrame(this.render)
-  }
-
-  render () {
     this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height)
 
     // Tell it to use our program (pair of shaders)
@@ -83,6 +76,34 @@ export class ShaderTexture {
 
     )
 
+    this.resolutionLocation = this.gl.getUniformLocation(this.shader, 'u_resolution')
+    this.timeLocation = this.gl.getUniformLocation(this.shader, 'u_time')
+    // this.render()
+  }
+
+  render () {
+    // this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height)
+
+    // // Tell it to use our program (pair of shaders)
+    // this.gl.useProgram(this.shader)
+
+    // // Turn on the attribute
+    // this.gl.enableVertexAttribArray(this.positionAttributeLocation)
+
+    // // Bind the position buffer.
+    // this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.positionBuffer)
+
+    // // Tell the attribute how to get data out of positionBuffer (ARRAY_BUFFER)
+    // this.gl.vertexAttribPointer(
+    //   this.positionAttributeLocation,
+    //   2, // 2 components per iteration
+    //   this.gl.FLOAT, // the data is 32bit floats
+    //   false, // don't normalize the data
+    //   0, // 0 = move forward size * sizeof(type) each iteration to get the next position
+    //   0 // start at the beginning of the buffer
+
+    // )
+
     // look up uniform locations
     // this.resolutionLocation = this.gl.getUniformLocation(this.shader, 'u_resolution')
     // this.timeLocation = this.gl.getUniformLocation(this.shader, 'u_time')
@@ -103,7 +124,7 @@ export class ShaderTexture {
   onTick (delta) {
     this.time += 0.001
     console.log(this.time)
-    requestAnimationFrame(this.render)
+
     this.render()
     // this.render()
 

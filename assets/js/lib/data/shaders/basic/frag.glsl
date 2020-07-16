@@ -2,6 +2,7 @@
   precision highp float;
   uniform vec2 u_resolution;
   uniform float u_time;
+  uniform float index;
 
 
   float hash(float p)
@@ -34,7 +35,7 @@ float noise ( vec2 uv){
     vec2 uv = vec2(1.);
     uv.x += cos(u_time)+5.;
     vec2  p = (gl_FragCoord.xy - .5 * u_resolution)/u_resolution.y;
-    p.x += u_time;
+    p.x += index + u_time;
     vec3 iri = iriGradient(p);
    // gl_FragColor = vec4(vec3(fract( u_time),0.,0.), 1);
     gl_FragColor = vec4(iri, 1);

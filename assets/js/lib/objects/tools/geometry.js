@@ -27,6 +27,21 @@ export class Tools {
     return newval
   }
 
+  static remap (value, low1, high1, low2, high2) {
+    return low2 + (high2 - low2) * (value - low1) / (high1 - low1)
+  }
+
+  static clamp (x, minVal, maxVal) {
+    return Math.min(Math.max(x, minVal), maxVal)
+  }
+
+  static smoothstep (x, edge0, edge1) {
+    // const t = clamp((x - edge0) / (edge1 - edge0), 0.0, 1.0)
+    const t = Math.min(Math.max((x - edge0) / (edge1 - edge0), 0.0), 1.0)
+
+    return t * t * (3.0 - 2.0 * t)
+  }
+
   static getPolarlength (p) {
     const length = Math.sqrt(Math.pow(p.x, 2.0) + Math.pow(p.y, 2.0))
     return length

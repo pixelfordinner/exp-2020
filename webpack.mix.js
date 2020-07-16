@@ -25,7 +25,21 @@ mix.webpackConfig({
         test: /\.js$/,
         exclude: /node_modules/,
         use: 'babel-loader'
+      },
+      {
+        test: /\.svg$/i,
+        use: 'raw-loader'
+      },
+
+      {
+        test: /\.(glsl|vs|fs|vert|frag)$/,
+        exclude: /node_modules/,
+        use: [
+          'raw-loader',
+          'glslify-loader'
+        ]
       }
+
     ]
   },
   resolve: {
@@ -43,7 +57,7 @@ mix.webpackConfig({
 })
 
 mix.js('assets/js/app.js', 'public/dist/js/app.min.js')
-  .sass('assets/sass/screen.scss', 'public/dist/css/screen.min.css', sassOptions).options({processCssUrls: false})
+  .sass('assets/sass/screen.scss', 'public/dist/css/screen.min.css', sassOptions).options({ processCssUrls: false })
   .sourceMaps()
   .browserSync({
     server: {

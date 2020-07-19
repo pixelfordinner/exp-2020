@@ -158,8 +158,8 @@ function resize () {
   // app.renderer.resize(window.innerWidth, window.innerHeight)
   app.renderer.resize(window.visualViewport.width, window.visualViewport.height)
   app.renderer.resolution = window.devicePixelRatio
-  console.log('visualViewport ' + window.visualViewport.width)
-  console.log('visualViewport ' + window.visualViewport.height)
+  // console.log('visualViewport ' + window.visualViewport.width)
+  // console.log('visualViewport ' + window.visualViewport.height)
 
   // leaf.onResize()
   // leaf2.onResize()

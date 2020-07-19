@@ -174,16 +174,13 @@ export class LeafComponent {
 
     this.status = true
 
-    this.amp = 2
-
     // console.log('leaf > ')
-    console.log(this.status)
   }
 
   onPointerOut () {
     this.status = false
 
-    this.amp = 0
+    // this.amp = 0
   }
 
   animateoffset () {
@@ -203,7 +200,17 @@ export class LeafComponent {
     // const angle = Math.cos(this.config.palette.nightPos * 4) * 10
     const angle = this.config.palette.nightVal * 10
     this.angle = angle
+    if (this.leaf.status) {
+      this.leaf.amp += 0.3
+      this.leaf.amp = Math.max(this.leaf.amp, 20)
+    }
+    if (!this.leaf.status) {
+      this.leaf.amp -= 0.5
+      this.leaf.amp = Math.max(0, this.leaf.amp)
+    }
+    // this.leaf.amp = Math.max(this.leaf.amp, 20)
 
+    console.log(this.leaf.amp)
     // this.leaf.angle = angle
 
     // if (this.offset < this.num) {
@@ -234,7 +241,7 @@ export class LeafComponent {
       //   this.amp = this.leaf.amp
       // }
 
-      // this.angle *= this.amp
+      this.angle += this.leaf.amp
 
       this.lightleaf.angle = 0.7 * this.tetha + (((190 - this.angle) / this.num) * this.offset)
       this.texture.angle = 0.7 * this.tetha + (((190 - this.angle) / this.num) * this.offset)

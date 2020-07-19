@@ -5,20 +5,23 @@ export class ColorPalette {
   constructor (app, config = {}) {
     this.defaults = {
       nightMode: true,
-      nightVal: 0.9
+      nightVal: 0.9,
+      animate: true
     }
     this.app = app
+
     this.app.ticker.add(delta => this.onTick(delta))
     this.config = Object.assign(this.defaults, config)
-
     this.nightMode = this.config.nightMode
-    this.nightVal = this.config.nightVal
-
+    // this.nightVal = this.config.nightVal
     this.setup()
   }
 
   setup () {
     this.time = 0
+    this.nightVal = this.config.nightMode ? Math.cos(1) : Math.cos(0)
+    this.nightPos = 1
+    this.depth = 0
     this.primaries = ['0xFDFAF2', '0x2C2037']
     this.complementaries = ['0xD8E6EE', '0x4A345F']
     this.secondaries = ['0xFF9E80', '0x62D7C9']
@@ -93,23 +96,22 @@ export class ColorPalette {
   }
 
   getConstantDepthColor (zpos) {
-    // zpos = Math.min(zpos, 400)
     const depthindex = Math.ceil(10 * Tools.smoothstep(zpos, 0, 1000))
-
-    // console.log('depthindex: ' + depthindex)
-
     return this.constantDepthGradient[depthindex - 1]
   }
 
+  getDepth (zpos) {
+    return Tools.smoothstep(zpos, 2000, 0) //* Math.pow(this.nightVal, 100)
+  }
+
   getConstantSmoothDepthColor (zpos) {
-    // zpos = Math.min(zpos, 400)
     const depthindex = Tools.smoothstep(zpos, 0, 1000)
 
-    // console.log('depthindex: ' + depthindex)
-    const col1 = this.primary
-    const col2 = this.se
+    const c1 = this.toString(this.rgbToHex(this.interpolateColor(this.complementaries[1], this.quaternary, this.nightVal)))
+    // const c2 = this.toString(this.rgbToHex(this.interpolateColor(this.complementaries[1], this.primaries[1], this.nightVal)))
 
-    return this.getGradient(this.primaries[1], this.complementaries[1], depthindex)
+    // return this.getGradient(this.primaries[1], this.quaternary, depthindex)
+    return this.getGradient(this.primaries[1], c1, depthindex)
   }
 
   getSmoothgradientColor (zpos, col1, col2) {
@@ -123,16 +125,26 @@ export class ColorPalette {
   }
 
   animate () {
-    // console.log(this.nightVal)
-    this.nightVal = (1 + Math.cos(this.time)) / 2
+    this.nightVal = (1 + Math.sin(this.time)) / 2
+    this.nightPos = (1 + Math.sin(this.time * 2)) / 2
 
+    // this.nightVal = 1 + Math.pow(Math.sin(this.time), 4) / 2
+    // this.nightPos = 1 + Math.pow(Math.sin(this.time * 2), 4) / 2
+
+    // this.nightPos = Math.pow(this.nightPos, 4)
     this.primary = this.getNightVal(this.primaries[0], this.primaries[1])
+    this.complementary = this.getNightVal(this.complementaries[0], this.complementaries[1])
+    this.secondary = this.getNightVal(this.secondaries[0], this.secondaries[1])
     this.app.renderer.backgroundColor = this.primary
     // console.log(this.nightVal)
   }
 
   onTick (delta) {
+    // this.nightVal = 0.5
+    // this.nightPos = 1
     this.time += 0.01
-    // this.animate()
+    if (this.config.animate) {
+      this.animate()
+    }
   }
 }

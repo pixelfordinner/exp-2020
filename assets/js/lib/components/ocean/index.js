@@ -1,3 +1,6 @@
+import { GradientShadingTexture } from 'components/textures/shadergradient'
+// import { displacementFilter } from 'components/displacement'
+
 export class OceanComponent {
   constructor (app, config = {}) {
     this.defaults = {
@@ -7,25 +10,23 @@ export class OceanComponent {
     this.time = 0
     app.ticker.add(delta => this.onTick(delta))
     this.config = Object.assign(this.defaults, config)
-    this.camera = this.config.camera.getCamera()
-    console.log(this.camera)
 
-    this.shape = new PIXI.Graphics()
-    this.shape.beginFill(this.config.palette.quaternary)
-    this.shape.drawRect(0, 0, this.config.bounds.maxWidth * 4, this.config.bounds.maxHeight * 2)
-    this.shape.pivot.x = this.config.bounds.maxWidth * 2
-    this.shape.pivot.y = 0
+    const size = 100
+    this.gradTex = new GradientShadingTexture(app, { width: size, height: size, vertical: 1, type: 'ocean' })
 
-    this.shape.endFill()
+    this.texture = new PIXI.Graphics()
+    this.texture.beginTextureFill(this.gradTex)
+    this.texture.drawRect(0, 5, size, size)
+    this.texture.endFill()
+    this.texture.pivot.x = size / 2
+    this.texture.scale.set(this.config.bounds.maxWidth * 10 / size, this.config.bounds.maxHeight * 3 / size)
+
     this.view = new PIXI.projection.Container3d()
-    this.view.addChild(this.shape)
+    this.view.addChild(this.texture)
 
     this.view.position3d.set(0, 0, this.config.z)
     this.view.zIndex = -this.config.z
-    // this.camera.addChild(this.view)
     this.config.parent.scene.addChild(this.view)
-    // this.camera.addChildAt(this.view)
-    // app.stage.addChild(this.shape)
   }
 
   onTick (delta) {

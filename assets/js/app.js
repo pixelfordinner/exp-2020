@@ -5,10 +5,12 @@ import { MouseComponent } from 'components/mouse'
 import { CameraComponent } from 'components/camera'
 import { LeafComponent } from 'components/leaf'
 import { ColorPalette } from 'components/colors'
-import { ShaderTexture } from 'components/textures/shadertexture'
-import { OceanTexture } from 'components/ocean'
-import { OceanComponent } from './lib/components/ocean'
-import { SceneComponent } from './lib/components/scene'
+import { OceanComponent } from 'components/ocean'
+import { SceneComponent } from 'components/scene'
+import { MontainComponent } from 'components/montain'
+import { SunComponent } from 'components/sun'
+
+import { BeachComponent } from 'components/beach'
 
 global.PIXI = PIXI
 window.PIXI = PIXI
@@ -30,18 +32,31 @@ const canvas = document.getElementById('canvas')
 
 const app = new PIXI.Application({
   view: canvas,
-  // resizeTo: canvas,
+  resizeTo: canvas,
   antialias: true,
   backgroundColor: 0xffffff
 })
-const renderer = app.renderer
+// const renderer = app.renderer
 
 app.renderer.resolution = window.devicePixelRatio
-app.renderer.resize(canvas.offsetWidth, canvas.offsetHeight)
+console.log(window)
+// app.renderer.resize(window.innerWidth, window.innerHeight)
+app.renderer.resize(window.visualViewport.width, window.visualViewport.height)
+// app.renderer.resize(canvas.offsetWidth, canvas.offsetHeight)
 
-const palette = new ColorPalette(app, { nightMode: true })
+const palette = new ColorPalette(app, { nightMode: false, animate: true })
+
 app.renderer.backgroundColor = palette.primary
+
+// app.stage.on('move', function (event) {
+//   console.log(event.type, event.target) // 'move', PIXI.DisplayObject {}
+// })
+/// /const noiseFilter = new PIXI.filters.NoiseFilter(0.05, 30)
+// app.stage.filters = [noiseFilter]
+// const filter = new PIXI.filters.DisplacementFilter(this.displacementSprite)
+
 const mouse = new MouseComponent(app)
+
 const camera = new CameraComponent(app, {
   mouse: mouse
 
@@ -49,6 +64,28 @@ const camera = new CameraComponent(app, {
 //
 // camera.sortChildren = true
 const scene = new SceneComponent(app, { camera: camera })
+const beach = new BeachComponent(app, {
+  parent: scene,
+  palette: palette,
+  x: 0,
+  y: 0,
+  z: 10
+})
+const sun = new SunComponent(app, {
+  parent: scene,
+  palette: palette,
+  x: 4200,
+  y: 2000,
+  z: 3000
+})
+
+const montain1 = new MontainComponent(app, {
+  parent: scene,
+  palette: palette,
+  x: 300,
+  y: 0,
+  z: 900
+})
 
 const ocean = new OceanComponent(app, {
   parent: scene,
@@ -66,22 +103,12 @@ const leaf4 = new LeafComponent(app, {
   mouse: mouse,
   bounds: bounds,
   palette: palette,
-  index: 1,
-  x: bounds.maxWidth / 2,
-  y: bounds.maxHeight / 2,
-  z: 300
+  index: 4,
+  x: -bounds.maxWidth / 4,
+  y: bounds.maxHeight / 1.6,
+  z: 200
 
 })
-
-// const ocean = new OceanComponent(app, {
-
-//   bounds: bounds,
-//   camera: camera,
-//   palette: palette,
-//   x: bounds.maxWidth / 2,
-//   y: bounds.maxHeight / 2,
-//   z: 2000
-// })
 
 const leaf3 = new LeafComponent(app, {
   parent: scene,
@@ -89,10 +116,24 @@ const leaf3 = new LeafComponent(app, {
   mouse: mouse,
   bounds: bounds,
   palette: palette,
+  light: true,
   index: 4,
-  x: bounds.maxWidth / 2,
-  y: bounds.maxHeight / 2,
+  x: bounds.maxWidth / 2 + 800,
+  y: bounds.maxHeight / 1.6,
   z: 400
+
+})
+const leaf2 = new LeafComponent(app, {
+  parent: scene,
+  camera: camera,
+  mouse: mouse,
+  bounds: bounds,
+  palette: palette,
+  light: true,
+  index: 2,
+  x: bounds.maxWidth / 2 - 200,
+  y: bounds.maxHeight / 2,
+  z: 100
 
 })
 const leaf = new LeafComponent(app, {
@@ -102,28 +143,28 @@ const leaf = new LeafComponent(app, {
   bounds: bounds,
   palette: palette,
   index: 2,
-  x: bounds.maxWidth / 2,
-  y: bounds.maxHeight / 2,
+  x: bounds.maxWidth / 2 - 200,
+  y: bounds.maxHeight / 1.5,
   z: 500
 
 })
 
-console.log(scene)
-
-// const ocean = new OceanComponent(app, {
-//   bounds: bounds,
-//   camera: camera,
-//   palette: palette
-// })
-
 window.addEventListener('resize', resize)
 
 function resize () {
-  app.renderer.resize(canvas.offsetWidth, canvas.offsetHeight)
-  leaf.onResize()
+  // const canvas = document.getElementById('canvas')
+
+  // app.renderer.resize(canvas.offsetWidth, canvas.offsetHeight)
+  // app.renderer.resize(window.innerWidth, window.innerHeight)
+  app.renderer.resize(window.visualViewport.width, window.visualViewport.height)
+  app.renderer.resolution = window.devicePixelRatio
+  console.log('visualViewport ' + window.visualViewport.width)
+  console.log('visualViewport ' + window.visualViewport.height)
+
+  // leaf.onResize()
   // leaf2.onResize()
-  leaf3.onResize()
-  leaf4.onResize()
+  // leaf3.onResize()
+  // leaf4.onResize()
   camera.onResize()
 }
 

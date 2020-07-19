@@ -1,6 +1,7 @@
 export class basicShader {
   constructor (app, config = {}) {
     this.defaults = {
+      type: 'basic'
 
     }
 
@@ -9,9 +10,23 @@ export class basicShader {
     this.config = Object.assign(this.defaults, config)
 
     // this.source = require('!raw-loader!../../../data/shaders/iridescent/fragment.glsl') // absolute path
-    this.source = require('!raw-loader!data/shaders/basic/frag.glsl')
+
+    switch (this.config.type) {
+      case 'ripple':
+        console.log('ripple')
+        this.source = require('!raw-loader!data/shaders/ripple/frag.glsl')
+        this.sourcev = require('!raw-loader!data/shaders/ripple/vert.glsl')
+
+        break
+
+      default:
+        this.source = require('!raw-loader!data/shaders/basic/frag.glsl')
+        this.sourcev = require('!raw-loader!data/shaders/basic/vert.glsl')
+        break
+    }
+    // this.source = require('!raw-loader!data/shaders/basic/frag.glsl')
     this.shaderfragment = this.source.default
-    this.sourcev = require('!raw-loader!data/shaders/basic/vert.glsl')
+    // this.sourcev = require('!raw-loader!data/shaders/basic/vert.glsl')
     this.shadervertex = this.sourcev.default
     // console.log()
 

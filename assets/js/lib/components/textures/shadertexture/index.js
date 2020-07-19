@@ -8,20 +8,21 @@ export class ShaderTexture {
     this.defaults = {
       program: new basicShader(app),
       width: 600,
-      height: 600
+      height: 600,
+      scale: 5,
+      brightness: 1.7
 
     }
 
     this.app = app
     this.config = Object.assign(this.defaults, config)
+
+    console.log(this.config.zindex)
     this.width = this.config.width
     this.height = this.config.height
-    // console.log(this.width + ' ' + this.height)
-    // this.texture = new PIXI.BaseTexture()
     this.time = 0
     this.app.ticker.add(delta => this.onTick(delta))
     this.program = this.config.program
-    // this.program = new basicShader(this.app)
 
     this.canvas = document.createElement('canvas')
 
@@ -41,94 +42,40 @@ export class ShaderTexture {
     this.positionAttributeLocation = this.gl.getAttribLocation(this.shader, 'a_position')
 
     this.positionBuffer = this.gl.createBuffer()
-
-    // Bind it to ARRAY_BUFFER (think of it as ARRAY_BUFFER = positionBuffer)
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.positionBuffer)
+    this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, 1]), this.gl.STATIC_DRAW)
 
-    // fill it with a 2 trianthis.gles that cover clip space
-    this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array([
-      -1, -1, // first triangle
-      1, -1,
-      -1, 1,
-      -1, 1, // second triangle
-      1, -1,
-      1, 1
-    ]), this.gl.STATIC_DRAW)
     this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height)
-
-    // Tell it to use our program (pair of shaders)
     this.gl.useProgram(this.shader)
-
-    // Turn on the attribute
     this.gl.enableVertexAttribArray(this.positionAttributeLocation)
-
-    // Bind the position buffer.
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.positionBuffer)
 
-    // Tell the attribute how to get data out of positionBuffer (ARRAY_BUFFER)
-    this.gl.vertexAttribPointer(
-      this.positionAttributeLocation,
-      2, // 2 components per iteration
-      this.gl.FLOAT, // the data is 32bit floats
-      false, // don't normalize the data
-      0, // 0 = move forward size * sizeof(type) each iteration to get the next position
-      0 // start at the beginning of the buffer
+    this.gl.vertexAttribPointer(this.positionAttributeLocation, 2, this.gl.FLOAT, false, 0, 0)
 
-    )
-
+    // set uniform locations
     this.resolutionLocation = this.gl.getUniformLocation(this.shader, 'u_resolution')
     this.timeLocation = this.gl.getUniformLocation(this.shader, 'u_time')
-    // this.render()
+    this.indexLocation = this.gl.getUniformLocation(this.shader, 'index')
+    this.scaleLocation = this.gl.getUniformLocation(this.shader, 'scale')
+    this.brightnessLocation = this.gl.getUniformLocation(this.shader, 'brightness')
+    // set uniform values
+    this.gl.uniform2f(this.resolutionLocation, this.gl.canvas.width, this.gl.canvas.height)
+    this.gl.uniform1f(this.indexLocation, this.config.zindex)
+    this.gl.uniform1f(this.scaleLocation, this.config.scale)
+    this.gl.uniform1f(this.brightnessLocation, this.config.brightness)
   }
 
   render () {
-    // this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height)
-
-    // // Tell it to use our program (pair of shaders)
-    // this.gl.useProgram(this.shader)
-
-    // // Turn on the attribute
-    // this.gl.enableVertexAttribArray(this.positionAttributeLocation)
-
-    // // Bind the position buffer.
-    // this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.positionBuffer)
-
-    // // Tell the attribute how to get data out of positionBuffer (ARRAY_BUFFER)
-    // this.gl.vertexAttribPointer(
-    //   this.positionAttributeLocation,
-    //   2, // 2 components per iteration
-    //   this.gl.FLOAT, // the data is 32bit floats
-    //   false, // don't normalize the data
-    //   0, // 0 = move forward size * sizeof(type) each iteration to get the next position
-    //   0 // start at the beginning of the buffer
-
-    // )
-
-    // look up uniform locations
-    // this.resolutionLocation = this.gl.getUniformLocation(this.shader, 'u_resolution')
-    // this.timeLocation = this.gl.getUniformLocation(this.shader, 'u_time')
-
-    this.gl.uniform2f(this.resolutionLocation, this.gl.canvas.width, this.gl.canvas.height)
+    // update ubiforms values
     this.gl.uniform1f(this.timeLocation, this.time)
-
-    this.gl.drawArrays(
-      this.gl.TRIANGLES,
-      0, // offset
-      6 // num vertices to process
-    )
-    // requestAnimationFrame(this.render)
-    // this.onTick(this.render)
-    // this.texture = new PIXI.Texture.from(this.canvas)
+    this.gl.uniform1f(this.brightnessLocation, this.config.brightness)
+    // draw on canvas
+    this.gl.drawArrays(this.gl.TRIANGLES, 0, 6)
   }
 
   onTick (delta) {
     this.time += 0.001
-    console.log(this.time)
-
     this.render()
-    // this.render()
-
-    // this.texture.destroy()
     this.texture.update()
   }
 

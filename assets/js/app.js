@@ -140,7 +140,8 @@ const leaf2 = new LeafComponent(app, {
   z: 100
 
 })
-const butterfly = new ButterflyComponent(app, { x: 800, y: 400, z: 60, parent: scene, palette: palette, anchor: leaf2 })
+const butterfly = new ButterflyComponent(app, { parent: scene, palette: palette, anchor: leaf2 })
+const butterfly2 = new ButterflyComponent(app, { courage: 1.2, x: 200, y: 100, parent: scene, palette: palette, anchor: leaf2 })
 const leaf = new LeafComponent(app, {
   parent: scene,
   camera: camera,
@@ -153,6 +154,8 @@ const leaf = new LeafComponent(app, {
   z: 500
 
 })
+
+// const butterfly2 = new ButterflyComponent(app, { parent: scene, palette: palette, anchor: leaf })
 
 window.addEventListener('resize', resize)
 

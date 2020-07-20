@@ -10,7 +10,10 @@ import { SceneComponent } from 'components/scene'
 import { MontainComponent } from 'components/montain'
 import { SunComponent } from 'components/sun'
 
+import { ButteflyComponent } from 'components/butterfly'
+
 import { BeachComponent } from 'components/beach'
+import { ButterflyComponent } from './lib/components/butterfly'
 
 global.PIXI = PIXI
 window.PIXI = PIXI
@@ -40,8 +43,8 @@ const app = new PIXI.Application({
 
 app.renderer.resolution = window.devicePixelRatio
 console.log(window)
-// app.renderer.resize(window.innerWidth, window.innerHeight)
-app.renderer.resize(window.visualViewport.width, window.visualViewport.height)
+// app.renderer.resize(window.innerWidth, window.innerHeight)/
+// app.renderer.resize(window.visualViewport.width, window.visualViewport.height)
 // app.renderer.resize(canvas.offsetWidth, canvas.offsetHeight)
 
 const palette = new ColorPalette(app, { nightMode: false, animate: true })
@@ -64,6 +67,7 @@ const camera = new CameraComponent(app, {
 //
 // camera.sortChildren = true
 const scene = new SceneComponent(app, { camera: camera })
+// const butterfly = new ButterflyComponent(app, { x: 800, y: 400, z: 60, parent: scene, palette: palette })
 const beach = new BeachComponent(app, {
   parent: scene,
   palette: palette,
@@ -136,6 +140,7 @@ const leaf2 = new LeafComponent(app, {
   z: 100
 
 })
+const butterfly = new ButterflyComponent(app, { x: 800, y: 400, z: 60, parent: scene, palette: palette, anchor: leaf2 })
 const leaf = new LeafComponent(app, {
   parent: scene,
   camera: camera,
@@ -152,19 +157,6 @@ const leaf = new LeafComponent(app, {
 window.addEventListener('resize', resize)
 
 function resize () {
-  // const canvas = document.getElementById('canvas')
-
-  // app.renderer.resize(canvas.offsetWidth, canvas.offsetHeight)
-  // app.renderer.resize(window.innerWidth, window.innerHeight)
-  app.renderer.resize(window.visualViewport.width, window.visualViewport.height)
-  app.renderer.resolution = window.devicePixelRatio
-  // console.log('visualViewport ' + window.visualViewport.width)
-  // console.log('visualViewport ' + window.visualViewport.height)
-
-  // leaf.onResize()
-  // leaf2.onResize()
-  // leaf3.onResize()
-  // leaf4.onResize()
   camera.onResize()
 }
 

@@ -12,7 +12,7 @@ export class OceanComponent {
     this.config = Object.assign(this.defaults, config)
 
     const size = 100
-    this.gradTex = new GradientShadingTexture(app, { width: size, height: size, vertical: 1, type: 'ocean' })
+    this.gradTex = new GradientShadingTexture(app, { palette: this.config.palette, width: size, height: size, vertical: 1, type: 'ocean' })
 
     this.texture = new PIXI.Graphics()
     this.texture.beginTextureFill(this.gradTex)

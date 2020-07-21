@@ -1,8 +1,6 @@
 import { Tools } from 'objects/tools/geometry'
 import { GradientShader } from 'components/shader/gradient'
-import { ColorPalette } from 'components/colors'
-// import { SunComponent } from '../../sun'
-// import {  } from "module";
+// import { ColorPalette } from 'components/colors'
 
 export class GradientShadingTexture {
   constructor (app, config = {}) {
@@ -10,7 +8,7 @@ export class GradientShadingTexture {
       program: new GradientShader(app),
       width: 1000,
       height: 1000,
-      palette: new ColorPalette(app),
+      // palette: new ColorPalette(app), / hurry up!! create new instance of color palette and dont follow the main palette property
       vertical: 1,
       color_start: '0x000000',
       color_end: '0xffffff',
@@ -21,10 +19,6 @@ export class GradientShadingTexture {
     this.app = app
     this.app.ticker.add(delta => this.onTick(delta))
     this.config = Object.assign(this.defaults, config)
-    // make a gradient with primary and secondary color
-    // from the updated color Palette ( see nightVal )
-    // this.rgb1 = this.config.color_start
-    // this.rgb2 = this.config.color_end
 
     this.c1 = this.config.palette.hexToRgb(this.config.palette.toHex(this.config.color_start))
     this.c2 = this.config.palette.hexToRgb(this.config.palette.toHex(this.config.color_end))
@@ -72,7 +66,7 @@ export class GradientShadingTexture {
       0,
       0
     )
-    // set uniforms locations here
+
     this.resolutionLocation = this.gl.getUniformLocation(this.shader, 'u_resolution')
     this.timeLocation = this.gl.getUniformLocation(this.shader, 'u_time')
     this.startColorLocation = this.gl.getUniformLocation(this.shader, 'start_color')
@@ -82,12 +76,7 @@ export class GradientShadingTexture {
     this.fadeLocation = this.gl.getUniformLocation(this.shader, 'fade_value')
 
     this.gl.uniform1f(this.fadeLocation, this.config.fade_value)
-    // set uniforms values
-    // this.gl.uniform2f(this.resolutionLocation, this.gl.canvas.width, this.gl.canvas.height)
-    // this.gl.uniform1f(this.timeLocation, this.time)
-    // this.gl.uniform3f(this.startColorLocation, this.c1[0], this.c1[1], this.c1[2])
-    // this.gl.uniform3f(this.endColorLocation, this.c2[0], this.c2[1], this.c2[2])
-    // this.render()
+
     this.render()
   }
 
@@ -101,8 +90,10 @@ export class GradientShadingTexture {
       this.c1 = this.config.palette.hexToRgb(this.config.palette.toHex(this.config.palette.secondary))
       this.c2 = this.config.palette.hexToRgb(this.config.palette.toHex(this.config.palette.quaternary))
     }
-
-    // console.log(this.c1)
+    if (this.config.type === 'beach') {
+      this.c1 = this.config.palette.hexToRgb(this.config.palette.toHex(this.config.palette.tertiary))
+      this.c2 = this.config.palette.hexToRgb(this.config.palette.toHex(this.config.palette.quaternary))
+    }
 
     // update uniforms here
     this.gl.uniform2f(this.resolutionLocation, this.gl.canvas.width, this.gl.canvas.height)
@@ -112,9 +103,6 @@ export class GradientShadingTexture {
     this.gl.uniform3f(this.endColorLocation, this.c2[0], this.c2[1], this.c2[2])
     this.gl.uniform1f(this.verticalLocation, this.config.vertical)
 
-    // this.gl.uniform3f(this.startColorLocation, this.c1[0], this.c1[1], this.c1[2])
-    // this.gl.uniform3f(this.endColorLocation, this.c2[0], this.c2[1], this.c2[2])
-
     this.gl.drawArrays(
       this.gl.TRIANGLES,
       0,
@@ -122,22 +110,9 @@ export class GradientShadingTexture {
     )
   }
 
-  updateColors () {
-    // update rgb values
-    // this.c1 = this.config.palette.hexToRgb(this.config.palette.toHex(this.config.palette.secondary))
-    // this.c2 = this.config.palette.hexToRgb(this.config.palette.toHex(this.config.palette.primary))
-    // update uniforms her
-    // this.gl.uniform3f(this.startColorLocation, this.c1[0], this.c1[1], this.c1[2])
-    // this.gl.uniform3f(this.endColorLocation, this.c2[0], this.c2[1], this.c2[2])
-  }
-
   onTick (delta) {
     this.time += 0.001
-    // this.updateColors()
-
     this.render()
-
-    // this.updateColors()
     this.texture.update()
   }
 

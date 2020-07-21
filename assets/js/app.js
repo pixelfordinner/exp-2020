@@ -9,11 +9,11 @@ import { OceanComponent } from 'components/ocean'
 import { SceneComponent } from 'components/scene'
 import { MontainComponent } from 'components/montain'
 import { SunComponent } from 'components/sun'
+import { CloudComponent } from 'components/cloud'
 
-import { ButteflyComponent } from 'components/butterfly'
+import { ButterflyComponent } from 'components/butterfly'
 
 import { BeachComponent } from 'components/beach'
-import { ButterflyComponent } from './lib/components/butterfly'
 
 global.PIXI = PIXI
 window.PIXI = PIXI
@@ -36,27 +36,13 @@ const canvas = document.getElementById('canvas')
 const app = new PIXI.Application({
   view: canvas,
   resizeTo: canvas,
-  antialias: true,
-  backgroundColor: 0xffffff
+  antialias: true
+  // backgroundColor: 0xffffff
 })
-// const renderer = app.renderer
 
 app.renderer.resolution = window.devicePixelRatio
-console.log(window)
-// app.renderer.resize(window.innerWidth, window.innerHeight)/
-// app.renderer.resize(window.visualViewport.width, window.visualViewport.height)
-// app.renderer.resize(canvas.offsetWidth, canvas.offsetHeight)
 
-const palette = new ColorPalette(app, { nightMode: false, animate: true })
-
-app.renderer.backgroundColor = palette.primary
-
-// app.stage.on('move', function (event) {
-//   console.log(event.type, event.target) // 'move', PIXI.DisplayObject {}
-// })
-/// /const noiseFilter = new PIXI.filters.NoiseFilter(0.05, 30)
-// app.stage.filters = [noiseFilter]
-// const filter = new PIXI.filters.DisplacementFilter(this.displacementSprite)
+// const palette = new ColorPalette(app, { nightMode: false, animate: false })
 
 const mouse = new MouseComponent(app)
 
@@ -64,10 +50,12 @@ const camera = new CameraComponent(app, {
   mouse: mouse
 
 })
-//
-// camera.sortChildren = true
+
 const scene = new SceneComponent(app, { camera: camera })
-// const butterfly = new ButterflyComponent(app, { x: 800, y: 400, z: 60, parent: scene, palette: palette })
+const palette = new ColorPalette(app, { nightMode: true, animate: true })
+// app.renderer.backgroundColor = palette.primary
+
+const cloud = new CloudComponent(app, { palette: palette, parent: scene.scene })
 const beach = new BeachComponent(app, {
   parent: scene,
   palette: palette,
@@ -154,8 +142,6 @@ const leaf = new LeafComponent(app, {
   z: 500
 
 })
-
-// const butterfly2 = new ButterflyComponent(app, { parent: scene, palette: palette, anchor: leaf })
 
 window.addEventListener('resize', resize)
 

@@ -1,11 +1,10 @@
-import { subtract } from 'gl-vec4'
+
 import { Tools } from 'objects/tools/geometry'
 
 export class ColorPalette {
   constructor (app, config = {}) {
     this.defaults = {
       nightMode: true,
-      nightVal: 0.9,
       animate: true
     }
     this.app = app
@@ -13,33 +12,25 @@ export class ColorPalette {
     this.app.ticker.add(delta => this.onTick(delta))
     this.config = Object.assign(this.defaults, config)
     this.nightMode = this.config.nightMode
-    // this.nightVal = this.config.nightVal
     this.setup()
   }
 
   setup () {
     this.time = 0
-    this.nightVal = this.config.nightMode ? Math.cos(1) : Math.cos(0)
+    this.nightVal = this.config.nightMode ? 1 : 0
     this.nightPos = 1
     this.depth = 0
     this.primaries = ['0xFDFAF2', '0x2C2037']
     this.complementaries = ['0xD8E6EE', '0x4A345F']
     this.secondaries = ['0xFF9E80', '0x62D7C9']
     this.tertiaries = ['0x62D7C9', '0xFF9E80']
-
-    this.primary = !this.config.nightMode ? this.primaries[0] : this.primaries[1]
-    this.complementary = !this.config.nightMode ? this.complementaries[0] : this.complementaries[1]
-    this.secondary = this.config.nightMode ? this.secondaries[0] : this.secondaries[1]
-    this.tertiary = this.config.nightMode ? this.tertiaries[0] : this.tertiaries[1]
     this.quaternary = '0x6754F3'
 
-    this.depthGradient = this.getGradientSteps(this.complementary, this.primary, 10)
-    this.constantDepthGradient = this.config.nightMode
-      ? this.getGradientSteps(this.complementaries[1], this.primaries[1], 10)
-      : this.getGradientSteps(this.primaries[1], this.complementaries[0], 10)
-    console.log(this.constantDepthGradient)
-
     // this.primary = this.getNightVal(this.primaries[0], this.primaries[1])
+    // this.complementary = this.getNightVal(this.complementaries[0], this.complementaries[1])
+    // this.secondary = this.getNightVal(this.secondaries[0], this.secondaries[1])
+    // this.tertiary = this.getNightVal(this.tertiaries[0], this.tertiaries[1])
+    this.setColors()
   }
 
   toHex (string) {
@@ -120,31 +111,39 @@ export class ColorPalette {
   }
 
   getNightVal (col1, col2) {
-    const depthindex = Tools.smoothstep(this.nightVal, 0, 1)
+    const depthindex = Tools.smoothstep(this.nightVal, 0.4, 0.6)
     return this.getGradient(col1, col2, depthindex)
   }
 
-  animate () {
-    this.nightVal = (1 + Math.sin(this.time)) / 2
-    this.nightPos = (1 + Math.sin(this.time * 2)) / 2
+  setColors () {
+    // this.nightVal = (1 + Math.sin(this.time)) / 2
+    // this.nightPos = (1 + Math.sin(this.time * 2)) / 2
 
     // this.nightVal = 1 + Math.pow(Math.sin(this.time), 4) / 2
     // this.nightPos = 1 + Math.pow(Math.sin(this.time * 2), 4) / 2
 
     // this.nightPos = Math.pow(this.nightPos, 4)
     this.primary = this.getNightVal(this.primaries[0], this.primaries[1])
+    // this.background = this.getNightVal(this.primaries[1], this.primaries[0])
     this.complementary = this.getNightVal(this.complementaries[0], this.complementaries[1])
     this.secondary = this.getNightVal(this.secondaries[0], this.secondaries[1])
+    this.tertiary = this.getNightVal(this.tertiaries[0], this.tertiaries[1])
     this.app.renderer.backgroundColor = this.primary
     // console.log(this.nightVal)
   }
 
+  animateNight () {
+    this.nightVal = (1 + Math.sin(this.time)) / 2
+    this.nightPos = (1 + Math.sin(this.time * 2)) / 2
+  }
+
   onTick (delta) {
-    // this.nightVal = 0.5
-    // this.nightPos = 1
     this.time += 0.01
+    console.log(this.config.animate)
+
     if (this.config.animate) {
-      this.animate()
+      this.animateNight()
+      this.setColors()
     }
   }
 }

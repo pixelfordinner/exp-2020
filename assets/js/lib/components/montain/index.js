@@ -3,8 +3,8 @@ import svg from '!raw-loader!data/svg/montain2.svg'
 import svg2 from '!raw-loader!data/svg/montain4.svg'
 import { ShaderTexture } from 'components/textures/shadertexture'
 import { basicShader } from 'components/shader/basic'
-import { DisplacementFilter } from 'components/displacement'
 import { RippleFilter } from 'components/filters/ripple'
+import { Tools } from 'objects/tools/geometry'
 
 export class MontainComponent {
   constructor (app, config = {}) {
@@ -44,7 +44,7 @@ export class MontainComponent {
 
     const program = new basicShader(this.app)
 
-    this.sTex = new ShaderTexture(this.app, { program: program, width: size, height: size, zindex: this.config.z, scale: 1, brightness: 1.8 })
+    this.sTex = new ShaderTexture(this.app, { palette: this.config.palette, program: program, width: size, height: size, zindex: this.config.z, scale: 1, brightness: 1.8 })
     this.texture = new PIXI.Graphics()
     this.texture.beginTextureFill(this.sTex)
     this.texture.drawRect(0, 0, this.shape.width / xr, this.shape.height / yr)
@@ -61,8 +61,6 @@ export class MontainComponent {
     this.montain.pivot.y = this.montain.height
     this.montain.position3d.set(this.config.x, this.config.y, this.config.z)
     this.montain.zIndex = -this.config.z
-
-    // this.montain.filters = [this.noiseFilter]
 
     this.shape2 = new SVG(svg2)
     this.shape2_shd = new SVG(svg2)
@@ -96,15 +94,15 @@ export class MontainComponent {
   }
 
   onTick (delta) {
-    this.shadow.alpha = this.config.palette.nightPos / 3
-    this.shape2_shd.alpha = this.config.palette.nightPos / 3
-    this.shape3_shd.alpha = this.config.palette.nightPos / 3
+    this.alpha = Tools.smoothstep(this.config.palette.nightPos, 0.2, 0.8)
+    this.shadow.alpha = this.alpha / 2.5
+    this.shape2_shd.alpha = this.alpha / 2.5
+    this.shape3_shd.alpha = this.alpha / 2.5
     this.shape2.tint = '0xffffff'
     this.shape3.tint = '0xffffff'
     this.shape2.tint = this.config.palette.complementary
     this.shape3.tint = this.config.palette.complementary
 
-    // this.filter.animate()
     this.time++
   }
 }

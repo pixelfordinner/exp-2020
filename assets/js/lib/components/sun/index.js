@@ -1,7 +1,5 @@
-import { Gradient } from 'components/gradients/custom'
+
 import { Tools } from 'objects/tools/geometry'
-import { basicShader } from 'components/shader/basic'
-import { ShaderTexture } from 'components/textures/shadertexture'
 import { GradientShadingTexture } from 'components/textures/shadergradient'
 
 export class SunComponent {
@@ -17,7 +15,7 @@ export class SunComponent {
     this.app = app
     this.app.ticker.add(delta => this.onTick(delta))
 
-    this.sTex2 = new GradientShadingTexture(this.app, { width: 100, height: 100, color_start: this.config.palette.primary, color_end: this.config.palette.secondary, vertical: 1, distord: 1, fade_value: 1 })
+    this.sTex2 = new GradientShadingTexture(this.app, { palette: this.config.palette, width: 100, height: 100, color_start: this.config.palette.primary, color_end: this.config.palette.secondary, vertical: 1, distord: 1, fade_value: 1 })
 
     this.texture = new PIXI.Graphics()
     this.texture.beginTextureFill(this.sTex2)

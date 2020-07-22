@@ -10,7 +10,7 @@ export class CloudShadingTexture {
       program: new CloudShader(app),
       width: 100,
       height: 100,
-      //  palette: new ColorPalette(app),
+      type: 'cloud',
       u_color: '0x000000',
       steps: 10
     }
@@ -68,6 +68,7 @@ export class CloudShadingTexture {
     this.timeLocation = this.gl.getUniformLocation(this.shader, 'u_time')
     this.colorLocation = this.gl.getUniformLocation(this.shader, 'u_color')
     this.stepsLocation = this.gl.getUniformLocation(this.shader, 'u_steps')
+    this.typeLocation = this.gl.getUniformLocation(this.shader, 'u_type')
     this.render()
   }
 
@@ -76,6 +77,7 @@ export class CloudShadingTexture {
     this.gl.uniform2f(this.resolutionLocation, this.gl.canvas.width, this.gl.canvas.height)
     this.gl.uniform1f(this.timeLocation, this.time)
     this.gl.uniform1f(this.stepsLocation, this.config.steps)
+    this.gl.uniform1f(this.typeLocation, this.config.type)
     this.gl.uniform3f(this.colorLocation, this.c1[0], this.c1[1], this.c1[2])
     this.gl.drawArrays(
       this.gl.TRIANGLES,

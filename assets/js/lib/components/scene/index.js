@@ -21,6 +21,7 @@ export class SceneComponent {
     app.ticker.add(delta => this.onTick(delta))
     this.palette = this.config.palette
     this.scene = new PIXI.projection.Container3d()
+    this.scene.zIndex = 1
     this.scene.sortableChildren = true
     this.camera = this.config.camera.getCamera()
     this.camera.addChild(this.scene)
@@ -35,7 +36,7 @@ export class SceneComponent {
   onTick (delta) {
     this.time++
     if (this.mouse.pos.x > 0) {
-      this.getParallax()
+      //   this.getParallax()
     }
     // this.getParallax()
   }

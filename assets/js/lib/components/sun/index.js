@@ -6,7 +6,7 @@ export class SunComponent {
   constructor (app, config = {}) {
     this.defaults = {
       x: 200,
-      y: 1000,
+      y: 3000,
       z: 0,
       size: 1
 
@@ -50,7 +50,7 @@ export class SunComponent {
     // console.log(this.sun.mouseover)
 
     this.time += 0.01
-    this.ypos = Tools.mix1(this.config.y, this.config.y - 4000, this.palette.nightPos)
+    this.ypos = Tools.mix1(this.config.y, this.config.y - 8000, this.palette.nightPos)
     this.sun.position3d.y = this.ypos
     this.strech = this.app.view.width * 5
     this.sun.position3d.x = this.strech

@@ -17,28 +17,26 @@ export class CameraComponent {
     this.camera.position.set(this.app.screen.width / 2, this.app.screen.height / 2)
     this.camera.position3d.z = -30
     this.camera.setPlanes(450, 100, 10000)
-    // this.camera.euler.x = Math.PI / 2
-    this.app.stage.addChild(this.camera)
+
     this.mouse = this.config.mouse
-    // this.setup()
   }
 
   getCamera () {
     return this.camera
   }
 
-  animate () {
-    // console.log(this.mouse.getWorldpos())
-    // this.mp = this.mouse.worldPos
-    // const parallaxH = Tools.map(this.mp.x, -this.app.screen.width / 2.5, this.app.screen.width / 2.5, -Math.PI, Math.PI)
-    // const parallaxV = Tools.map(this.mp.y, -this.app.screen.height / 2.5, this.app.screen.height / 2.5, -Math.PI, Math.PI)
-    // console.log([parallaxH, parallaxV])
-    // this.camera.euler.y = (parallaxH) / 60
-    // this.camera.euler.x = (parallaxV) / 60
+  getParallax () {
+    this.parallax = this.mouse.getParallax2()
+    this.camera.euler.y = this.parallax.y
+    this.camera.euler.x = this.parallax.x
   }
 
   onTick (delta) {
     this.time += 0.01
+    this.time++
+    if (this.mouse.pos.x > 0) {
+      this.getParallax()
+    }
   }
 
   onResize () {

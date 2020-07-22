@@ -10,6 +10,7 @@
   uniform float u_time;
   uniform vec3 u_color;
   uniform float u_steps;
+  uniform float u_type;
 
 
   float hash(float p)
@@ -37,10 +38,15 @@ float noise ( vec2 uv){
     vec2 id = ceil(uv*size);
     uv = fract(uv * size) - 0.5;
     vec3 fcolor = u_color / 255.;
-    float noise = noise(id * u_time);
-    float shape =  smoothstep(  0.3,.4, length(uv));
-    noise -= shape;
-    noise -= smoothstep(size, 0., id.y);
+    float type = u_type;
+    float n = noise(id);
 
-    gl_FragColor = vec4(fcolor*vec3(noise), noise);
+    n = smoothstep(.995, 1., n);
+
+    if(type == 1.){
+    n -= smoothstep(size, 0., id.y);
+    }
+   if(n>0.)n += 0.1*cos(0.1*u_time*id.x+id.y*33.33);
+
+    gl_FragColor = vec4(fcolor*vec3(n), n);
   }

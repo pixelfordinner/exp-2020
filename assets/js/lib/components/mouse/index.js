@@ -32,8 +32,9 @@ export class MouseComponent {
   }
 
   getParallax2 () {
-    const parallaxH = Tools.map(this.worldPos.x, -this.app.screen.width / 2, this.app.screen.width / 2, -Math.PI, Math.PI)
-    const parallaxV = Tools.map(this.worldPos.y, -this.app.screen.height / 2, this.app.screen.height / 2, -Math.PI, Math.PI)
+    const amp = 100
+    const parallaxV = Tools.map(this.worldPos.x, -this.app.screen.width / 2, this.app.screen.width / 2, -Math.PI / amp, Math.PI / amp)
+    const parallaxH = Tools.map(this.worldPos.y, -this.app.screen.height / 2, this.app.screen.height / 2, -Math.PI / amp, Math.PI / amp)
     return new PIXI.Point(parallaxH, parallaxV)
   }
 

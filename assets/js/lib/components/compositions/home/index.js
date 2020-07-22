@@ -35,7 +35,7 @@ export class HomeComposition {
 
     const butterfly = new ButterflyComponent(app, { parent: this.parent, anchor: leaf })
     const beach = new BeachComponent(app, { parent: this.parent, x: 0, y: 0, z: 10 })
-    // const sun = new SunComponent(app, { parent: this.parent, x: 7200, y: 5000, z: 9000, size: 50 })
+    const sun = new SunComponent(app, { parent: this.parent, x: 7200, y: 5000, z: 9000, size: 50 })
     // const sun = new SunComponent(app, { parent: this.parent, x: 0, y: 0, z: 0, size: 10 })
     const montains = new MontainComponent(app, { parent: this.parent, x: 3050, y: -1300, z: 2100 })
     const ocean = new OceanComponent(app, { parent: this.parent, z: 3500 })

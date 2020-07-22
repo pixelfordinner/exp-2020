@@ -19,6 +19,8 @@ export class MontainComponent {
     this.app = app
     this.app.ticker.add(delta => this.onTick(delta))
     this.config = Object.assign(this.defaults, config)
+    this.parent = this.config.parent.scene
+    this.palette = this.config.parent.palette
 
     this.time = 0
 
@@ -32,11 +34,11 @@ export class MontainComponent {
     this.shadow = new SVG(svg)
     this.shadow.pivot.y = this.shadow.height * 2
     this.shadow.scale.set(1, -1)
-    this.shadow.tint = this.config.palette.quaternary
+    this.shadow.tint = this.palette.quaternary
     // this.shadow.blendMode = PIXI.BLEND_MODES.MULTIPLY
     this.shadow.alpha = 0.3
-    // this.filter = new DisplacementFilter(this.app, { parent: this.config.parent.scene }).filter
-    this.filter = new RippleFilter(this.app, { parent: this.config.parent.scene }).filter
+    // this.filter = new DisplacementFilter(this.app, { parent: this.parent }).filter
+    this.filter = new RippleFilter(this.app, { parent: this.parent }).filter
 
     this.noiseFilter = new PIXI.filters.NoiseFilter(0.5, 30)
 
@@ -44,7 +46,7 @@ export class MontainComponent {
 
     const program = new basicShader(this.app)
 
-    this.sTex = new ShaderTexture(this.app, { palette: this.config.palette, program: program, width: size, height: size, zindex: this.config.z, scale: 1, brightness: 1.8 })
+    this.sTex = new ShaderTexture(this.app, { palette: this.palette, program: program, width: size, height: size, zindex: this.config.z, scale: 1, brightness: 1.8 })
     this.texture = new PIXI.Graphics()
     this.texture.beginTextureFill(this.sTex)
     this.texture.drawRect(0, 0, this.shape.width / xr, this.shape.height / yr)
@@ -69,7 +71,7 @@ export class MontainComponent {
 
     this.shape2.position.x = -400
     this.shape2_shd.position.x = -400
-    this.shape2_shd.tint = this.config.palette.quaternary
+    this.shape2_shd.tint = this.palette.quaternary
     this.shape2_shd.filters = [this.filter]
     this.shape3 = new SVG(svg2)
     this.shape3.scale.set(1, 1)
@@ -78,7 +80,7 @@ export class MontainComponent {
     this.shape3_shd.scale.set(1, -0.6)
     this.shape3_shd.position.x = 700
     this.shape3_shd.position.y = this.shape3.height - this.shape3_shd.height
-    this.shape3_shd.tint = this.config.palette.quaternary
+    this.shape3_shd.tint = this.palette.quaternary
     this.shape3_shd.filters = [this.filter]
     this.montain2 = new PIXI.projection.Container3d()
     this.montain2.addChild(this.shape2)
@@ -89,19 +91,19 @@ export class MontainComponent {
     this.montain2.zIndex = -this.config.z - 500
     this.montain2.scale3d.set(3.4)
 
-    this.config.parent.scene.addChild(this.montain)
-    this.config.parent.scene.addChild(this.montain2)
+    this.parent.addChild(this.montain)
+    this.parent.addChild(this.montain2)
   }
 
   onTick (delta) {
-    this.alpha = Tools.smoothstep(this.config.palette.nightPos, 0.2, 0.8)
+    this.alpha = Tools.smoothstep(this.palette.nightPos, 0.2, 0.8)
     this.shadow.alpha = this.alpha / 2.5
     this.shape2_shd.alpha = this.alpha / 2.5
     this.shape3_shd.alpha = this.alpha / 2.5
     this.shape2.tint = '0xffffff'
     this.shape3.tint = '0xffffff'
-    this.shape2.tint = this.config.palette.complementary
-    this.shape3.tint = this.config.palette.complementary
+    this.shape2.tint = this.palette.complementary
+    this.shape3.tint = this.palette.complementary
 
     this.time++
   }

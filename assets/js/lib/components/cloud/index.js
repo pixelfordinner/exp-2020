@@ -12,8 +12,11 @@ export class CloudComponent {
     this.config = Object.assign(this.defaults, config)
     this.time = 0
     this.app = app
+    this.parent = this.config.parent.scene
+    this.palette = this.config.parent.palette
+
     this.app.ticker.add(delta => this.onTick(delta))
-    this.ctex = new CloudShadingTexture(this.app, { palette: this.config.palette, steps: 8, tiling: 10, width: 100, height: 100, u_color: this.config.palette.secondary })
+    this.ctex = new CloudShadingTexture(this.app, { palette: this.palette, steps: 8, tiling: 10, width: 100, height: 100, u_color: this.palette.secondary })
     this.ctex.wrapMode = PIXI.WRAP_MODES.REPEAT
     this.shape = new PIXI.Graphics()
     this.shape.beginTextureFill(this.ctex)
@@ -28,11 +31,11 @@ export class CloudComponent {
     this.cloud.zIndex = -this.config.z
     this.cloud.addChild(this.shape)
     this.cloud.scale3d.set(3.8)
-    this.config.parent.addChild(this.cloud)
+    this.parent.addChild(this.cloud)
   }
 
   onTick (delta) {
-    this.shape.alpha = Tools.smoothstep(this.config.palette.nightPos, 0.5, 1.0) / 2
+    this.shape.alpha = Tools.smoothstep(this.palette.nightPos, 0.5, 1.0) / 2
     this.time++
   }
 }

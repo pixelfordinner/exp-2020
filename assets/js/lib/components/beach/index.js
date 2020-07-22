@@ -12,6 +12,8 @@ export class BeachComponent {
     this.app = app
     this.app.ticker.add(delta => this.onTick(delta))
     this.config = Object.assign(this.defaults, config)
+    this.parent = this.config.parent.scene
+    this.palette = this.config.parent.palette
 
     this.shape = new SVG(svg)
     this.shape.pivot.x = this.shape.width / 2
@@ -22,7 +24,7 @@ export class BeachComponent {
     const size = 100
     this.xratio = this.shape2.width / size
     this.yratio = this.shape2.height / size
-    this.gtex = new GradientShadingTexture(app, { palette: this.config.palette, width: size, height: size, vertical: 0, type: 'beach' })
+    this.gtex = new GradientShadingTexture(app, { palette: this.palette, width: size, height: size, vertical: 0, type: 'beach' })
     this.texture = new PIXI.Graphics()
     this.texture.beginTextureFill(this.gtex)
     this.texture.drawRect(0, 0, size, size)
@@ -41,16 +43,16 @@ export class BeachComponent {
     this.view2.pivot.x = this.view2.width / 2
     this.view2.scale3d.set(6, 3, 1)
     this.view2.zIndex = -this.config.z - 400
-    this.config.parent.scene.addChild(this.view)
-    this.config.parent.scene.addChild(this.view2)
+    this.parent.addChild(this.view)
+    this.parent.addChild(this.view2)
   }
 
   onTick (delta) {
     this.shape.tint = '0xffffff'
-    this.shape.tint = this.config.palette.primary
+    this.shape.tint = this.palette.primary
     // if (this.config.mode === 'primary') {
     //   this.shape.tint = '0xffffff'
-    //   this.shape.tint = this.config.palette.primary
+    //   this.shape.tint = this.palette.primary
     // }
   }
 }

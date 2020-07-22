@@ -14,8 +14,10 @@ export class SunComponent {
     this.time = 0
     this.app = app
     this.app.ticker.add(delta => this.onTick(delta))
+    this.palette = this.config.parent.palette
+    this.parent = this.config.parent.scene
 
-    this.sTex2 = new GradientShadingTexture(this.app, { palette: this.config.palette, width: 100, height: 100, color_start: this.config.palette.primary, color_end: this.config.palette.secondary, vertical: 1, distord: 1, fade_value: 1 })
+    this.sTex2 = new GradientShadingTexture(this.app, { palette: this.palette, width: 100, height: 100, color_start: this.palette.primary, color_end: this.palette.secondary, vertical: 1, distord: 1, fade_value: 1 })
 
     this.texture = new PIXI.Graphics()
     this.texture.beginTextureFill(this.sTex2)
@@ -35,7 +37,7 @@ export class SunComponent {
     this.sun.addChild(this.texture)
     this.sun.scale3d.set(20)
 
-    this.config.parent.scene.addChild(this.sun)
+    this.parent.addChild(this.sun)
   }
 
   onClick () {
@@ -47,7 +49,7 @@ export class SunComponent {
     // console.log(this.sun.mouseover)
 
     this.time += 0.01
-    this.ypos = Tools.mix1(this.config.y, this.config.y - 4000, this.config.palette.nightPos)
+    this.ypos = Tools.mix1(this.config.y, this.config.y - 4000, this.palette.nightPos)
     this.sun.position3d.y = this.ypos
     this.strech = this.app.view.width * 2
     this.sun.position3d.x = this.strech

@@ -29,6 +29,7 @@ export class LeafComponent {
     this.svg = new SVG(drop)
     this.num = this.config.num
     this.petal = [this.num]
+    this.leafs = [this.num]
 
     this.rd = Math.ceil(Math.random(this.config.zindex * 2567.78) * 9)
     this.offset = this.rd
@@ -53,6 +54,20 @@ export class LeafComponent {
 
   doShape () {
     const program = new basicShader(this.app)
+    // this.petal.forEach(index => {
+    //   this.p = this.svg.clone()
+    //   this.p.pivot.x = this.svg.width / 2
+    //   this.p.angle = this.tetha + ((190 / this.num) * index)
+    //   this.p.tint = this.palette.getConstantSmoothDepthColor(this.config.z)
+    //   this.p.interactive = true
+    //   this.p.mouseIsOn = false
+    //   this.p.on('mouseover', this.petalOn)
+    //   this.p.on('pointerout', this.petalOff)
+    //   this.petal.push(this.p)
+    //   // this.petal[i] = this.petal
+
+    //   this.leaf.addChild(this.p)
+    // })
 
     for (let i = 0; i < this.num; i++) {
       this.petal[i] = this.svg.clone()
@@ -63,7 +78,12 @@ export class LeafComponent {
       this.petal[i].mouseIsOn = false
       this.petal[i].on('mouseover', this.petalOn)
       this.petal[i].on('pointerout', this.petalOff)
+      // this.petal[i] = this.petal
+
       this.leaf.addChild(this.petal[i])
+
+      // this.leafcontainer = new PIXI.projection.Container3d()
+      // this.leafcontainer.addChild()
     }
 
     if (this.config.light) {

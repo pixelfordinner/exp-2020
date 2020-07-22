@@ -1,4 +1,4 @@
-import wing from '!raw-loader!data/svg/wing3.svg'
+import wing from '!raw-loader!data/svg/wing4.svg'
 import { Tools } from 'objects/tools/geometry'
 
 export class ButterflyComponent {
@@ -13,14 +13,17 @@ export class ButterflyComponent {
     this.config = Object.assign(this.defaults, config)
     this.time = 0
     this.wtime = this.config.x
+    this.palette = this.config.parent.palette
+    this.parent = this.config.parent.scene
+
     this.app = app
     this.app.ticker.add(delta => this.onTick(delta))
 
     this.shape = new SVG(wing)
     this.shape.pivot.x = this.shape.width
     this.shape.pivot.y = this.shape.height / 2
-    this.shape.tint = this.config.palette.quaternary
-    this.shape.alpha = 0.3
+    this.shape.tint = this.palette.quaternary
+    // this.shape.alpha = 0.3
 
     this.eye = new PIXI.Graphics()
     this.eye.alpha = 1
@@ -30,12 +33,12 @@ export class ButterflyComponent {
 
     this.wing = new PIXI.projection.Container3d()
     this.wing.addChild(this.shape)
-    this.wing.addChild(this.eye)
+    // this.wing.addChild(this.eye)
 
     this.wing2 = new PIXI.projection.Container3d()
     this.shape2 = new SVG(wing)
-    this.shape2.tint = this.config.palette.quaternary
-    this.shape2.alpha = 0.3
+    this.shape2.tint = this.palette.quaternary
+    // this.shape2.alpha = 0.3
 
     this.eye2 = new PIXI.Graphics()
     this.eye2.beginFill('0xffffff')
@@ -45,20 +48,20 @@ export class ButterflyComponent {
     this.shape2.pivot.y = this.shape.height / 2
 
     this.wing2.addChild(this.shape2)
-    this.wing2.addChild(this.eye2)
+    // this.wing2.addChild(this.eye2)
     this.wing2.euler.y = Math.PI / 1.2
     this.wing.euler.y = Math.PI / 1.2 + Math.PI
 
     this.butterfly = new PIXI.projection.Container3d()
     this.butterfly.addChild(this.wing)
     this.butterfly.addChild(this.wing2)
-    this.config.parent.scene.addChild(this.butterfly)
+    this.parent.addChild(this.butterfly)
     this.butterfly.scale3d.set(0.5, 0.5, 0.5)
 
     if (this.config.anchor != null && !this.butterfly.affraid) {
-      this.config.x = this.config.anchor.leaf.position3d.x - this.config.x
-      this.config.y = this.config.anchor.leaf.position3d.y - this.config.y
-      this.config.z = this.config.anchor.leaf.position3d.z - 20
+      this.config.x = this.config.anchor.cluster.position3d.x - this.config.x
+      this.config.y = this.config.anchor.cluster.position3d.y - this.config.y
+      this.config.z = this.config.anchor.cluster.position3d.z - 20
       this.butterfly.position3d.set(this.config.x, this.config.y, this.config.z)
     }
 
@@ -68,12 +71,16 @@ export class ButterflyComponent {
     this.butterfly.stress = 0
   }
 
+  getAnchorPoint () {
+    // this.atractor = this.config.anchor.petals[1].po
+  }
+
   onTick (delta) {
     this.amp = 1.6
     this.time += 0.05
     this.wangle = Math.PI
 
-    if (this.config.anchor.leaf.status) {
+    if (this.config.anchor.cluster.active) {
       this.butterfly.affraid = true
     }
 
@@ -110,9 +117,9 @@ export class ButterflyComponent {
 
     if (this.config.anchor != null) {
       this.atime = 1.0
-      this.xpos = this.config.anchor.leaf.position3d.x - this.config.x
-      this.ypos = this.config.anchor.leaf.position3d.y - this.config.y
-      this.zpos = this.config.anchor.leaf.position3d.z - 5
+      this.xpos = this.config.anchor.cluster.position3d.x - this.config.x
+      this.ypos = this.config.anchor.cluster.position3d.y - this.config.y
+      this.zpos = this.config.anchor.cluster.position3d.z - 5
       this.plusx = this.xpos + (Math.cos(this.time) * 400)
       this.plusy = this.ypos + ((0.5 * Math.sin(this.time) + 0.5) * -300)
       this.newx = Tools.mix1(this.config.x, this.plusx, this.butterfly.stress)
@@ -124,7 +131,7 @@ export class ButterflyComponent {
       this.butterfly.zIndex = -this.zpos
     }
 
-    this.shape2.alpha = Math.min(1.3 - this.config.palette.nightVal, 0.8)
-    this.shape.alpha = Math.min(1.3 - this.config.palette.nightVal, 0.8)
+    // this.shape2.alpha = Math.min(1.3 - this.palette.nightVal, 0.8)
+    // this.shape.alpha = Math.min(1.3 - this.palette.nightVal, 0.8)
   }
 }

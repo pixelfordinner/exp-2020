@@ -50,7 +50,7 @@ export class BeachComponent {
     this.view2.position3d.set(1000, 600, 400)
     // this.view2.pivot.x = this.view2.width / 2
     this.view2.scale3d.set(2)
-    this.view2.zIndex = -40
+    this.view2.zIndex = -400
     this.parent.addChild(this.view)
     this.parent.addChild(this.view2)
   }

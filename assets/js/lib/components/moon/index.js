@@ -2,11 +2,11 @@
 import { Tools } from 'objects/tools/geometry'
 import { GradientShadingTexture } from 'components/textures/shadergradient'
 
-export class SunComponent {
+export class MoonComponent {
   constructor (app, config = {}) {
     this.defaults = {
-      x: 200,
-      y: 3000,
+      x: 0,
+      y: 0,
       z: 0,
       size: 1
 
@@ -25,20 +25,22 @@ export class SunComponent {
     this.texture.drawCircle(-50, -50, 49, 49)
     this.texture.endFill()
 
-    this.sun = new PIXI.projection.Container3d()
-    this.sun.interactive = true
-    this.sun.on('pointerdown', this.onClick)
+    this.texture.position.x = 300
 
-    // this.sun.mouseover = function (mouseData) {
-    //   console.log('hello')
-    // }
+    // this.sun = new PIXI.projection.Container3d()
+    // this.sun.interactive = true
+    // this.sun.on('pointerdown', this.onClick)
 
-    this.sun.zIndex = -this.config.z
-    this.sun.position3d.set(this.config.x, this.config.y, this.config.z)
-    this.sun.addChild(this.texture)
-    this.sun.scale3d.set(this.config.size)
+    // // this.sun.mouseover = function (mouseData) {
+    // //   console.log('hello')
+    // // }
 
-    this.parent.addChild(this.sun)
+    // this.sun.zIndex = -this.config.z
+    // this.sun.position3d.set(this.config.x, this.config.y, this.config.z)
+    // this.sun.addChild(this.texture)
+    // this.sun.scale3d.set(this.config.size)
+
+    this.parent.addChild(this.texture)
   }
 
   onClick () {
@@ -49,10 +51,10 @@ export class SunComponent {
   onTick (delta) {
     // console.log(this.sun.mouseover)
 
-    this.time += 0.01
-    this.ypos = Tools.mix1(this.config.y, this.config.y - 8000, this.palette.nightPos)
-    this.sun.position3d.y = this.ypos
-    this.strech = this.app.view.width * 5
-    this.sun.position3d.x = this.strech
+    // this.time += 0.01
+    // this.ypos = Tools.mix1(this.config.y, this.config.y - 8000, this.palette.nightPos)
+    // this.sun.position3d.y = this.ypos
+    // this.strech = this.app.view.width * 5
+    // this.sun.position3d.x = this.strech
   }
 }

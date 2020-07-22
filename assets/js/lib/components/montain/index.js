@@ -35,7 +35,7 @@ export class MontainComponent {
     this.debug.pivot.x = this.debug.width / 2
 
     // this.shape.scale.set(3)
-    const size = 50
+    const size = 100
     const ratio = this.shape.width / this.shape.height
 
     const xr = this.shape.width / size
@@ -61,7 +61,7 @@ export class MontainComponent {
     this.sTex = new ShaderTexture(this.app, { palette: this.palette, program: program, width: size, height: size, zindex: this.config.z, scale: 1, brightness: 1.8 })
     this.texture = new PIXI.Graphics()
     this.texture.beginTextureFill(this.sTex)
-    this.texture.drawRect(0, 0, this.shape.width / xr, this.shape.height / yr)
+    this.texture.drawRect(0, -10, this.shape.width / xr + 10, this.shape.height / yr + 10)
     this.texture.endFill()
     this.texture.scale.set(xr, yr)
     // this.texture.position.x = -this.texture.width / 2

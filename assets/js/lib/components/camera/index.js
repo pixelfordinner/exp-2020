@@ -27,8 +27,11 @@ export class CameraComponent {
 
   getParallax () {
     this.parallax = this.mouse.getParallax2()
-    this.camera.euler.y = this.parallax.y
-    this.camera.euler.x = this.parallax.x
+    this.camera.euler.y = -this.parallax.y / 5
+    this.camera.euler.x = -this.parallax.x / 5
+
+    this.camera.position3d.y = (this.parallax.x * 1000)
+    this.camera.position3d.x = (this.parallax.y * 1000)
   }
 
   onTick (delta) {

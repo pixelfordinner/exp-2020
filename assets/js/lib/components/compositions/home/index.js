@@ -23,7 +23,7 @@ export class HomeComposition {
     this.background = new PIXI.projection.Container3d()
     this.background.zIndex = 100
     const stars = new StarComponent(app, { parent: this.background, palette: this.parent.palette })
-    const moon = new MoonComponent(app, { parent: this.background, palette: this.parent.palette, x: 200, y: 0, z: 0, size: 1 })
+    // const moon = new MoonComponent(app, { parent: this.background, palette: this.parent.palette, x: 200, y: 0, z: 0, size: 1 })
 
     // const sun = new SunComponent(app, { parent: this.background, palette: this.parent.palette, x: 0, y: 0, z: 0, size: 5 })
     // this.parent.camera.addChild(this.background)

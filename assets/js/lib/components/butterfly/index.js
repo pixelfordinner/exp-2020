@@ -1,4 +1,5 @@
 import wing from '!raw-loader!data/svg/wing4.svg'
+import detail from '!raw-loader!data/svg/wing5.svg'
 import { Tools } from 'objects/tools/geometry'
 import { ShaderTexture } from 'components/textures/shadertexture'
 
@@ -35,27 +36,21 @@ export class ButterflyComponent {
     this.texture.pivot.y = this.texture.height / 2
     this.texture.mask = this.shape
 
-    // this.shape.alpha = 0.3
-
-    // this.eye = new PIXI.Graphics()
-    // this.eye.alpha = 1
-    // this.eye.beginFill('0xffffff')
-    // this.eye.drawCircle(-this.shape.width + 50, -50, 20, 20)
-    // this.eye.endFill()
+    this.detail = new SVG(detail)
+    this.detail.pivot.x = this.texture.width
+    this.detail.pivot.y = this.texture.height / 2
+    this.detail.tint = '0sffffff'
+    this.detail.tint = this.palette.primaries[1]
 
     this.wing = new PIXI.projection.Container3d()
     this.wing.addChild(this.shape)
     this.wing.addChild(this.texture)
+    // this.wing.addChild(this.detail)
 
     this.wing2 = new PIXI.projection.Container3d()
     this.shape2 = new SVG(wing)
     this.shape2.tint = this.palette.quaternary
-    // this.shape2.alpha = 0.3
 
-    // this.eye2 = new PIXI.Graphics()
-    // this.eye2.beginFill('0xffffff')
-    // this.eye2.drawCircle(-this.shape2.width + 50, -50, 20, 20)
-    // this.eye2.endFill()
     this.shape2.pivot.x = this.shape.width
     this.shape2.pivot.y = this.shape.height / 2
 
@@ -68,8 +63,15 @@ export class ButterflyComponent {
     this.texture2.pivot.y = this.texture.height / 2
     this.texture2.mask = this.shape2
 
+    this.detail2 = new SVG(detail)
+    this.detail2.pivot.x = this.texture.width
+    this.detail2.pivot.y = this.texture.height / 2
+    this.detail2.tint = '0sffffff'
+    this.detail2.tint = this.palette.primaries[1]
+
     this.wing2.addChild(this.shape2)
     this.wing2.addChild(this.texture2)
+    // this.wing2.addChild(this.detail2)
     this.wing2.euler.y = Math.PI / 1.2
     this.wing.euler.y = Math.PI / 1.2 + Math.PI
 

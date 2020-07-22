@@ -50,7 +50,7 @@ export class SunComponent {
     // console.log(this.sun.mouseover)
 
     this.time += 0.01
-    this.ypos = Tools.mix1(this.config.y, this.config.y - 8000, this.palette.nightPos)
+    this.ypos = Tools.mix1(this.config.y, this.config.y - 10000, this.palette.nightPos)
     this.sun.position3d.y = this.ypos
     this.strech = this.app.view.width * 5
     this.sun.position3d.x = this.strech

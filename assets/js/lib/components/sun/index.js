@@ -7,7 +7,8 @@ export class SunComponent {
     this.defaults = {
       x: 200,
       y: 1000,
-      z: 0
+      z: 0,
+      size: 1
 
     }
     this.config = Object.assign(this.defaults, config)
@@ -35,7 +36,7 @@ export class SunComponent {
     this.sun.zIndex = -this.config.z
     this.sun.position3d.set(this.config.x, this.config.y, this.config.z)
     this.sun.addChild(this.texture)
-    this.sun.scale3d.set(20)
+    this.sun.scale3d.set(this.config.size)
 
     this.parent.addChild(this.sun)
   }
@@ -51,7 +52,7 @@ export class SunComponent {
     this.time += 0.01
     this.ypos = Tools.mix1(this.config.y, this.config.y - 4000, this.palette.nightPos)
     this.sun.position3d.y = this.ypos
-    this.strech = this.app.view.width * 2
+    this.strech = this.app.view.width * 5
     this.sun.position3d.x = this.strech
   }
 }

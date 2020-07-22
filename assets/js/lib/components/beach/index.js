@@ -39,10 +39,10 @@ export class BeachComponent {
     this.view2 = new PIXI.projection.Container3d()
     this.view2.addChild(this.texture)
     this.view2.addChild(this.shape2)
-    this.view2.position3d.set(this.config.x - 2300, this.config.y + 650, this.config.z + 400)
+    this.view2.position3d.set(this.config.x - 2300, this.config.y + 650, this.config.z + 300)
     this.view2.pivot.x = this.view2.width / 2
     this.view2.scale3d.set(6, 3, 1)
-    this.view2.zIndex = -this.config.z - 400
+    this.view2.zIndex = -this.config.z - 300
     this.parent.addChild(this.view)
     this.parent.addChild(this.view2)
   }

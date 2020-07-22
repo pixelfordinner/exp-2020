@@ -8,6 +8,7 @@ export class SceneComponent {
     }
     this.config = Object.assign(this.defaults, config)
     this.time = 0
+    this.mouse = this.config.mouse
     this.wind = 0.5
     this.speed = 0.01
     this.bounds = {
@@ -25,7 +26,17 @@ export class SceneComponent {
     this.camera.addChild(this.scene)
   }
 
+  getParallax () {
+    this.parallax = this.mouse.getParallax2()
+    this.scene.euler.y = -this.parallax.x / 300
+    this.scene.euler.x = -this.parallax.y / 200
+  }
+
   onTick (delta) {
     this.time++
+    if (this.mouse.pos.x > 0) {
+      this.getParallax()
+    }
+    // this.getParallax()
   }
 }

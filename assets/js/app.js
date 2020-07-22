@@ -43,8 +43,8 @@ const camera = new CameraComponent(app, {
 
 })
 
-const palette = new ColorPalette(app, { nightMode: false, animate: false })
-const scene = new SceneComponent(app, { camera: camera, palette: palette })
+const palette = new ColorPalette(app, { nightMode: true, animate: true })
+const scene = new SceneComponent(app, { camera: camera, palette: palette, mouse: mouse })
 const composition = new HomeComposition(app, { parent: scene })
 
 window.addEventListener('resize', resize)

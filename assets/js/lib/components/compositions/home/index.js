@@ -32,7 +32,7 @@ export class HomeComposition {
     this.app.stage.addChild(this.background)
     const leaf = new LeafClusterComponent(app, { x: this.bounds.maxWidth / 2 - 200, y: this.bounds.maxHeight / 1.7, z: 100, parent: this.parent })
     // const leaf2 = new LeafClusterComponent(app, { x: this.bounds.maxWidth / 2 - 200, y: this.bounds.maxHeight / 1.0, z: 500, parent: this.parent })
-    const leaf3 = new LeafClusterComponent(app, { x: this.bounds.maxWidth / 2 + 800, y: this.bounds.maxHeight / 1.2, z: 400, parent: this.parent })
+    const leaf3 = new LeafClusterComponent(app, { x: this.bounds.maxWidth / 2 + 1000, y: this.bounds.maxHeight / 1.2, z: 500, parent: this.parent })
     const leaf4 = new LeafClusterComponent(app, { x: -this.bounds.maxWidth / 4, y: this.bounds.maxHeight / 1.2, z: 200, parent: this.parent })
 
     // const palm = new PalmTreeComponent(app, { x: -this.bounds.maxWidth / 0.9, y: -1000, z: 500, parent: this.parent })

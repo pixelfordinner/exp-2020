@@ -90,6 +90,7 @@ export class LeafClusterComponent {
     //   color: this.palette.getConstantSmoothDepthColor(this.config.z)
     // })
     // this.cluster.addChild(this.line.shape)
+    this.line.doShape(this.palette.getConstantSmoothDepthColor(this.cluster.position3d.z))
   }
 
   onTick (delta) {

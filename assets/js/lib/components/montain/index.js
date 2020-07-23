@@ -105,7 +105,7 @@ export class MontainComponent {
     this.montain2.addChild(this.shape3_shd)
     this.montain2.position3d.set(this.config.x - 1200, this.config.y + 1000, this.config.z + 600)
     this.montain2.zIndex = -this.config.z - 600
-    this.montain2.scale3d.set(6)
+    this.montain2.scale3d.set(5)
     this.montain2.pivot3d.x = this.montain2.width / 2
 
     this.parent.addChild(this.montain)

@@ -1,5 +1,6 @@
 
 import leaf_shape from '!raw-loader!data/svg/drop4.svg'
+import leaf_shape_palm from '!raw-loader!data/svg/drop5.svg'
 import { Tools } from 'objects/tools/geometry'
 
 export class BaseLeafComponent {
@@ -8,7 +9,8 @@ export class BaseLeafComponent {
       parent: app.stage,
       x: 0,
       y: 0,
-      z: 0
+      z: 0,
+      type: 'basic'
     }
     this.config = Object.assign(this.defaults, config)
     this.active = false
@@ -20,6 +22,15 @@ export class BaseLeafComponent {
     this.parent = this.config.parent.scene
 
     this.shape = new SVG(leaf_shape)
+    switch (this.config.type) {
+      case 'palm':
+        this.shape = new SVG(leaf_shape_palm)
+        break
+
+      default:
+        this.shape = new SVG(leaf_shape)
+        break
+    }
     this.shape.interactive = true
     this.shape.on('mouseover', this.over)
     this.shape.on('pointerout', this.out)

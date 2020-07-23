@@ -27,7 +27,7 @@ export class LineComponent {
     this.shape.clear()
     this.shape.lineStyle(this.config.stroke, color, this.config.alfa)
     this.shape.moveTo(0, 0)
-    this.shape.bezierCurveTo(0, 0, -20, 100, 0, 200)
+    this.shape.bezierCurveTo(0, 0, -20, 100, 0, 300)
   }
 
   onTick (delta) {

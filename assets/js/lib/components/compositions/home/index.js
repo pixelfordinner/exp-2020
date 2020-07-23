@@ -35,7 +35,8 @@ export class HomeComposition {
     const leaf3 = new LeafClusterComponent(app, { x: this.bounds.maxWidth / 2 + 800, y: this.bounds.maxHeight / 1.2, z: 400, parent: this.parent })
     const leaf4 = new LeafClusterComponent(app, { x: -this.bounds.maxWidth / 4, y: this.bounds.maxHeight / 1.2, z: 200, parent: this.parent })
 
-    // const palm = new PalmTreeComponent(app, { x: -this.bounds.maxWidth / 2, y: this.bounds.maxHeight / 1.6, z: 500, parent: this.parent })
+    // const palm = new PalmTreeComponent(app, { x: -this.bounds.maxWidth / 0.9, y: -1000, z: 500, parent: this.parent })
+    // const palm2 = new PalmTreeComponent(app, { x: this.bounds.maxWidth / 2 + 1600, y: 400, z: 900, parent: this.parent, scale: 5 })
 
     const butterfly = new ButterflyComponent(app, { parent: this.parent, anchor: leaf })
     const beach = new BeachComponent(app, { parent: this.parent, x: 0, y: 0, z: 10 })

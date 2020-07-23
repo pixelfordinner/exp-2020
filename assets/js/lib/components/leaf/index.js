@@ -7,6 +7,7 @@ import { ShaderTexture } from 'components/textures/shadertexture'
 export class LeafComponent {
   constructor (app, config = {}) {
     this.defaults = {
+      type: 'leaf',
       num: 13,
       light: true,
       interactive: true,
@@ -26,7 +27,18 @@ export class LeafComponent {
     this.time = 0
     this.counter = 0
     this.status = false
-    this.svg = new SVG(drop)
+    switch (this.config.type) {
+      case 'palm':
+        this.svg = new SVG(drop)
+
+        break
+
+      default:
+        this.svg = new SVG(drop)
+        break
+    }
+    // this.svg = new SVG(drop)
+
     this.num = this.config.num
     this.petal = [this.num]
     this.leafs = [this.num]

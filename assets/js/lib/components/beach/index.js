@@ -22,7 +22,7 @@ export class BeachComponent {
 
     this.shape2 = new SVG(svg)
     this.shape2.pivot.x = this.shape2.width / 2
-    this.shape2.scale.set(3)
+    this.shape2.scale.set(3, 2)
     // this.shape2.pivot.x = -this.shape2.width / 2
     // this.shape2.scale.set(8, 6)
     // this.shape2.pivot.x = this.shape.width / 2

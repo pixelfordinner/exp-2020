@@ -1,6 +1,7 @@
 
 import svg from '!raw-loader!data/svg/montain2.svg'
-import svg2 from '!raw-loader!data/svg/montain4.svg'
+import svg2 from '!raw-loader!data/svg/montain6.svg'
+import svg3 from '!raw-loader!data/svg/montain5.svg'
 import { ShaderTexture } from 'components/textures/shadertexture'
 import { basicShader } from 'components/shader/basic'
 import { RippleFilter } from 'components/filters/ripple'
@@ -88,7 +89,7 @@ export class MontainComponent {
     this.shape2_shd.position.x = -800
     this.shape2_shd.tint = this.palette.quaternary
     this.shape2_shd.filters = [this.filter]
-    this.shape3 = new SVG(svg2)
+    this.shape3 = new SVG(svg3)
     this.shape3.scale.set(1)
     this.shape3.position.x = 100
     this.shape3_shd = this.shape3.clone()
@@ -102,9 +103,9 @@ export class MontainComponent {
     this.montain2.addChild(this.shape3)
     this.montain2.addChild(this.shape2_shd)
     this.montain2.addChild(this.shape3_shd)
-    this.montain2.position3d.set(this.config.x - 1300, this.config.y + 1200, this.config.z + 100)
-    this.montain2.zIndex = -this.config.z - 100
-    this.montain2.scale3d.set(5)
+    this.montain2.position3d.set(this.config.x - 1200, this.config.y + 1000, this.config.z + 600)
+    this.montain2.zIndex = -this.config.z - 600
+    this.montain2.scale3d.set(6)
     this.montain2.pivot3d.x = this.montain2.width / 2
 
     this.parent.addChild(this.montain)

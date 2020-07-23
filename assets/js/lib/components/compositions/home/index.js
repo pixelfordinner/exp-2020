@@ -6,8 +6,8 @@ import { SunComponent } from 'components/sun'
 import { MontainComponent } from 'components/montain'
 import { OceanComponent } from 'components/ocean'
 import { ButterflyComponent } from 'components/butterfly'
-import { PalmTreeComponent } from 'components/palmtree'
-import { MoonComponent } from 'components/moon'
+// import { PalmTreeComponent } from 'components/palmtree'
+// import { MoonComponent } from 'components/moon'
 
 export class HomeComposition {
   constructor (app, config = {}) {
@@ -31,7 +31,7 @@ export class HomeComposition {
     // this.parent.camera.addChild(this.background)
     this.app.stage.addChild(this.background)
     const leaf = new LeafClusterComponent(app, { x: this.bounds.maxWidth / 2 - 200, y: this.bounds.maxHeight / 1.7, z: 100, parent: this.parent })
-    const leaf2 = new LeafClusterComponent(app, { x: this.bounds.maxWidth / 2 - 200, y: this.bounds.maxHeight / 1.0, z: 500, parent: this.parent })
+    // const leaf2 = new LeafClusterComponent(app, { x: this.bounds.maxWidth / 2 - 200, y: this.bounds.maxHeight / 1.0, z: 500, parent: this.parent })
     const leaf3 = new LeafClusterComponent(app, { x: this.bounds.maxWidth / 2 + 800, y: this.bounds.maxHeight / 1.2, z: 400, parent: this.parent })
     const leaf4 = new LeafClusterComponent(app, { x: -this.bounds.maxWidth / 4, y: this.bounds.maxHeight / 1.2, z: 200, parent: this.parent })
 

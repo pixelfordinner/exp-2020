@@ -85,11 +85,11 @@ export class LeafClusterComponent {
       leaf.shape.tint = this.palette.getConstantSmoothDepthColor(this.cluster.position3d.z)
     })
 
-    this.line = new LineComponent(this.app, {
-      // camera: this.camera,
-      color: this.palette.getConstantSmoothDepthColor(this.config.z)
-    })
-    this.cluster.addChild(this.line.shape)
+    // this.line = new LineComponent(this.app, {
+    //   // camera: this.camera,
+    //   color: this.palette.getConstantSmoothDepthColor(this.config.z)
+    // })
+    // this.cluster.addChild(this.line.shape)
   }
 
   onTick (delta) {

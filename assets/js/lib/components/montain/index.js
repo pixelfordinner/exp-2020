@@ -45,7 +45,7 @@ export class MontainComponent {
     this.shadow = new SVG(svg)
     // this.shadow.position.x = this.shape.width / 2
     // this.shadow.pivot.y = this.shadow.height * 2
-    this.shadow.scale.set(1, -0.9)
+    this.shadow.scale.set(1, -0.8)
     this.shadow.position.y = this.shape.height - this.shadow.height
     this.shadow.tint = this.palette.quaternary
     // this.shadow.blendMode = PIXI.BLEND_MODES.MULTIPLY
@@ -74,7 +74,7 @@ export class MontainComponent {
     this.montain.addChild(this.texture)
     this.montain.addChild(this.shape)
 
-    this.montain.scale3d.set(7)
+    this.montain.scale3d.set(6)
     this.montain.pivot3d.x = this.montain.width / 2
     // this.montain.pivot3d.y = this.montain.height / 2
     this.montain.position3d.set(this.config.x, this.config.y, this.config.z)
@@ -103,7 +103,7 @@ export class MontainComponent {
     this.montain2.addChild(this.shape3)
     this.montain2.addChild(this.shape2_shd)
     this.montain2.addChild(this.shape3_shd)
-    this.montain2.position3d.set(this.config.x - 1200, this.config.y + 1000, this.config.z + 600)
+    this.montain2.position3d.set(this.config.x - 800, this.config.y + 1000, this.config.z + 600)
     this.montain2.zIndex = -this.config.z - 600
     this.montain2.scale3d.set(5)
     this.montain2.pivot3d.x = this.montain2.width / 2
@@ -122,6 +122,6 @@ export class MontainComponent {
     this.shape2.tint = this.palette.complementary
     this.shape3.tint = this.palette.complementary
 
-    this.time++
+    // this.time++
   }
 }

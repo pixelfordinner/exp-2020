@@ -12,8 +12,10 @@ uniform float u_time;
 void main() {
   vec2 uv = vTextureCoord;
   uv.y *= 1.5;
-  float steps = length(uv.y*3.);
-  uv.x += sin(u_time+ steps*20.)*steps*0.005;
+  float steps = (uv.y*3.);
+
+uv.x += sin(u_time+ steps*20.)*steps*0.005;
+ // uv.x += sin(u_time)*0.005;
 
   vec4 currentColor = texture2D(uSampler, uv);
 

@@ -30,6 +30,13 @@ export class LineComponent {
     this.shape.bezierCurveTo(0, 0, -20, 100, 0, 300)
   }
 
+  drawLine (p1, p2, color) {
+    this.shape.clear()
+    this.shape.lineStyle(this.config.stroke, color, this.config.alfa)
+    this.shape.moveTo(p1.x, p1.y)
+    this.shape.bezierCurveTo(p1.x, p1.y, 0, p1.y + 100, 0, p1.y + 200)
+  }
+
   onTick (delta) {
   }
 

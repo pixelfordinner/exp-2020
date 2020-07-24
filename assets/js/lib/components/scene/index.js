@@ -25,6 +25,9 @@ export class SceneComponent {
     this.scene.sortableChildren = true
     this.camera = this.config.camera.getCamera()
     this.camera.addChild(this.scene)
+    // this.filter = new PIXI.filters.BlurFilter(20)
+    // this.scene.filters = [this.filter]
+    // console.log(PIXI.filters)
   }
 
   getParallax () {

@@ -27,7 +27,7 @@ app.renderer.resolution = window.devicePixelRatio
 
 const mouse = new MouseComponent(app)
 const camera = new CameraComponent(app, { mouse: mouse })
-const palette = new ColorPalette(app, { nightMode: true, animate: true })
+const palette = new ColorPalette(app, { nightMode: true, animate: false })
 const scene = new SceneComponent(app, { camera: camera, palette: palette, mouse: mouse })
 const composition = new HomeComposition(app, { parent: scene })
 
@@ -36,6 +36,7 @@ window.addEventListener('resize', resize)
 
 function resize () {
   camera.onResize()
+  // app.renderer.resolution = window.devicePixelRatio
 }
 
 resize()

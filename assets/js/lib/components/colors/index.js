@@ -139,7 +139,7 @@ export class ColorPalette {
 
   onTick (delta) {
     this.time += 0.01
-    console.log(this.config.animate)
+    // console.log(this.config.animate)
 
     if (this.config.animate) {
       this.animateNight()

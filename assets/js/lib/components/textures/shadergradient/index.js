@@ -23,8 +23,6 @@ export class GradientShadingTexture {
     this.c1 = this.config.palette.hexToRgb(this.config.palette.toHex(this.config.color_start))
     this.c2 = this.config.palette.hexToRgb(this.config.palette.toHex(this.config.color_end))
 
-    console.log(this.rgb1)
-
     this.width = this.config.width
     this.height = this.config.height
     this.time = 0

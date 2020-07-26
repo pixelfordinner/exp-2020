@@ -20,8 +20,6 @@ export class CloudShadingTexture {
     this.config = Object.assign(this.defaults, config)
     this.c1 = this.config.palette.hexToRgb(this.config.palette.toHex(this.config.u_color))
 
-    console.log(this.rgb1)
-
     this.width = this.config.width
     this.height = this.config.height
     this.time = 0

@@ -11,6 +11,21 @@ export class Tools {
     return a * (1 - di) + b * di
   }
 
+  static Cart2Pol (p) {
+    const l = Math.sqrt(Math.pow(p.x, 2.0) + Math.pow(p.y, 2.0))
+    const a = Math.atan(p.y, p.x)
+    console.log(a)
+
+    return new PIXI.Point(a, l)
+  }
+
+  static Pol2Cart (a, l) {
+    const x = l * Math.cos(a)
+    const y = l * Math.sin(a)
+
+    return new PIXI.Point(x, y)
+  }
+
   static mix2 (a, b, d) {
     const x1 = a.x
     const y1 = a.y

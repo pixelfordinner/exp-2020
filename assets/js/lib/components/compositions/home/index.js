@@ -8,6 +8,9 @@ import { OceanComponent } from 'components/ocean'
 import { ButterflyComponent } from 'components/butterfly'
 import { PalmTreeComponent } from 'components/palmtree'
 import { FlowerComponent } from 'components/flower'
+import { SvgBlobComponent } from 'components/blob_svg'
+import { BlobComponent } from 'components/blob'
+
 // import { MoonComponent } from 'components/moon'
 
 export class HomeComposition {
@@ -40,7 +43,7 @@ export class HomeComposition {
     const flower3 = new FlowerComponent(app, { parent: this.parent, y: 430, x: 1250, z: 220 })
 
     const flower4 = new FlowerComponent(app, { parent: this.parent, y: 530, x: 1450, z: 220 })
-
+    const blob = new BlobComponent(app, { parent: this.parent })
     // const flower35 = new FlowerComponent(app, { parent: this.parent, y: 500, x: 1450, z: 120 })
     // const palm = new PalmTreeComponent(app, { x: -this.bounds.maxWidth / 1.9, y: -300, z: 10, parent: this.parent, scale: 3 })
     // const palm2 = new PalmTreeComponent(app, { x: this.bounds.maxWidth / 2 + 1600, y: 400, z: 900, parent: this.parent, scale: 5 })
@@ -64,6 +67,6 @@ export class HomeComposition {
 
   onTick (delta) {
     this.time++
-    console.log(this.app.renderer.width)
+    // console.log(this.app.renderer.width)
   }
 }

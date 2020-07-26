@@ -17,7 +17,6 @@ export class ShaderTexture {
     this.app = app
     this.config = Object.assign(this.defaults, config)
 
-    console.log(this.config.zindex)
     this.width = this.config.width
     this.height = this.config.height
     this.time = 0

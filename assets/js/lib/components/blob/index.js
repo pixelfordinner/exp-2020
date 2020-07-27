@@ -1,3 +1,5 @@
+import TWEEN from '@tweenjs/tween.js'
+import { Tween, autoPlay } from 'es6-tween'
 
 export class BlobComponent {
   constructor (app, config = {}) {
@@ -10,51 +12,42 @@ export class BlobComponent {
     app.ticker.add(delta => this.onTick(delta))
     this.numbers = 6
     this.pump = 30
+    this.gap = 20
     this.angles = []
+    // this.curvedata = 0
     this.parent = this.config.parent.scene
     // this.rangles = []
-    this.setAnglesRange(this.numbers, this.angles)
-    this.rangles = this.randomizeAngles(this.angles)
-    this.lengths = this.getrandomLenght()
-    console.log(this.lengths)
 
-    this.points = this.getpolarPoints(this.rangles, this.lengths)
-    this.vectors = this.getVectorPoints(this.points, this.rangles, this.pump)
-    // console.log(this.vectors[2][1])
-    this.curvedata = this.compileCurveData(this.points, this.vectors)
-    // console.log(this.curvedata)
-    this.curve = new PIXI.Graphics()
-
-    this.drawCurve(this.curvedata, this.curve)
+    this.curvedata = this.makeBlob()
+    this.curvedata2 = this.makeBlob()
+    this.prevdata = null
+    this.blob = new PIXI.Graphics()
+    this.blob.interactive = true
+    this.blob.on('pointerdown', this.mousedown)
+    this.blob.on('pointerup', this.mouseup)
+    // this.drawCurve(this.curvedata, this.blob)
+    this.parent.addChild(this.blob)
+    // this.tween = new Tween(this.curvedata)
+    // this.tween.from(this.curvedata)
+    // this.tween.to(this.curvedata2)
+    console.log(this.tween)
 
     this.shape = new PIXI.Graphics()
-    this.drawPoints(this.points, this.shape)
-    this.drawVectorPoints(this.vectors, this.shape)
+    // this.drawPoints(this.points, this.shape)
+    // this.drawVectorPoints(this.vectors, this.shape)
 
     this.parent.addChild(this.shape)
-    this.parent.addChild(this.curve)
+    // this.parent.addChild(this.blob)
+    // this.t = new TWEEN.Tween(this.curvedata)
+    // console.log(TWEEN)
   }
 
-  drawCurve (data, graphics) {
-    graphics.beginFill(0xffffff)
-    graphics.moveTo(data[this.numbers - 1].p.x, data[this.numbers - 1].p.y)
-    // graphics.drawCircle(data[this.numbers - 1].p.x, data[this.numbers - 1].p.y, 20, 20)
-    // graphics.moveTo(data[0].p.x, data[0].p.y)
+  mousedown () {
+    // this.active = true
+  }
 
-    data.forEach((c, index) => {
-      // graphics.lineTo(p.x, p.y)
-      // graphics.lineTo(d.p.x, d.p.y)
-
-      // graphics.drawCircle(d.p.x, d.p.y, 20, 20)
-
-      // console.log(c.cp2.x)
-      // graphics.moveTo(c.p.x, c.p.y)
-      // graphics.lineTo(p.x, p.y)
-      // graphics.drawCircle(p.x, p.y, 20, 20)
-      //
-      graphics.bezierCurveTo(c.cp2.x, c.cp2.y, c.cp.x, c.cp.y, c.p.x, c.p.y)
-    })
-    graphics.endFill()
+  mouseup () {
+    this.active = true
   }
 
   compileCurveData (points, vectors) {
@@ -145,22 +138,10 @@ export class BlobComponent {
   }
 
   getpolarPoints (angles, lengths) {
-    // const r = 200
     const points = []
-    // for (const a of angles) {
-    //   const angle = (a / 360) * Math.PI * 2
-    //   const r = 100
-    //   console.log('angle  deg: ' + a + ' rad : ' + angle)
-    //   const x = r * Math.cos(angle)
-    //   const y = r * Math.sin(angle)
-    //   points.push(new PIXI.Point(x, y))
-    // }
     angles.forEach((a, index) => {
       const r = lengths[index]
       const angle = (a / 360) * Math.PI * 2
-
-      // console.log('angle' + index + ' : ' + angle)
-
       const x = r * Math.cos(angle)
       const y = r * Math.sin(angle)
       points.push(new PIXI.Point(x, y))
@@ -174,7 +155,6 @@ export class BlobComponent {
       const angle = this.rint(a[0], a[1])
       rangles.push(angle)
     })
-    // console.log(rangles)
     return rangles
   }
 
@@ -184,21 +164,18 @@ export class BlobComponent {
       const angle = (Math.PI * 2) / (index)
       uangles.push(angle)
     })
-    // console.log(uangles)
     return uangles
   }
 
   setAnglesRange (num, angles) {
-    // const angle = (Math.PI * 2) / this.numbers
     const a = 330 / num
-    const gap = 20
+    const gap = this.gap
     for (let i = 0; i < num; i++) {
       if (i < num - 1) {
         angles.push([(a * i) + gap, (a * (i + 1)) - gap])
       } else {
         angles.push([(a * i) + gap, 330])
       }
-      // console.log(angles)
     }
   }
 
@@ -213,7 +190,92 @@ export class BlobComponent {
     return Math.round(amount)
   }
 
+  makeBlob () {
+    this.setAnglesRange(this.numbers, this.angles)
+    this.rangles = this.randomizeAngles(this.angles)
+    this.lengths = this.getrandomLenght()
+    this.points = this.getpolarPoints(this.rangles, this.lengths)
+    this.vectors = this.getVectorPoints(this.points, this.rangles, this.pump)
+    return this.compileCurveData(this.points, this.vectors)
+  }
+
+  drawvectors (data, graphics) {
+    graphics.clear()
+    graphics.lineStyle(2, '0x00ffff')
+    data.forEach((vertex, index) => {
+      const p = vertex.p
+      let cp2 = 0
+      const cp = vertex.cp
+      if (index < this.numbers - 1) {
+        cp2 = data[index + 1].cp2
+      }
+      if (index === this.numbers - 1) {
+        cp2 = data[0].cp2
+      }
+
+      graphics.moveTo(cp.x, cp.y)
+      graphics.lineTo(cp2.x, cp2.y)
+      graphics.beginFill('0x00ffff')
+      graphics.drawCircle(p.x, p.y, 8, 8)
+      graphics.drawCircle(cp.x, cp.y, 3, 3)
+      graphics.drawCircle(cp2.x, cp2.y, 3, 3)
+    })
+    graphics.endFill()
+  }
+
+  drawCurve (data, graphics) {
+    graphics.clear()
+    graphics.beginFill(0xffffff)
+    graphics.moveTo(data[this.numbers - 1].p.x, data[this.numbers - 1].p.y)
+    data.forEach((c, index) => {
+      graphics.bezierCurveTo(c.cp2.x, c.cp2.y, c.cp.x, c.cp.y, c.p.x, c.p.y)
+      // this.drawPoints(this.points, this.shape)
+      // this.drawVectorPoints(this.vectors, this.shape)
+    })
+    graphics.closePath()
+    graphics.endFill()
+  }
+
+  drawBlob (shape, shape2) {
+    const data = this.curvedata
+    autoPlay(true)
+
+    if (this.prevdata === null) {
+      this.drawCurve(data, shape)
+      this.drawvectors(data, shape2)
+      // this.drawPoints(this.points, this.shape)
+      // this.drawVectorPoints(this.vectors, this.shape)
+    } else {
+      console.log('newblob')
+      const coords = [...this.prevdata]
+      const tween = new Tween(coords)
+      tween.to(data, 1000)
+      tween.on('update', p => {
+        this.drawCurve(p, shape)
+        this.drawvectors(p, shape2)
+      })
+      tween.start()
+      // this.prevdata = data
+    }
+    // this.prevdata = data
+    // this.prevdata = data
+    // this.drawCurve(data, shape)
+  }
+
   onTick (delta) {
+    if (this.blob.active) {
+      this.prevdata = this.curvedata
+      this.curvedata = this.makeBlob()
+      this.blob.active = false
+      // this.prevdata =
+      // this.drawCurve(this.curvedata, this.blob)
+    }
+    this.drawBlob(this.blob, this.shape)
+    // setInterval(() => {
+    //   this.makeBlob()
+    //   this.drawCurve(this.curvedata, this.blob)
+    //   // console.log('hello')
+    // }, 3000)
     this.time++
   }
 }

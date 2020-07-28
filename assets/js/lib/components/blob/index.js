@@ -1,17 +1,19 @@
 import TWEEN from '@tweenjs/tween.js'
-import { Tween, autoPlay } from 'es6-tween'
+import { Tween, autoPlay, Easing } from 'es6-tween'
 
 export class BlobComponent {
   constructor (app, config = {}) {
     this.defaults = {
-
+      interactive: true,
+      debug: true
     }
+
     this.config = Object.assign(this.defaults, config)
     this.time = 0
 
     app.ticker.add(delta => this.onTick(delta))
     this.numbers = 6
-    this.pump = 30
+    this.pump = 40
     this.gap = 20
     this.angles = []
     // this.curvedata = 0
@@ -25,7 +27,7 @@ export class BlobComponent {
     this.blob.interactive = true
     this.blob.on('pointerdown', this.mousedown)
     this.blob.on('pointerup', this.mouseup)
-    // this.drawCurve(this.curvedata, this.blob)
+    this.drawCurve(this.curvedata, this.blob)
     this.parent.addChild(this.blob)
     // this.tween = new Tween(this.curvedata)
     // this.tween.from(this.curvedata)
@@ -239,20 +241,23 @@ export class BlobComponent {
   drawBlob (shape, shape2) {
     const data = this.curvedata
     autoPlay(true)
+    // console.log(Easing.Elastic)
 
     if (this.prevdata === null) {
       this.drawCurve(data, shape)
-      this.drawvectors(data, shape2)
+      if (this.config.debug) this.drawvectors(data, shape2)
       // this.drawPoints(this.points, this.shape)
       // this.drawVectorPoints(this.vectors, this.shape)
     } else {
-      console.log('newblob')
       const coords = [...this.prevdata]
+
       const tween = new Tween(coords)
       tween.to(data, 1000)
+
+      tween.easing(Easing.Elastic.InOut(5, 5))
       tween.on('update', p => {
         this.drawCurve(p, shape)
-        this.drawvectors(p, shape2)
+        if (this.config.debug) this.drawvectors(p, shape2)
       })
       tween.start()
       // this.prevdata = data
@@ -263,19 +268,15 @@ export class BlobComponent {
   }
 
   onTick (delta) {
-    if (this.blob.active) {
-      this.prevdata = this.curvedata
-      this.curvedata = this.makeBlob()
-      this.blob.active = false
-      // this.prevdata =
-      // this.drawCurve(this.curvedata, this.blob)
+    if (this.config.interactive) {
+      if (this.blob.active) {
+        this.prevdata = this.curvedata
+        this.curvedata = this.makeBlob()
+        this.blob.active = false
+      }
+      this.drawBlob(this.blob, this.shape)
     }
-    this.drawBlob(this.blob, this.shape)
-    // setInterval(() => {
-    //   this.makeBlob()
-    //   this.drawCurve(this.curvedata, this.blob)
-    //   // console.log('hello')
-    // }, 3000)
+
     this.time++
   }
 }

@@ -1,7 +1,8 @@
 import * as PIXI from 'pixi.js'
 import { SVG } from 'pixi-svg'
 import { Tween, Easing, autoPlay } from 'es6-tween'
-import { TWEEN } from '@tweenjs/tween.js'
+// import { TWEEN } from '@tweenjs/tween.js'
+
 import { MouseComponent } from 'components/mouse'
 import { CameraComponent } from 'components/camera'
 import { ColorPalette } from 'components/colors'

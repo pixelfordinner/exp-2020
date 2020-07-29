@@ -1,11 +1,12 @@
-import TWEEN from '@tweenjs/tween.js'
-import { Tween, autoPlay, Easing } from 'es6-tween'
+// import TWEEN from '@tweenjs/tween.js'
+import { Tween, Easing, autoPlay } from 'es6-tween'
 
 export class BlobComponent {
   constructor (app, config = {}) {
     this.defaults = {
-      interactive: true,
-      debug: true
+      interactive: false,
+      debug: false,
+      addtoparent: false
     }
 
     this.config = Object.assign(this.defaults, config)
@@ -28,7 +29,7 @@ export class BlobComponent {
     this.blob.on('pointerdown', this.mousedown)
     this.blob.on('pointerup', this.mouseup)
     this.drawCurve(this.curvedata, this.blob)
-    this.parent.addChild(this.blob)
+    if (this.config.addtoparent) this.parent.addChild(this.blob)
     // this.tween = new Tween(this.curvedata)
     // this.tween.from(this.curvedata)
     // this.tween.to(this.curvedata2)

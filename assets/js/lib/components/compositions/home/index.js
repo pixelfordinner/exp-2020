@@ -47,7 +47,7 @@ export class HomeComposition {
     const flower4 = new FlowerComponent(app, { parent: this.parent, y: 530, x: 1450, z: 220 })
     // const blob = new BlobComponent(app, { parent: this.parent })
 
-    this.cave = new CaveComponent(app, { parent: this.parent })
+    // this.cave = new CaveComponent(app, { parent: this.parent })
     // const flower35 = new FlowerComponent(app, { parent: this.parent, y: 500, x: 1450, z: 120 })
     // const palm = new PalmTreeComponent(app, { x: -this.bounds.maxWidth / 1.9, y: -300, z: 10, parent: this.parent, scale: 3 })
     // const palm2 = new PalmTreeComponent(app, { x: this.bounds.maxWidth / 2 + 1600, y: 400, z: 900, parent: this.parent, scale: 5 })

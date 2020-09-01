@@ -56,6 +56,7 @@
     "glslify-loader": "^2.0.0",
     "pixi-svg": "^2.2.0",
     "pixi.js": "^5.2.0",
+    "pixi3d": "^0.6.0",
     "raw-loader": "^4.0.1",
     "rollup-plugin-glslify": "^1.2.0",
     "save": "^2.4.0"

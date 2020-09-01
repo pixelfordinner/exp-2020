@@ -6,7 +6,7 @@ export class MouseComponent {
     this.app = app
     this.pos = new PIXI.Point()
     this.WorldPos = new PIXI.Point()
-    this.initShape()
+    // this.initShape()
     this.amp = 100
     this.setup()
   }
@@ -38,13 +38,13 @@ export class MouseComponent {
     return new PIXI.Point(parallaxH, parallaxV)
   }
 
-  isIn () {
-    if (this.pos.x >= 0) {
-      return true
-    } else {
-      return false
-    }
-  }
+  // isIn () {
+  //   if (this.pos.x >= 0) {
+  //     return true
+  //   } else {
+  //     return false
+  //   }
+  // }
 
   initShape () {
     this.shape = new PIXI.Graphics()
@@ -95,12 +95,21 @@ export class MouseComponent {
     return this.val
   }
 
+  onbounds () {
+    let inside = false
+    if (this.pos.x > 0 && this.pos.x < this.app.screen.width && this.pos.y > 0 && this.pos.y < this.app.screen.height) {
+      inside = true
+    }
+    return inside
+  }
+
   onTick (delta) {
     this.time += 0.1
     this.getpos()
     this.getWorldpos()
-    this.shape.x = this.pos.x
-    this.shape.y = this.pos.y
-    this.drawShape()
+
+    // this.shape.x = this.pos.x
+    // this.shape.y = this.pos.y
+    // this.drawShape()
   }
 }

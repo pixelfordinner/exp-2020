@@ -49,7 +49,7 @@ window.addEventListener('resize', resize)
 function resize () {
   camera.onResize()
   console.log('resize')
-  // app.renderer.resolution = window.devicePixelRatio
+  app.renderer.resolution = window.devicePixelRatio
 }
 
-resize()
+// resize()

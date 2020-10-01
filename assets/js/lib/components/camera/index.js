@@ -17,6 +17,7 @@ export class CameraComponent {
     this.camera.position.set(this.app.screen.width / 2, this.app.screen.height / 2)
     this.camera.position3d.z = -30
     this.camera.setPlanes(450, 100, 10000)
+    this.app.stage.addChild(this.camera)
 
     this.mouse = this.config.mouse
   }

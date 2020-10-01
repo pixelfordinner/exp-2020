@@ -6,7 +6,7 @@ export class MouseComponent {
     this.app = app
     this.pos = new PIXI.Point()
     this.WorldPos = new PIXI.Point()
-    // this.initShape()
+    this.initShape()
     this.amp = 100
     this.setup()
   }
@@ -16,6 +16,11 @@ export class MouseComponent {
   }
 
   getpos () {
+    // console.log(this.app.renderer)
+
+    // this.pos = new PIXI.InteractionManager(this.app.renderer).mouse.global
+    console.log(this.pos)
+
     this.pos = this.app.renderer.plugins.interaction.mouse.global
   }
 
@@ -108,8 +113,8 @@ export class MouseComponent {
     this.getpos()
     this.getWorldpos()
 
-    // this.shape.x = this.pos.x
-    // this.shape.y = this.pos.y
-    // this.drawShape()
+    this.shape.x = this.pos.x
+    this.shape.y = this.pos.y
+    this.drawShape()
   }
 }

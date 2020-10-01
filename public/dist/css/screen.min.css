@@ -178,6 +178,7 @@ body {
   width: 100%;
   min-width: 320px;
   max-width: 1920px;
+  height: 100%;
   margin-right: auto;
   margin-left: auto;
   overflow-x: hidden;
@@ -206,5 +207,4 @@ svg {
   display: block;
   width: 100vw;
   height: 100vh;
-  height: var(--vh100);
 }

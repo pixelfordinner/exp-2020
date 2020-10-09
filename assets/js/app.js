@@ -11,7 +11,7 @@ import { SceneComponent } from 'components/scene'
 import { HomeComposition } from 'components/compositions/home'
 import { KarlPerfil } from 'components/compositions/perfils/karl'
 
-import { ImageTexture } from 'components/image3d'
+import { ImageTexture } from 'components/textures/image3d'
 
 global.PIXI = PIXI
 window.PIXI = PIXI
@@ -35,10 +35,11 @@ const app = new PIXI.Application({
 const mouse = new MouseComponent(app)
 const camera = new CameraComponent(app, { mouse: mouse })
 
-const palette = new ColorPalette(app, { nightMode: false, animate: true })
+const palette = new ColorPalette(app, { nightMode: false, animate: false })
 const scene = new SceneComponent(app, { camera: camera, palette: palette, mouse: mouse })
 
-const composition = new HomeComposition(app, { parent: scene })
+// const composition = new HomeComposition(app, { parent: scene })
+
 // const mesh = app.stage.addChild(PIXI3D.Mesh3D.createCube())
 
 /// ////////////////////////////////////////////////////////////

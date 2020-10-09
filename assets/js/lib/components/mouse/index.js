@@ -4,8 +4,8 @@ import { Tools } from 'objects/tools/geometry'
 export class MouseComponent {
   constructor (app) {
     this.app = app
-    this.pos = new PIXI.Point()
-    this.WorldPos = new PIXI.Point()
+    this.pos = new PIXI.Point(0, 0)
+    this.WorldPos = new PIXI.Point(0, 0)
     this.initShape()
     this.amp = 100
     this.setup()
@@ -19,7 +19,7 @@ export class MouseComponent {
     // console.log(this.app.renderer)
 
     // this.pos = new PIXI.InteractionManager(this.app.renderer).mouse.global
-    console.log(this.pos)
+    // console.log(this.pos)
 
     this.pos = this.app.renderer.plugins.interaction.mouse.global
   }

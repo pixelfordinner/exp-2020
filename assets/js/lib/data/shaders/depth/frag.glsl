@@ -90,7 +90,9 @@ float fbm(vec2 p){
     vec4 image = texture2D(img,pos + displacement) ;
     vec4 next_image = texture2D(next_img,pos+displacement ) ;
 
-    float factor = (cos(time*2.))*0.5 + 0.5;
+    float factor = (cos(time*10.))*0.5 + 0.5;
+    //factor *=2.;
+
 
     float transition = smoothstep(0.,1.,factor);
 

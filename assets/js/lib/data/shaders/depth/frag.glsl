@@ -9,19 +9,20 @@
   uniform vec2 u_mouse;
   uniform float u_time;
 
-  uniform sampler2D img;
+  uniform sampler2D img_0;
+  uniform sampler2D map_0;
 
 
-  uniform sampler2D map;
-    uniform sampler2D next_img;
-  uniform sampler2D prev_img;
+  uniform sampler2D img_1;
+  uniform sampler2D map_1;
 
   // specifices uniforms
 
   uniform float isdepth;
   uniform float myindex;
+  uniform float u_progression;
 
-  float isfading = 1.;
+  float isfading = 0.;
 
   ///// NOISE /////
 float hash( float n ) {
@@ -55,8 +56,9 @@ float fbm(vec2 p){
 
   float clouds (vec2 uv, float time) {
    // float n = noise(uv + vec2(0.,time));
-  time*= 2.;
-    uv.x += time;
+  time*= 5.;
+    uv.x -= time;
+    //uv.y += time*0.2;
     float nuv = fbm( uv );
     uv.x += nuv * 0.7 * fbm(uv + vec2(0., cos(time)*3.));
     uv.y -= nuv * 1.3 * fbm(4.+uv + vec2( sin(time)*3., 0.));
@@ -67,53 +69,8 @@ float fbm(vec2 p){
 
   }
 
+  vec4 effect( vec2 uv, vec2 pos,float time,float mask, float mask2, vec4 image, vec4 color){
 
-
-  void main() {
-
-    vec2 pos = vpos * vec2(0.5,-.5) + vec2(.5);
-
-
-
-    vec2 displacement = u_mouse *  texture2D(map,pos).x * 0.02;
-    // no displacement is isdepth condition is 0.
-    // cf: isdepth_location in components/textures/image3d
-
-    if ( isdepth < 0.5 || isfading > 0.) {
-      displacement = vec2(0.0);
-    }
-
-    vec2 uv = pos + displacement;
-    float time = u_time * 0.25 ;
-
-    vec4 filter =  texture2D(map, pos + displacement);
-    vec4 image = texture2D(img,pos + displacement) ;
-    vec4 next_image = texture2D(next_img,pos+displacement ) ;
-
-    float factor = (cos(time*10.))*0.5 + 0.5;
-    //factor *=2.;
-
-
-    float transition = smoothstep(0.,1.,factor);
-
-    vec4 trans_img = mix(image,next_image,transition);
-
-    image = trans_img;
-
-
-
-
-    float depth = filter.r;
-    float mask  = filter.g;
-    float mask2 = filter.b;
-
-    //float particles = 1. -smoothstep(0.0,0.003, length(uv - ( vec2(0.5, 0.4)+0.02* vec2(cos(pos.x + time), sin(pos.y + time * 0.3))) ));
-
-    vec4 color = image ;
-
-
-    if( isfading < 0.5){
-// make light rays
     float rays =  3. * cos( time + uv.x * 5. - uv.y * 3.) * cos(-1. * time + uv.x * 10. - uv.y * 6.) + sin(time * 0.5 + uv.x * 100. - uv.y * 60.) * 2. * uv.y;
     rays = max(0. , rays);
     rays = min(1., rays);
@@ -127,7 +84,7 @@ float fbm(vec2 p){
     float period = cos(2.*time + (-1. + pos.x) * 5.) -1.;
     glights = 1. - glights ;
     glights -= mask;
-    glights += image.b * 2.;
+    glights += image.b * 3.;
     // masking
     glights -= smoothstep (0.8, 0.0, pos.y);
     glights = max(0., glights + period) ;
@@ -140,39 +97,85 @@ float fbm(vec2 p){
      cloud /= 2.;
      cloud = pow(cloud, 3.);
      cloud -= 1.-clouds(uv * 5., time)*0.2;
+
     // masking
-     cloud -= mask;
+     cloud -= mask*2.;
      float cmask = smoothstep( 0.0,0.6, length(uv.y - 0.6));
-     //cloud -= cmask*4.;
+     cloud -= cmask*4.;
      cloud = min(1., cloud);
      float resitant = cloud *0.25;
      cloud = max ( 0., cloud + period);
      cloud += resitant;
-
-     cloud -= cmask*10.;
      cloud = max(cloud, 0.);
      cloud = min(cloud, 1.);
 
     // lighning effect
-    color.xyz += max( 0., glights ) * vec3(0.9, 0.8, 0.7) *0.3;
-    color.xyz += max( 0., lightrays ) * vec3(0.9, 0.8, 0.7) * 0.17;
+    color.xyz += max( 0., glights ) * vec3(0.9, 0.8, 0.7) *0.2;
+    color.xyz += max( 0., lightrays ) * vec3(0.9, 0.8, 0.7) * 0.15;
+    color.xyz += vec3(cloud)*0.1;
 
-    color.xyz += vec3(cloud)*0.15;
 
-    // depth curves
-    float focallight = smoothstep (0.5, 1.1, depth);
-    color.xyz = pow( color.xyz , 0.6 * vec3( 1.7 * 1. - focallight));
-
-    // vigneting
     float vigneting = smoothstep(0.7, 1.0, (length(length(.55 * uv * uv) - vec2(0.))));
-    color.xyz -= vigneting * 0.06;
 
+
+
+
+    color.xyz -= vigneting * 0.07;
+
+    color = pow(color, vec4(1.05));
+    return color;
+  }
+
+
+
+  void main() {
+
+    vec2 pos = vpos * vec2(0.5,-.5) + vec2(.5);
+
+    float depth = texture2D(map_0,pos).r;
+    float n_depth =  texture2D(map_1,pos).r;
+
+    float time = u_time * 0.125 ;
+    float factor = u_progression;
+    factor = smoothstep(0.333, 0.666, factor);
+    float final_depth = mix(depth, n_depth, factor);
+
+    vec2 displacement = u_mouse  *  final_depth * vec2(0.012, 0.015);
+    vec2 uv = pos + displacement;
+    float intensity = 0.05;
+
+    float displacement_out = factor * ( 2.*length(   uv.y ) *final_depth * intensity );
+    vec4 filter =  texture2D(map_0, uv + vec2(0.,-displacement_out ));
+    vec4 image =   texture2D(img_0,uv + vec2(0.,-displacement_out )) ;
+
+    float displacement_in = (1.- factor) * (2.*length(   uv.y ) * final_depth* intensity );
+    vec4 next_image = texture2D(img_1,uv + vec2(0., -displacement_in ) ) ;
+    vec4 next_filter = texture2D(map_1, uv + vec2(0., -displacement_in )) ;
+
+
+    image = mix(image, next_image, factor);
+    filter = mix(filter, next_filter, factor);
+
+    float mask = filter.g;
+    float mask2 = filter.b;
+
+    vec4 color = image;
+    color = effect(uv,pos, time, mask, mask2, image, color);
+
+    gl_FragColor = color;
+
+    if(u_progression >= 1.){
+
+      vec4 tpimage = image;
+      vec4 tpfilter = filter;
+
+      image = next_image;
+      filter = next_filter;
+
+      next_image = tpimage;
+      next_filter = tpfilter;
 
     }
 
-
-
-    gl_FragColor = color ;
-   // gl_FragColor =  vec4(vec3(cloud), 1.);
 
   }

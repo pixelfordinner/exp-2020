@@ -11,7 +11,7 @@ import { SceneComponent } from 'components/scene'
 import { HomeComposition } from 'components/compositions/home'
 import { KarlPerfil } from 'components/compositions/perfils/karl'
 
-import { ImageTexture } from 'components/textures/image3d'
+import { glImage } from 'components/textures/glbuffer'
 
 global.PIXI = PIXI
 window.PIXI = PIXI
@@ -35,8 +35,10 @@ const app = new PIXI.Application({
 const mouse = new MouseComponent(app)
 const camera = new CameraComponent(app, { mouse: mouse })
 
-const palette = new ColorPalette(app, { nightMode: false, animate: false })
+const palette = new ColorPalette(app, { nightMode: true, animate: false })
 const scene = new SceneComponent(app, { camera: camera, palette: palette, mouse: mouse })
+
+app.renderer.backgroundColor = '0x463D3F'
 
 // const composition = new HomeComposition(app, { parent: scene })
 
@@ -80,8 +82,10 @@ const scene = new SceneComponent(app, { camera: camera, palette: palette, mouse:
 // app.stage.filters = [filter]
 //
 /// ////////////////////////////////////
-const texture = new ImageTexture(app, { mouse: mouse, palette: palette, width: 1500, height: 1000, zindex: 0 })
+const texture = new glImage(app, { mouse: mouse, palette: palette, width: 1000, height: 666, zindex: 0 })
 const frame = new PIXI.Sprite.from(texture.texture)
+frame.pivot.set(500, 333)
+frame.position.set(canvas.width / 2, canvas.height / 2)
 // frame.scale.set(1.5, 1)//
 app.stage.addChild(frame)
 /// /////////////////////////////

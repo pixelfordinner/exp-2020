@@ -51,12 +51,12 @@ export class ImageTexture {
     this.positionAttributeLocation = this.gl.getAttribLocation(this.shader, 'a_position')
 
     this.positionBuffer = this.gl.createBuffer()
-    // this.vertices = [-1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, 1]
+    this.vertices = [-1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, 1]
 
     this.w = 1
     this.h = 1
 
-    this.vertices = this.createPlane(this.w, this.h)
+    // this.vertices = this.createPlane(this.w, this.h)
 
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.positionBuffer)
     this.gl.bufferData(this.gl.ARRAY_BUFFER, new Float32Array(this.vertices), this.gl.STATIC_DRAW)
@@ -66,7 +66,8 @@ export class ImageTexture {
     this.gl.enableVertexAttribArray(this.positionAttributeLocation)
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.positionBuffer)
 
-    this.gl.vertexAttribPointer(this.positionAttributeLocation, 3, this.gl.FLOAT, false, 0, 0)
+    // this.gl.vertexAttribPointer(this.positionAttributeLocation, 3, this.gl.FLOAT, false, 0, 0)
+    this.gl.vertexAttribPointer(this.positionAttributeLocation, 2, this.gl.FLOAT, false, 0, 0)
 
     // set uniform locations
     // basics
@@ -76,8 +77,8 @@ export class ImageTexture {
 
     // specifics
 
-    this.isdepth_Location = this.gl.getUniformLocation(this.shader, 'isdepth')
-    this.index_Location = this.gl.getUniformLocation(this.shader, 'myindex')
+    this.progression_Location = this.gl.getUniformLocation(this.shader, 'u_progression')
+    // this.index_Location = this.gl.getUniformLocation(this.shader, 'myindex')
     // this.brightnessLocation = this.gl.getUniformLocation(this.shader, 'brightness')
 
     // const mpx = (this.mouse.pos.x - this.canvas.width / 2) / this.canvas.width
@@ -88,7 +89,7 @@ export class ImageTexture {
     this.gl.uniform2f(this.mouseLocation, 0, 0)
     this.gl.uniform1f(this.timeLocation, this.time)
     this.gl.uniform1f(this.isdepth_Location, 1.0)
-    this.gl.uniform1f(this.index_Location, 0.0)
+    this.gl.uniform1f(this.progression_Location, 1.0)
 
     // this.gl.uniform1f(this.brightnessLocation, this.config.brightness)
 
@@ -96,20 +97,33 @@ export class ImageTexture {
   }
 
   async init () {
+    this.collection = 'wood'
+    // this.index = 1
+
     this.img = new Image()
-    this.img.src = '/dist/images/wood.jpg'
+    this.img.src = '/dist/images/' + this.collection + '_' + 0 + '.jpg'
     await new Promise(resolve => { this.img.onload = resolve })
-    this.setTexture(this.img, 'img', 0, this.gl)
+    this.setTexture(this.img, 'img_0', 0, this.gl)
 
     this.map = new Image()
-    this.map.src = '/dist/images/wood-01-filter.jpg'
+    this.map.src = '/dist/images/' + this.collection + '_' + 0 + '_filter.jpg'
     await new Promise(resolve => { this.map.onload = resolve })
-    this.setTexture(this.map, 'map', 1, this.gl)
+    this.setTexture(this.map, 'map_0', 1, this.gl)
 
-    this.next_img = new Image()
-    this.next_img.src = '/dist/images/wood2.jpg'
-    await new Promise(resolve => { this.next_img.onload = resolve })
-    this.setTexture(this.next_img, 'next_img', 2, this.gl)
+    this.img = new Image()
+    this.img.src = '/dist/images/' + this.collection + '_' + 1 + '.jpg'
+    await new Promise(resolve => { this.img.onload = resolve })
+    this.setTexture(this.img, 'img_1', 2, this.gl)
+
+    this.map = new Image()
+    this.map.src = '/dist/images/' + this.collection + '_' + 1 + '_filter.jpg'
+    await new Promise(resolve => { this.map.onload = resolve })
+    this.setTexture(this.map, 'map_1', 3, this.gl)
+
+    // this.next_img = new Image()
+    // this.next_img.src = '/dist/images/wood2.jpg'
+    // await new Promise(resolve => { this.next_img.onload = resolve })
+    // this.setTexture(this.next_img, 'next_img', 2, this.gl)
 
     glMatrix.setMatrixArrayType(Array)
 
@@ -145,10 +159,14 @@ export class ImageTexture {
   onTick (delta) {
     this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT)
 
-    const mpx = (this.mouse.pos.x - this.canvas.width / 2) / this.canvas.width
-    const mpy = (this.mouse.pos.y - this.canvas.height / 2) / this.canvas.height
+    const mpx = (this.mouse.pos.x - (this.canvas.width / 2)) / this.canvas.width
+    const mpy = (this.mouse.pos.y - (this.canvas.height / 2)) / this.canvas.height
+
     this.gl.uniform2f(this.mouseLocation, mpx, mpy)
 
+    this.progression = Math.cos(this.time * 1.5) * 0.5 + 0.5
+
+    this.gl.uniform1f(this.progression_Location, this.progression)
     this.time += 0.01
     this.render()
     this.texture.update()

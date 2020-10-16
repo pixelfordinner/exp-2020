@@ -1,10 +1,12 @@
 
 import { Tools } from 'objects/tools/geometry'
+import { Tween, Easing, autoPlay } from 'es6-tween'
 
 export class MouseComponent {
   constructor (app) {
     this.app = app
     this.pos = new PIXI.Point(0, 0)
+    this.lastpos = new PIXI.Point(1, 1)
     this.WorldPos = new PIXI.Point(0, 0)
     this.initShape()
     this.amp = 100
@@ -85,20 +87,20 @@ export class MouseComponent {
     return this.val
   }
 
-  getMouseInfluenceX (refPoint, minD, maxD, minF, maxF) {
-    const mpx = this.pos.x - this.app.screen.width / 2
-    const mpy = this.pos.y - this.app.screen.height / 2
+  // getMouseInfluenceX (refPoint, minD, maxD, minF, maxF) {
+  //   const mpx = this.pos.x - this.app.screen.width / 2
+  //   const mpy = this.pos.y - this.app.screen.height / 2
 
-    const px = mpx - refPoint.x
-    const py = mpy - refPoint.y
-    const op = new PIXI.Point(px, py)
-    const lgth = Tools.getXlength(op)
-    // this.amp = lgth
+  //   const px = mpx - refPoint.x
+  //   const py = mpy - refPoint.y
+  //   const op = new PIXI.Point(px, py)
+  //   const lgth = Tools.getXlength(op)
+  //   // this.amp = lgth
 
-    this.val = Tools.map(lgth, minD, maxD, minF, maxF)
-    if (this.val < 0) this.val = 0
-    return this.val
-  }
+  //   this.val = Tools.map(lgth, minD, maxD, minF, maxF)
+  //   if (this.val < 0) this.val = 0
+  //   return this.val
+  // }
 
   onbounds () {
     let inside = false
@@ -113,8 +115,25 @@ export class MouseComponent {
     this.getpos()
     this.getWorldpos()
 
-    this.shape.x = this.pos.x
-    this.shape.y = this.pos.y
+    autoPlay(true) // simplify the your code
+
+    const pos = { x: this.lastpos.x, y: this.lastpos.y }
+
+    const tween = new Tween(pos)
+
+    tween.easing(Easing.Elastic.InOut(5, 0))
+
+      .to({ x: this.pos.x, y: this.pos.y }, 200)
+
+      .on('update', ({ x, y }) => {
+        this.lastpos.x = x
+        this.lastpos.y = y
+      })
+      .start()
+
+    this.shape.x = this.lastpos.x
+    this.shape.y = this.lastpos.y
+
     this.drawShape()
   }
 }

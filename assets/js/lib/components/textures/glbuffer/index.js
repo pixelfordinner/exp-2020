@@ -1,8 +1,9 @@
 // import { IriShader } from 'components/shader/iri'
 
+import { _tweensAddedDuringUpdate } from '@tweenjs/tween.js'
 import { depthShader } from 'components/shader/depth'
 
-import { mat4, glMatrix } from 'gl-matrix'
+import { Tween, Easing, autoPlay } from 'es6-tween'
 
 export class glImage {
   constructor (app, config = {}) {
@@ -17,11 +18,21 @@ export class glImage {
 
     this.app = app
     this.config = Object.assign(this.defaults, config)
-
+    this.indice = 0
+    this.next_indice = 0
     this.mouse = this.config.mouse
+    this.orientation = 0
+    this.prev_orientation = 0
+    this.isfading = false
+    this.progression_plus = 0
 
     this.width = this.config.width
     this.height = this.config.height
+
+    this.scroll = new PIXI.Point(0, 0)
+    this.scroll_density = new PIXI.Point(0, 0)
+    this.progression = 0
+    this.density = 500
     this.time = 1
     this.app.ticker.add(delta => this.onTick(delta))
     this.program = this.config.program
@@ -38,6 +49,10 @@ export class glImage {
 
     this.canvas.width = this.width
     this.canvas.height = this.height
+
+    console.log(this.canvas)
+
+    document.body.addEventListener('wheel', e => this.canvasOnScroll(e))
 
     this.ratio = this.canvas.width / this.canvas.height
 
@@ -88,25 +103,28 @@ export class glImage {
   async init () {
     this.collection = 'wood'
 
-    this.img = new Image()
-    this.img.src = '/dist/images/' + this.collection + '_' + 0 + '.jpg'
-    await new Promise(resolve => { this.img.onload = resolve })
-    this.setTexture(this.img, 'img_0', 0, this.gl)
+    this.images = []
+    this.filters = []
 
-    this.map = new Image()
-    this.map.src = '/dist/images/' + this.collection + '_' + 0 + '_filter.jpg'
-    await new Promise(resolve => { this.map.onload = resolve })
-    this.setTexture(this.map, 'map_0', 1, this.gl)
+    for (let i = 0; i < 2; i++) {
+      const img = new Image()
+      img.src = '/dist/images/' + this.collection + '_' + i + '.jpg'
+      await new Promise(resolve => { img.onload = resolve })
+      this.images.push(img)
 
-    this.img = new Image()
-    this.img.src = '/dist/images/' + this.collection + '_' + 1 + '.jpg'
-    await new Promise(resolve => { this.img.onload = resolve })
-    this.setTexture(this.img, 'img_1', 2, this.gl)
+      const map = new Image()
+      map.src = '/dist/images/' + this.collection + '_' + i + '_filter.jpg'
+      await new Promise(resolve => { map.onload = resolve })
+      this.filters.push(map)
+    }
 
-    this.map = new Image()
-    this.map.src = '/dist/images/' + this.collection + '_' + 1 + '_filter.jpg'
-    await new Promise(resolve => { this.map.onload = resolve })
-    this.setTexture(this.map, 'map_1', 3, this.gl)
+    this.setTexture(this.images[0], 'img_0', 0, this.gl)
+
+    this.setTexture(this.filters[0], 'map_0', 1, this.gl)
+
+    this.setTexture(this.images[1], 'img_1', 2, this.gl)
+
+    this.setTexture(this.filters[1], 'map_1', 3, this.gl)
   }
 
   render () {
@@ -117,17 +135,124 @@ export class glImage {
     this.gl.drawArrays(this.gl.TRIANGLES, 0, 6 * this.w * this.h)
   }
 
+  canvasOnScroll (e) {
+  //  console.log(e.deltaY)
+
+    // const sx = e.clientX
+
+    this.scroll.x = e.deltaX
+    this.scroll.y = e.deltaY
+
+    if (this.scroll.y > 0) {
+      this.orientation = 1
+    } else {
+      this.orientation = -1
+    }
+
+    if (this.scroll.y > 0 && this.scroll.y < this.density) {
+      // console.log('detect UP scroll')
+      this.scroll_density.x += this.scroll.y
+    }
+
+    if (this.scroll.y < 0 && this.scroll.y > -this.density) {
+      // console.log('detect DOWN scroll')
+      this.scroll_density.y += Math.abs(this.scroll.y)
+    }
+  }
+
+  canvasOnClick (e) {
+    // console.log(e)
+    console.log('click')
+  }
+
+  updatetransition (v) {
+    this.gl.uniform1f(this.progression_Location, v)
+  }
+
+  loadnextimage () {
+    if (this.orientation > 0) {
+      if (this.indice < this.images.length - 1) {
+        this.next_indice = this.indice + 1
+      } else {
+        this.next_indice = 0
+      }
+    }
+    console.log('next')
+    console.log(this.next_indice)
+    this.setTexture(this.images[this.next_indice], 'img_1', 2, this.gl)
+    this.setTexture(this.filters[this.next_indice], 'map_1', 3, this.gl)
+  }
+
   onTick (delta) {
     this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT)
 
-    const mpx = (this.mouse.pos.x - (this.canvas.width / 2)) / this.canvas.width
-    const mpy = (this.mouse.pos.y - (this.canvas.height / 2)) / this.canvas.height
+    const mpx = (this.mouse.shape.x - (this.canvas.width / 2)) / this.canvas.width
+    const mpy = (this.mouse.shape.y - (this.canvas.height / 2)) / this.canvas.height
 
     this.gl.uniform2f(this.mouseLocation, mpx, mpy)
 
-    this.progression = Math.cos(this.time * 1.5) * 0.5 + 0.5
+    if (this.progression > 0.9) {
+      if (this.isfading) {
+        this.indice++
+        const id = this.indice % 2
+        // const nid = (this.indice + 1) % 2
+        // console.log('indice')
+        // console.log(id)
+        // console.log(nid)
 
-    this.gl.uniform1f(this.progression_Location, this.progression)
+        // this.setTexture(this.images[nid], 'img_1', 2, this.gl)
+        // this.setTexture(this.filters[nid], 'map_1', 3, this.gl)
+
+        this.setTexture(this.images[id], 'img_0', 0, this.gl)
+        this.setTexture(this.filters[id], 'map_0', 1, this.gl)
+
+        this.isfading = false
+        // this.progression = 1
+        this.orientation = 0
+        this.prev_orientation = 0
+        this.progression_plus = 0
+        this.scroll_density.x = 0
+      }
+    }
+    if (this.progression > 0.9 && !this.isfading) {
+      const nid = (this.indice + 1) % 2
+      console.log('next_indice')
+      // console.log(id)
+      console.log(nid)
+
+      this.setTexture(this.images[nid], 'img_1', 2, this.gl)
+      this.setTexture(this.filters[nid], 'map_1', 3, this.gl)
+      this.progression = 0
+    }
+
+    autoPlay(true)
+    if (!this.isfading) {
+      this.progression_plus = this.scroll_density.x / 1000
+    }
+    console.log(this.progression_plus)
+    this.updatetransition(this.progression_plus)
+
+    const p = { x: this.progression }
+
+    if (this.progression_plus >= 0.1) {
+      // this.progression_plus = 0
+      this.isfading = true
+      this.tween = new Tween(p)
+      this.tween.to({ x: 1 }, 600)
+      this.tween.easing(Easing.Elastic.InOut(10, 0))
+      this.tween.on('update', x => {
+        this.progression = x.x
+      })
+      this.tween.start()
+      this.updatetransition(this.progression + 0.1)
+      // this.progression_plus = 0
+    } else {
+      // this.updatetransition(this.progression_plus)
+      if (this.scroll_density.x > 0) {
+        this.scroll_density.x -= 5
+      }
+    }
+
     this.time += 0.01
     this.render()
     this.texture.update()

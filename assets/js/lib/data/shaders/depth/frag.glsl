@@ -137,7 +137,7 @@ float fbm(vec2 p){
 
     float time = u_time * 0.125 ;
     float factor = u_progression;
-    factor = smoothstep(0.333, 0.666, factor);
+   // factor = smoothstep(0.0, 1.0, factor);
     float final_depth = mix(depth, n_depth, factor);
 
     vec2 displacement = u_mouse  *  final_depth * vec2(0.012, 0.015);
@@ -164,18 +164,7 @@ float fbm(vec2 p){
 
     gl_FragColor = color;
 
-    if(u_progression >= 1.){
 
-      vec4 tpimage = image;
-      vec4 tpfilter = filter;
-
-      image = next_image;
-      filter = next_filter;
-
-      next_image = tpimage;
-      next_filter = tpfilter;
-
-    }
 
 
   }

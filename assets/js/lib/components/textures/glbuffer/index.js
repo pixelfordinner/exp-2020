@@ -23,6 +23,7 @@ export class glImage {
     this.mouse = this.config.mouse
     this.orientation = 0
     this.prev_orientation = 0
+    this.set_next = false
     this.isfading = false
     this.progression_plus = 0
 
@@ -136,26 +137,20 @@ export class glImage {
   }
 
   canvasOnScroll (e) {
-  //  console.log(e.deltaY)
-
-    // const sx = e.clientX
-
     this.scroll.x = e.deltaX
     this.scroll.y = e.deltaY
+    this.prev_orientation = this.orientation
 
     if (this.scroll.y > 0) {
       this.orientation = 1
     } else {
       this.orientation = -1
     }
-
-    if (this.scroll.y > 0 && this.scroll.y < this.density) {
-      // console.log('detect UP scroll')
-      this.scroll_density.x += this.scroll.y
+    if (this.prev_orientation !== this.orientation) {
+      this.set_next = false
     }
 
-    if (this.scroll.y < 0 && this.scroll.y > -this.density) {
-      // console.log('detect DOWN scroll')
+    if (this.scroll.y < this.density && this.scroll.y > -this.density) {
       this.scroll_density.y += Math.abs(this.scroll.y)
     }
   }
@@ -183,59 +178,69 @@ export class glImage {
     this.setTexture(this.filters[this.next_indice], 'map_1', 3, this.gl)
   }
 
-  onTick (delta) {
-    this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT)
-
+  updatemouse () {
     const mpx = (this.mouse.shape.x - (this.canvas.width / 2)) / this.canvas.width
     const mpy = (this.mouse.shape.y - (this.canvas.height / 2)) / this.canvas.height
-
     this.gl.uniform2f(this.mouseLocation, mpx, mpy)
+  }
+
+  onTick (delta) {
+    this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT)
+    this.updatemouse()
+
+    // const mpx = (this.mouse.shape.x - (this.canvas.width / 2)) / this.canvas.width
+    // const mpy = (this.mouse.shape.y - (this.canvas.height / 2)) / this.canvas.height
+    // this.gl.uniform2f(this.mouseLocation, mpx, mpy)
+
+    if (this.progression > 0.0 && !this.set_next && !this.isfading) {
+      this.nid = 0
+      if (this.orientation > 0) {
+        this.nid = (this.indice + 1) % 2
+      } else {
+        this.nid = this.indice > 0 ? (this.indice - 1) % 2 : 1
+      }
+
+      this.setTexture(this.images[this.nid], 'img_1', 2, this.gl)
+      this.setTexture(this.filters[this.nid], 'map_1', 3, this.gl)
+      this.set_next = true
+    }
 
     if (this.progression > 0.9) {
       if (this.isfading) {
-        this.indice++
-        const id = this.indice % 2
-        // const nid = (this.indice + 1) % 2
-        // console.log('indice')
-        // console.log(id)
-        // console.log(nid)
+        const prev_indice = this.indice
+        if (this.orientation > 0.0) {
+          this.indice++
+        } else {
+          this.indice = this.indice > 0 ? this.indice - 1 : 1
+        }
+        console.log('new id: ' + this.indice + ' prev id: ' + prev_indice)
 
-        // this.setTexture(this.images[nid], 'img_1', 2, this.gl)
-        // this.setTexture(this.filters[nid], 'map_1', 3, this.gl)
+        const id = this.indice % 2
 
         this.setTexture(this.images[id], 'img_0', 0, this.gl)
         this.setTexture(this.filters[id], 'map_0', 1, this.gl)
 
         this.isfading = false
-        // this.progression = 1
         this.orientation = 0
         this.prev_orientation = 0
         this.progression_plus = 0
-        this.scroll_density.x = 0
+        this.scroll_density.y = 0
       }
     }
     if (this.progression > 0.9 && !this.isfading) {
-      const nid = (this.indice + 1) % 2
-      console.log('next_indice')
-      // console.log(id)
-      console.log(nid)
-
-      this.setTexture(this.images[nid], 'img_1', 2, this.gl)
-      this.setTexture(this.filters[nid], 'map_1', 3, this.gl)
       this.progression = 0
     }
 
     autoPlay(true)
-    if (!this.isfading) {
-      this.progression_plus = this.scroll_density.x / 1000
-    }
-    console.log(this.progression_plus)
-    this.updatetransition(this.progression_plus)
 
+    if (!this.isfading) {
+      this.progression_plus = this.scroll_density.y / 1000
+    }
+
+    this.updatetransition(this.progression_plus)
     const p = { x: this.progression }
 
     if (this.progression_plus >= 0.1) {
-      // this.progression_plus = 0
       this.isfading = true
       this.tween = new Tween(p)
       this.tween.to({ x: 1 }, 600)
@@ -245,11 +250,9 @@ export class glImage {
       })
       this.tween.start()
       this.updatetransition(this.progression + 0.1)
-      // this.progression_plus = 0
     } else {
-      // this.updatetransition(this.progression_plus)
-      if (this.scroll_density.x > 0) {
-        this.scroll_density.x -= 5
+      if (this.scroll_density.y > 0) {
+        this.scroll_density.y -= 5
       }
     }
 

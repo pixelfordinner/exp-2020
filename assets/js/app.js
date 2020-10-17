@@ -88,6 +88,9 @@ frame.pivot.set(600, 400)
 frame.position.set(canvas.width / 2, canvas.height / 2)
 // frame.scale.set(1.5, 1)//
 app.stage.addChild(frame)
+app.stage.interactive = true
+
+app.stage.on('pointermove', mouse.setpos)//
 /// /////////////////////////////
 // window.onmousemove = function (e) {
 //   filter.scale.x = (window.innerWidth / 2 - e.clientX) / 30

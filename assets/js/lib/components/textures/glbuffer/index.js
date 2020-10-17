@@ -25,6 +25,9 @@ export class glImage {
     this.prev_orientation = 0
     this.set_next = false
     this.isfading = false
+
+    this.progression = 0
+    this.density = 500
     this.progression_plus = 0
 
     this.width = this.config.width
@@ -32,14 +35,38 @@ export class glImage {
 
     this.scroll = new PIXI.Point(0, 0)
     this.scroll_density = new PIXI.Point(0, 0)
-    this.progression = 0
-    this.density = 500
+
     this.time = 1
     this.app.ticker.add(delta => this.onTick(delta))
     this.program = this.config.program
 
     this.canvas = document.createElement('canvas')
+    this.initCanvas()
+    this.initShaders()
 
+    this.initTextures()
+  }
+
+  initShaders () {
+    // set uniform locations
+    // basics
+    this.resolutionLocation = this.gl.getUniformLocation(this.shader, 'u_resolution')
+    this.mouseLocation = this.gl.getUniformLocation(this.shader, 'u_mouse')
+    this.timeLocation = this.gl.getUniformLocation(this.shader, 'u_time')
+
+    // specifics
+
+    this.progression_Location = this.gl.getUniformLocation(this.shader, 'u_progression')
+
+    // set uniform values
+    this.gl.uniform2f(this.resolutionLocation, this.gl.canvas.width, this.gl.canvas.height)
+    this.gl.uniform2f(this.mouseLocation, 0, 0)
+    this.gl.uniform1f(this.timeLocation, this.time)
+    this.gl.uniform1f(this.isdepth_Location, 1.0)
+    this.gl.uniform1f(this.progression_Location, 1.0)
+  }
+
+  initCanvas () {
     this.gl = this.canvas.getContext('webgl')
     if (!this.gl) {
       return
@@ -80,28 +107,9 @@ export class glImage {
     this.gl.enableVertexAttribArray(this.positionAttributeLocation)
     this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.positionBuffer)
     this.gl.vertexAttribPointer(this.positionAttributeLocation, 2, this.gl.FLOAT, false, 0, 0)
-
-    // set uniform locations
-    // basics
-    this.resolutionLocation = this.gl.getUniformLocation(this.shader, 'u_resolution')
-    this.mouseLocation = this.gl.getUniformLocation(this.shader, 'u_mouse')
-    this.timeLocation = this.gl.getUniformLocation(this.shader, 'u_time')
-
-    // specifics
-
-    this.progression_Location = this.gl.getUniformLocation(this.shader, 'u_progression')
-
-    // set uniform values
-    this.gl.uniform2f(this.resolutionLocation, this.gl.canvas.width, this.gl.canvas.height)
-    this.gl.uniform2f(this.mouseLocation, 0, 0)
-    this.gl.uniform1f(this.timeLocation, this.time)
-    this.gl.uniform1f(this.isdepth_Location, 1.0)
-    this.gl.uniform1f(this.progression_Location, 1.0)
-
-    this.init()
   }
 
-  async init () {
+  async initTextures () {
     this.collection = 'wood'
 
     this.images = []
@@ -120,11 +128,8 @@ export class glImage {
     }
 
     this.setTexture(this.images[0], 'img_0', 0, this.gl)
-
     this.setTexture(this.filters[0], 'map_0', 1, this.gl)
-
     this.setTexture(this.images[1], 'img_1', 2, this.gl)
-
     this.setTexture(this.filters[1], 'map_1', 3, this.gl)
   }
 

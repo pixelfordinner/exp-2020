@@ -6,7 +6,7 @@ export class MouseComponent {
   constructor (app) {
     this.app = app
     this.pos = new PIXI.Point(0, 0)
-    this.pointerpos = this.pos
+    // this.pointerpos = this.pos
     this.lastpos = new PIXI.Point(1, 1)
     this.WorldPos = new PIXI.Point(0, 0)
     this.interactions = new PIXI.InteractionManager(this.app.renderer)
@@ -17,23 +17,17 @@ export class MouseComponent {
 
   setup () {
     this.app.ticker.add(delta => this.onTick(delta))
+    this.app.stage.pointerpos = new PIXI.Point(0, 0),
+    this.app.stage.on('pointermove', this.setpos)
   }
 
   getpos () {
-    // console.log(this.app.renderer)
-
-    // this.pos = new PIXI.InteractionManager(this.app.renderer).mouse.global
-    // console.log(this.pos)
-    // this.pos = this.pointerpos
-    this.pos = this.interactions.mouse.global
+    // this.pos = this.interactions.mouse.global
+    this.pos = this.app.stage.pointerpos
   }
 
   setpos (e) {
-    // console.log(e.data.global)
-    // return e.data.global
-    // this.mouse_pos = e.data.global
     this.pointerpos = e.data.global
-    console.log(this.pointerpos)
   }
 
   getWorldpos () {

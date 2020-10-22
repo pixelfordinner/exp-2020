@@ -32,7 +32,11 @@ const app = new PIXI.Application({
   antialias: true
 })
 // app.renderer.resolution = window.devicePixelRatio
+
+app.stage.interactive = true
+
 const mouse = new MouseComponent(app)
+
 const camera = new CameraComponent(app, { mouse: mouse })
 
 const palette = new ColorPalette(app, { nightMode: true, animate: false })
@@ -82,15 +86,15 @@ app.renderer.backgroundColor = '0x463D3F'
 // app.stage.filters = [filter]
 //
 /// ////////////////////////////////////
-const texture = new glImage(app, { mouse: mouse, palette: palette, width: 1200, height: 800, zindex: 0 })
+const texture = new glImage(app, { mouse: mouse, palette: palette, width: 1200, height: 800, zindex: 0, univers: 'garden' })
 const frame = new PIXI.Sprite.from(texture.texture)
 frame.pivot.set(600, 400)
 frame.position.set(canvas.width / 2, canvas.height / 2)
 // frame.scale.set(1.5, 1)//
 app.stage.addChild(frame)
-app.stage.interactive = true
+// app.stage.interactive = true
 
-app.stage.on('pointermove', mouse.setpos)//
+// app.stage.on('pointermove', mouse.setpos)//
 /// /////////////////////////////
 // window.onmousemove = function (e) {
 //   filter.scale.x = (window.innerWidth / 2 - e.clientX) / 30

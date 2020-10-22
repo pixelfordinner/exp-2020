@@ -56,8 +56,8 @@ float fbm(vec2 p){
 
   float clouds (vec2 uv, float time) {
    // float n = noise(uv + vec2(0.,time));
-  time*= 5.;
-    uv.x -= time;
+    time*= 5.;
+    uv.x += time;
     //uv.y += time*0.2;
     float nuv = fbm( uv );
     uv.x += nuv * 0.7 * fbm(uv + vec2(0., cos(time)*3.));

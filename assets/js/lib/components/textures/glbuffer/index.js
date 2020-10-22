@@ -8,7 +8,8 @@ import { Tween, Easing, autoPlay } from 'es6-tween'
 export class glImage {
   constructor (app, config = {}) {
     this.defaults = {
-      program: new depthShader(app),
+      univers: 'forest',
+      // program: new depthShader(app, { univers: 'garden', hello: 1 }),
       width: 600,
       height: 600,
       scale: 1,
@@ -18,6 +19,7 @@ export class glImage {
 
     this.app = app
     this.config = Object.assign(this.defaults, config)
+
     this.indice = 0
     this.next_indice = 0
     this.mouse = this.config.mouse
@@ -38,12 +40,12 @@ export class glImage {
 
     this.time = 1
     this.app.ticker.add(delta => this.onTick(delta))
-    this.program = this.config.program
+    this.program = new depthShader(app, { univers: this.config.univers, hello: 1 })
 
     this.canvas = document.createElement('canvas')
+
     this.initCanvas()
     this.initShaders()
-
     this.initTextures()
   }
 
@@ -78,7 +80,7 @@ export class glImage {
     this.canvas.width = this.width
     this.canvas.height = this.height
 
-    console.log(this.canvas)
+    // console.log(this.canvas)
 
     document.body.addEventListener('wheel', e => this.canvasOnScroll(e))
 

@@ -86,7 +86,7 @@ app.renderer.backgroundColor = '0x463D3F'
 // app.stage.filters = [filter]
 //
 /// ////////////////////////////////////
-const texture = new glImage(app, { mouse: mouse, palette: palette, width: 1200, height: 800, zindex: 0, univers: 'garden' })
+const texture = new glImage(app, { mouse: mouse, palette: palette, width: 1200, height: 800, zindex: 0, collection: 'hills' })
 const frame = new PIXI.Sprite.from(texture.texture)
 frame.pivot.set(600, 400)
 frame.position.set(canvas.width / 2, canvas.height / 2)

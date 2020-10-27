@@ -110,7 +110,9 @@ float fbm(vec2 p){
 
     float time = u_time * 0.125 ;
     vec2 wind = vec2(0.0025*cos(20.*time+ pos.x * 20.), 0.);
-    wind*= 1.-mask2;
+    wind *= 1.-mask2;
+    wind *= 1.-mask;
+
     //wind -= n_mask;
    // wind *= 0.3;
 

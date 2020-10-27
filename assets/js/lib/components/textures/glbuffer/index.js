@@ -8,7 +8,7 @@ import { Tween, Easing, autoPlay } from 'es6-tween'
 export class glImage {
   constructor (app, config = {}) {
     this.defaults = {
-      univers: 'forest',
+      collection: 'wood',
       width: 600,
       height: 600,
       scale: 1,
@@ -39,7 +39,7 @@ export class glImage {
 
     this.time = 1
     this.app.ticker.add(delta => this.onTick(delta))
-    this.program = new depthShader(app, { univers: this.config.univers, hello: 1 })
+    this.program = new depthShader(app, { collection: this.config.collection, hello: 1 })
 
     this.canvas = document.createElement('canvas')
     // INI WEBGL CANVAS
@@ -113,7 +113,7 @@ export class glImage {
   }
 
   async initTextures () {
-    this.collection = 'garden'
+    this.collection = this.config.collection
 
     this.images = []
     this.filters = []
@@ -152,11 +152,13 @@ export class glImage {
 
     if (this.scroll.y > 0) {
       this.orientation = 1
+      this.set_next = true
     } else {
       this.orientation = -1
+      this.set_next = true
     }
     if (this.scroll.y != 0 && this.prev_orientation !== this.orientation) {
-      this.set_next = true
+      // this.set_next = true
       console.log('change orientation')
     }
 
@@ -184,7 +186,7 @@ export class glImage {
     this.updatemouse()
 
     // LOOK UP FOR NEXT IMAGE
-    if (this.progression > 0.1 && this.set_next && !this.isfading) {
+    if (this.progression > 0.0 && this.set_next && !this.isfading) {
       this.nid = 0
 
       if (this.orientation > 0) {
@@ -215,7 +217,8 @@ export class glImage {
         this.setTexture(this.filters[id], 'map_0', 1, this.gl)
 
         this.isfading = false
-        this.orientation = 0
+
+        // this.orientation = 0
         this.scroll_density.y = 0
       }
     }
@@ -226,7 +229,7 @@ export class glImage {
     autoPlay(true)
     // TRANSITION BETWEEN 2 IMAGES
     if (!this.isfading) {
-      this.progression_plus = this.scroll_density.y / 1000
+      this.progression_plus = this.scroll_density.y / 500
     }
 
     this.updatetransition(this.progression_plus)
@@ -235,7 +238,7 @@ export class glImage {
     if (this.progression_plus >= 0.1) {
       this.isfading = true
       this.tween = new Tween(p)
-      this.tween.to({ x: 1 }, 600)
+      this.tween.to({ x: 1 }, 400)
       this.tween.easing(Easing.Elastic.InOut(10, 0))
       this.tween.on('update', x => {
         this.progression = x.x

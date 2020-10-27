@@ -1,7 +1,7 @@
 export class depthShader {
   constructor (app, config = {}) {
     this.defaults = {
-      univers: 'forest'
+      collection: 'forest'
 
     }
 
@@ -11,16 +11,16 @@ export class depthShader {
 
     console.log(this.config)
 
-    switch (this.config.univers) {
-      case 'garden':
-        this.source = require('!raw-loader!data/shaders/wind/frag.glsl')
-        this.sourcev = require('!raw-loader!data/shaders/wind/vert.glsl')
+    switch (this.config.collection) {
+      case 'wood':
+        this.source = require('!raw-loader!data/shaders/sunray/frag.glsl')
+        this.sourcev = require('!raw-loader!data/shaders/sunray/vert.glsl')
 
         break
 
       default:
-        this.source = require('!raw-loader!data/shaders/sunray/frag.glsl')
-        this.sourcev = require('!raw-loader!data/shaders/sunray/vert.glsl')
+        this.source = require('!raw-loader!data/shaders/wind/frag.glsl')
+        this.sourcev = require('!raw-loader!data/shaders/wind/vert.glsl')
         break
     }
 

@@ -9,7 +9,6 @@ export class glImage {
   constructor (app, config = {}) {
     this.defaults = {
       univers: 'forest',
-      // program: new depthShader(app, { univers: 'garden', hello: 1 }),
       width: 600,
       height: 600,
       scale: 1,
@@ -112,12 +111,13 @@ export class glImage {
   }
 
   async initTextures () {
-    this.collection = 'wood'
+    this.collection = 'garden'
 
     this.images = []
     this.filters = []
+    this.max = 4
 
-    for (let i = 0; i < 2; i++) {
+    for (let i = 0; i < this.max; i++) {
       const img = new Image()
       img.src = '/dist/images/' + this.collection + '_' + i + '.jpg'
       await new Promise(resolve => { img.onload = resolve })
@@ -155,6 +155,7 @@ export class glImage {
     }
     if (this.prev_orientation !== this.orientation) {
       this.set_next = false
+      console.log('change orientation')
     }
 
     if (this.scroll.y < this.density && this.scroll.y > -this.density) {
@@ -171,19 +172,19 @@ export class glImage {
     this.gl.uniform1f(this.progression_Location, v)
   }
 
-  loadnextimage () {
-    if (this.orientation > 0) {
-      if (this.indice < this.images.length - 1) {
-        this.next_indice = this.indice + 1
-      } else {
-        this.next_indice = 0
-      }
-    }
-    console.log('next')
-    console.log(this.next_indice)
-    this.setTexture(this.images[this.next_indice], 'img_1', 2, this.gl)
-    this.setTexture(this.filters[this.next_indice], 'map_1', 3, this.gl)
-  }
+  // loadnextimage () {
+  //   if (this.orientation > 0) {
+  //     if (this.indice < this.images.length - 1) {
+  //       this.next_indice = this.indice + 1
+  //     } else {
+  //       this.next_indice = 0
+  //     }
+  //   }
+  //   console.log('next')
+  //   console.log(this.next_indice)
+  //   this.setTexture(this.images[this.next_indice], 'img_1', 2, this.gl)
+  //   this.setTexture(this.filters[this.next_indice], 'map_1', 3, this.gl)
+  // }
 
   updatemouse () {
     const mpx = (this.mouse.shape.x - (this.canvas.width / 2)) / this.canvas.width
@@ -202,9 +203,9 @@ export class glImage {
     if (this.progression > 0.0 && !this.set_next && !this.isfading) {
       this.nid = 0
       if (this.orientation > 0) {
-        this.nid = (this.indice + 1) % 2
+        this.nid = (this.indice + 1) % this.max
       } else {
-        this.nid = this.indice > 0 ? (this.indice - 1) % 2 : 1
+        this.nid = this.indice > 0 ? (this.indice - 1) % this.max : this.max - 1
       }
 
       this.setTexture(this.images[this.nid], 'img_1', 2, this.gl)
@@ -218,11 +219,11 @@ export class glImage {
         if (this.orientation > 0.0) {
           this.indice++
         } else {
-          this.indice = this.indice > 0 ? this.indice - 1 : 1
+          this.indice = this.indice > 0 ? this.indice - 1 : this.max - 1
         }
         console.log('new id: ' + this.indice + ' prev id: ' + prev_indice)
 
-        const id = this.indice % 2
+        const id = this.indice % this.max
 
         this.setTexture(this.images[id], 'img_0', 0, this.gl)
         this.setTexture(this.filters[id], 'map_0', 1, this.gl)

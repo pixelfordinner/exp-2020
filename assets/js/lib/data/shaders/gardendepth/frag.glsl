@@ -54,65 +54,30 @@ float fbm(vec2 p){
 
 
 
-  float clouds (vec2 uv, float time) {
-   // float n = noise(uv + vec2(0.,time));
-    time*= 5.;
-    uv.x += time;
-    //uv.y += time*0.2;
-    float nuv = fbm( uv );
-    uv.x += nuv * 0.7 * fbm(uv + vec2(0., cos(time)*3.));
-    uv.y -= nuv * 1.3 * fbm(4.+uv + vec2( sin(time)*3., 0.));
+  // float clouds (vec2 uv, float time) {
+  //  // float n = noise(uv + vec2(0.,time));
+  //   time*= 5.;
+  //   uv.x += time;
+  //   //uv.y += time*0.2;
+  //   float nuv = fbm( uv );
+  //   uv.x += nuv * 0.7 * fbm(uv + vec2(0., cos(time)*3.));
+  //   uv.y -= nuv * 1.3 * fbm(4.+uv + vec2( sin(time)*3., 0.));
 
-    float result = smoothstep(0.0, 0.99, fbm(uv));
-    return result;
-
-
-  }
-
-  vec4 effect( vec2 uv, vec2 pos,float time,float mask, float mask2, vec4 image, vec4 color){
-
-    float rays =  3. * cos( time + uv.x * 5. - uv.y * 3.) * cos(-1. * time + uv.x * 10. - uv.y * 6.) + sin(time * 0.5 + uv.x * 100. - uv.y * 60.) * 2. * uv.y;
-    rays = max(0. , rays);
-    rays = min(1., rays);
-
-    float lightrays = rays - mask ;
-    lightrays -= smoothstep(0.5, .7, pos.x );
-    lightrays -= smoothstep(0.0, .6,pos.y);
-
-// make ground reflexions
-    float glights = mask2 ;
-    float period = cos(2.*time + (-1. + pos.x) * 5.) -1.;
-    glights = 1. - glights ;
-    glights -= mask;
-    glights += image.b * 3.;
-    // masking
-    glights -= smoothstep (0.8, 0.0, pos.y);
-    glights = max(0., glights + period) ;
+  //   float result = smoothstep(0.0, 0.99, fbm(uv));
+  //   return result;
 
 
-// make foggy clouds
-    float cloud = 1.-clouds(pos * 9., time);
-     cloud += 1.-clouds(uv * 20., time)*0.7;
-     cloud += 1.-clouds(uv * 100., time)*0.2;
-     cloud /= 2.;
-     cloud = pow(cloud, 3.);
-     cloud -= 1.-clouds(uv * 5., time)*0.2;
+  // }
 
-    // masking
-     cloud -= mask*2.;
-     float cmask = smoothstep( 0.0,0.6, length(uv.y - 0.6));
-     cloud -= cmask*4.;
-     cloud = min(1., cloud);
-     float resitant = cloud *0.25;
-     cloud = max ( 0., cloud + period);
-     cloud += resitant;
-     cloud = max(cloud, 0.);
-     cloud = min(cloud, 1.);
+  vec4 effect( vec2 uv, vec4 color){
+
+
+
 
     // lighning effect
-    color.xyz += max( 0., glights ) * vec3(0.9, 0.8, 0.7) *0.2;
-    color.xyz += max( 0., lightrays ) * vec3(0.9, 0.8, 0.7) * 0.15;
-    color.xyz += vec3(cloud)*0.1;
+    //color.xyz += max( 0., glights ) * vec3(0.9, 0.8, 0.7) *0.2;
+   // color.xyz += max( 0., lightrays ) * vec3(0.9, 0.8, 0.7) * 0.15;
+    //color.xyz += vec3(cloud)*0.1;
 
 
     float vigneting = smoothstep(0.7, 1.0, (length(length(.55 * uv * uv) - vec2(0.))));
@@ -123,6 +88,7 @@ float fbm(vec2 p){
     color.xyz -= vigneting * 0.07;
 
     color = pow(color, vec4(1.05));
+
     return color;
   }
 
@@ -135,13 +101,27 @@ float fbm(vec2 p){
     float depth = texture2D(map_0,pos).r;
     float n_depth =  texture2D(map_1,pos).r;
 
+    float mask = texture2D(map_0,pos).g;
+    float n_mask = texture2D(map_1,pos).g;
+
+    float mask2 = texture2D(map_0,pos).b;
+    float n_mask2 = texture2D(map_1,pos).b;
+
+
     float time = u_time * 0.125 ;
+    vec2 wind = vec2(0.0025*cos(20.*time+ pos.x * 20.), 0.);
+    wind*= 1.-mask2;
+    //wind -= n_mask;
+   // wind *= 0.3;
+
     float factor = u_progression;
    // factor = smoothstep(0.0, 1.0, factor);
     float final_depth = mix(depth, n_depth, factor);
 
-    vec2 displacement = u_mouse  *  final_depth * vec2(0.012, 0.015);
-    vec2 uv = pos + displacement;
+    //vec2 wind = vec2(cos(time+pos*2), 0);
+
+    vec2 displacement = u_mouse  *  final_depth * vec2(0.012, 0.012);
+    vec2 uv = pos + displacement  + wind ;
     float intensity = 0.05;
 
     float displacement_out = factor * ( 2.*length(   uv.y ) *final_depth * intensity );
@@ -156,12 +136,13 @@ float fbm(vec2 p){
     image = mix(image, next_image, factor);
     filter = mix(filter, next_filter, factor);
 
-    float mask = filter.g;
-    float mask2 = filter.b;
+    //float mask = filter.g;
+    //float mask2 = filter.b;
 
     vec4 color = image;
-    color = effect(uv,pos, time, mask, mask2, image, color);
-    color += vec4(.3,0.,0.,0.);
+
+    color = effect(uv, color);
+    //color += vec4(.3,0.,0.,0.);
 
     gl_FragColor = color;
 

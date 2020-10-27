@@ -42,9 +42,11 @@ export class glImage {
     this.program = new depthShader(app, { univers: this.config.univers, hello: 1 })
 
     this.canvas = document.createElement('canvas')
-
+    // INI WEBGL CANVAS
     this.initCanvas()
+    // LOAD SHADERS PROGRAMS
     this.initShaders()
+    // SET UP AND LOAD TEXTURES IMAGES
     this.initTextures()
   }
 
@@ -153,8 +155,8 @@ export class glImage {
     } else {
       this.orientation = -1
     }
-    if (this.prev_orientation !== this.orientation) {
-      this.set_next = false
+    if (this.scroll.y != 0 && this.prev_orientation !== this.orientation) {
+      this.set_next = true
       console.log('change orientation')
     }
 
@@ -164,27 +166,12 @@ export class glImage {
   }
 
   canvasOnClick (e) {
-    // console.log(e)
     console.log('click')
   }
 
   updatetransition (v) {
     this.gl.uniform1f(this.progression_Location, v)
   }
-
-  // loadnextimage () {
-  //   if (this.orientation > 0) {
-  //     if (this.indice < this.images.length - 1) {
-  //       this.next_indice = this.indice + 1
-  //     } else {
-  //       this.next_indice = 0
-  //     }
-  //   }
-  //   console.log('next')
-  //   console.log(this.next_indice)
-  //   this.setTexture(this.images[this.next_indice], 'img_1', 2, this.gl)
-  //   this.setTexture(this.filters[this.next_indice], 'map_1', 3, this.gl)
-  // }
 
   updatemouse () {
     const mpx = (this.mouse.shape.x - (this.canvas.width / 2)) / this.canvas.width
@@ -196,42 +183,39 @@ export class glImage {
     this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT)
     this.updatemouse()
 
-    // const mpx = (this.mouse.shape.x - (this.canvas.width / 2)) / this.canvas.width
-    // const mpy = (this.mouse.shape.y - (this.canvas.height / 2)) / this.canvas.height
-    // this.gl.uniform2f(this.mouseLocation, mpx, mpy)
-
-    if (this.progression > 0.0 && !this.set_next && !this.isfading) {
+    // LOOK UP FOR NEXT IMAGE
+    if (this.progression > 0.1 && this.set_next && !this.isfading) {
       this.nid = 0
+
       if (this.orientation > 0) {
         this.nid = (this.indice + 1) % this.max
       } else {
         this.nid = this.indice > 0 ? (this.indice - 1) % this.max : this.max - 1
       }
+      console.log('nextid : ' + this.nid)
 
       this.setTexture(this.images[this.nid], 'img_1', 2, this.gl)
       this.setTexture(this.filters[this.nid], 'map_1', 3, this.gl)
-      this.set_next = true
+      this.set_next = false
     }
-
+    // LOOK UP FOR ACTUAL IMAGE
     if (this.progression > 0.9) {
       if (this.isfading) {
         const prev_indice = this.indice
+
         if (this.orientation > 0.0) {
           this.indice++
         } else {
-          this.indice = this.indice > 0 ? this.indice - 1 : this.max - 1
+          this.indice = this.indice > 0 ? this.indice - 1 : this.max
         }
-        console.log('new id: ' + this.indice + ' prev id: ' + prev_indice)
-
         const id = this.indice % this.max
+        console.log('new id: ' + id)
 
         this.setTexture(this.images[id], 'img_0', 0, this.gl)
         this.setTexture(this.filters[id], 'map_0', 1, this.gl)
 
         this.isfading = false
         this.orientation = 0
-        this.prev_orientation = 0
-        this.progression_plus = 0
         this.scroll_density.y = 0
       }
     }
@@ -240,7 +224,7 @@ export class glImage {
     }
 
     autoPlay(true)
-
+    // TRANSITION BETWEEN 2 IMAGES
     if (!this.isfading) {
       this.progression_plus = this.scroll_density.y / 1000
     }

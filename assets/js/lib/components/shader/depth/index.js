@@ -13,14 +13,14 @@ export class depthShader {
 
     switch (this.config.univers) {
       case 'garden':
-        this.source = require('!raw-loader!data/shaders/gardendepth/frag.glsl')
-        this.sourcev = require('!raw-loader!data/shaders/gardendepth/vert.glsl')
+        this.source = require('!raw-loader!data/shaders/wind/frag.glsl')
+        this.sourcev = require('!raw-loader!data/shaders/wind/vert.glsl')
 
         break
 
       default:
-        this.source = require('!raw-loader!data/shaders/depth/frag.glsl')
-        this.sourcev = require('!raw-loader!data/shaders/depth/vert.glsl')
+        this.source = require('!raw-loader!data/shaders/sunray/frag.glsl')
+        this.sourcev = require('!raw-loader!data/shaders/sunray/vert.glsl')
         break
     }
 

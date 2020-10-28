@@ -210,6 +210,7 @@ export class glImage {
         } else {
           this.indice = this.indice > 0 ? this.indice - 1 : this.max
         }
+        // this.time = 0
         const id = this.indice % this.max
         console.log('new id: ' + id)
 
@@ -236,6 +237,7 @@ export class glImage {
     const p = { x: this.progression }
 
     if (this.progression_plus >= 0.1) {
+      this.time = 0
       this.isfading = true
       this.tween = new Tween(p)
       this.tween.to({ x: 1 }, 400)

@@ -1,5 +1,5 @@
 ///////////////////////////
-// depth frag Shader
+// wind frag Shader
 
   precision highp float;
 
@@ -107,22 +107,31 @@ float fbm(vec2 p){
     float mask2 = texture2D(map_0,pos).b;
     float n_mask2 = texture2D(map_1,pos).b;
 
+ float factor = u_progression;
+    float time = u_time * 0.25 ;
 
-    float time = u_time * 0.125 ;
-    vec2 wind = vec2(0.0025*cos(20.*time+ pos.x * 20.), 0.);
+    //float force = 0.0025;
+
+    float force = smoothstep(0.0, 1., time)*0.0025;
+
+    vec2 wind = vec2(force * cos(20.*time+ pos.x * 20.), 0.);
     wind *= 1.-mask2;
     wind *= 1.-mask;
 
     //wind -= n_mask;
    // wind *= 0.3;
 
-    float factor = u_progression;
+    //float factor = u_progression;
+    //wind = mix( wind, vec2(0.), vec2(factor));
+   // wind = smoothstep( wind,vec2(0.) vec2(factor));
+
    // factor = smoothstep(0.0, 1.0, factor);
     float final_depth = mix(depth, n_depth, factor);
 
     //vec2 wind = vec2(cos(time+pos*2), 0);
 
     vec2 displacement = u_mouse  *  final_depth * vec2(0.012, 0.012);
+    // displacement = min(displacement, displacement*u_progression);
     vec2 uv = pos + displacement  + wind ;
     float intensity = 0.05;
 
@@ -141,7 +150,8 @@ float fbm(vec2 p){
     //float mask = filter.g;
     //float mask2 = filter.b;
 
-    vec4 color = image;
+     vec4 color = image;
+    //vec4 color = filter;
 
     color = effect(uv, color);
     //color += vec4(.3,0.,0.,0.);

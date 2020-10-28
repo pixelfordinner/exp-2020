@@ -101,47 +101,65 @@
     float depth = texture2D(map_0,pos).r;
     float n_depth =  texture2D(map_1,pos).r;
 
-    float mask = texture2D(map_0,pos).g;
-    float n_mask = texture2D(map_1,pos).g;
+    // float mask = texture2D(map_0,pos).g;
+    // float n_mask = texture2D(map_1,pos).g;
 
-    float mask2 = texture2D(map_0,pos).b;
-    float n_mask2 = texture2D(map_1,pos).b;
+    // float mask2 = texture2D(map_0,pos).b;
+    // float n_mask2 = texture2D(map_1,pos).b;
 
- float factor = u_progression;
+    // float factor = u_progression;
+    // float time = u_time * 0.25 ;
+
+    // //float force = 0.0025;
+
+    // float force = smoothstep(0.0, .25, time)*0.0025;
+
+    // vec2 wind = vec2(force * cos(20.*time+ pos.x * 20.), 0.);
+    // wind *= 1.-mask2;
+    // wind *= 1.-mask;
+
+
+    float factor = u_progression;
+    float final_depth = mix(depth, n_depth, factor);
+
+
+    vec2 displacement = u_mouse  *  final_depth * vec2(0.015, 0.015);
+
+
+
+    // displacement = min(displacement, displacement*u_progression);
+    vec2 uv = pos + displacement  ;
+
+
+    float mask = texture2D(map_0,uv).g;
+    float n_mask = texture2D(map_1,uv).g;
+
+    float mask2 = texture2D(map_0,uv).b;
+    float n_mask2 = texture2D(map_1,uv).b;
+
     float time = u_time * 0.25 ;
 
     //float force = 0.0025;
 
     float force = smoothstep(0.0, .25, time)*0.0025;
 
-    vec2 wind = vec2(force * cos(20.*time+ pos.x * 20.), 0.);
+    vec2 wind = vec2(force * cos(20.*time+ uv.x * 20.), 0.);
     wind *= 1.-mask2;
     wind *= 1.-mask;
 
-    //wind -= n_mask;
-   // wind *= 0.3;
 
-    //float factor = u_progression;
-    //wind = mix( wind, vec2(0.), vec2(factor));
-   // wind = smoothstep( wind,vec2(0.) vec2(factor));
+    vec2 uv2 = pos + displacement + wind;
 
-   // factor = smoothstep(0.0, 1.0, factor);
-    float final_depth = mix(depth, n_depth, factor);
 
-    //vec2 wind = vec2(cos(time+pos*2), 0);
-
-    vec2 displacement = u_mouse  *  final_depth * vec2(0.015, 0.015);
-    // displacement = min(displacement, displacement*u_progression);
-    vec2 uv = pos + displacement  + wind ;
     float intensity = 0.05;
 
-    float displacement_out = factor * ( 2.*length(   uv.y ) *final_depth * intensity );
-    vec4 filter =  texture2D(map_0, uv + vec2(0.,-displacement_out ));
-    vec4 image =   texture2D(img_0,uv + vec2(0.,-displacement_out )) ;
+    float displacement_out = factor * ( 2.*length(   uv2.y ) *final_depth * intensity );
+    vec4 filter =  texture2D(map_0, uv2 + vec2(0.,-displacement_out ));
+    vec4 image =   texture2D(img_0,uv2 + vec2(0.,-displacement_out )) ;
 
-    float displacement_in = (1.- factor) * (2.*length(   uv.y ) * final_depth* intensity );
-    vec4 next_image = texture2D(img_1,uv + vec2(0., -displacement_in ) ) ;
-    vec4 next_filter = texture2D(map_1, uv + vec2(0., -displacement_in )) ;
+    float displacement_in = (1.- factor) * (2.*length(   uv2.y ) * final_depth* intensity );
+    vec4 next_image = texture2D(img_1,uv2 + vec2(0., -displacement_in ) ) ;
+    vec4 next_filter = texture2D(map_1, uv2 + vec2(0., -displacement_in )) ;
 
 
     image = mix(image, next_image, factor);

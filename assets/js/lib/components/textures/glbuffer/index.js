@@ -157,7 +157,7 @@ export class glImage {
       this.orientation = -1
       this.set_next = true
     }
-    if (this.scroll.y != 0 && this.prev_orientation !== this.orientation) {
+    if (this.scroll.y !== 0 && this.prev_orientation !== this.orientation) {
       // this.set_next = true
       console.log('change orientation')
     }
@@ -186,12 +186,12 @@ export class glImage {
     this.updatemouse()
 
     // LOOK UP FOR NEXT IMAGE
-    if (this.progression > 0.0 && this.set_next && !this.isfading) {
+    if (this.set_next && !this.isfading) {
       this.nid = 0
 
-      if (this.orientation >= 0) {
+      if (this.orientation > 0) {
         this.nid = (this.indice + 1) % this.max
-      } else {
+      } else if (this.orientation < 0.0) {
         this.nid = this.indice > 0 ? (this.indice - 1) % this.max : this.max - 1
       }
       console.log('nextid : ' + this.nid)
@@ -205,9 +205,9 @@ export class glImage {
       if (this.isfading && this.set_next) {
         const prev_indice = this.indice
 
-        if (this.orientation >= 0.0) {
+        if (this.orientation > 0.0) {
           this.indice++
-        } else {
+        } else if (this.orientation < 0.0) {
           this.indice = this.indice > 0 ? this.indice - 1 : this.max - 1
         }
         // this.time = 0

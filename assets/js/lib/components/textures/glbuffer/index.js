@@ -236,7 +236,7 @@ export class glImage {
     this.updatetransition(this.progression_plus)
     const p = { x: this.progression }
 
-    if (this.progression_plus >= 0.1) {
+    if (this.progression_plus >= 0.05) {
       this.time = 0
       this.isfading = true
       this.tween = new Tween(p)
@@ -246,7 +246,7 @@ export class glImage {
         this.progression = x.x
       })
       this.tween.start()
-      this.updatetransition(this.progression + 0.1)
+      this.updatetransition(this.progression + 0.051)
     } else {
       if (this.scroll_density.y > 0) {
         this.scroll_density.y -= 5

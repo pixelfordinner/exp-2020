@@ -112,7 +112,7 @@ float fbm(vec2 p){
 
     //float force = 0.0025;
 
-    float force = smoothstep(0.0, 1., time)*0.0025;
+    float force = smoothstep(0.0, .25, time)*0.0025;
 
     vec2 wind = vec2(force * cos(20.*time+ pos.x * 20.), 0.);
     wind *= 1.-mask2;
@@ -130,7 +130,7 @@ float fbm(vec2 p){
 
     //vec2 wind = vec2(cos(time+pos*2), 0);
 
-    vec2 displacement = u_mouse  *  final_depth * vec2(0.012, 0.012);
+    vec2 displacement = u_mouse  *  final_depth * vec2(0.015, 0.015);
     // displacement = min(displacement, displacement*u_progression);
     vec2 uv = pos + displacement  + wind ;
     float intensity = 0.05;

@@ -140,11 +140,11 @@ float fbm(vec2 p){
    // factor = smoothstep(0.0, 1.0, factor);
     float final_depth = mix(depth, n_depth, factor);
 
-    vec2 displacement = (.5 * u_mouse )  *  final_depth * vec2(0.022, 0.024);
+    vec2 displacement = (.5 * u_mouse )  *  final_depth * vec2(0.02, 0.02);
     vec2 uv = pos + displacement;
     float intensity = 0.05;
 
-    float displacement_out = factor * ( 2.*length(   uv.y ) *final_depth * intensity );
+    float displacement_out = factor * ( 1.*length(   uv.y ) *final_depth * intensity );
     vec4 filter =  texture2D(map_0, uv + vec2(0.,-displacement_out ));
     vec4 image =   texture2D(img_0,uv + vec2(0.,-displacement_out )) ;
 

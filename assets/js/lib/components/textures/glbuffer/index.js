@@ -189,7 +189,7 @@ export class glImage {
     if (this.progression > 0.0 && this.set_next && !this.isfading) {
       this.nid = 0
 
-      if (this.orientation > 0) {
+      if (this.orientation >= 0) {
         this.nid = (this.indice + 1) % this.max
       } else {
         this.nid = this.indice > 0 ? (this.indice - 1) % this.max : this.max - 1
@@ -202,13 +202,13 @@ export class glImage {
     }
     // LOOK UP FOR ACTUAL IMAGE
     if (this.progression > 0.9) {
-      if (this.isfading) {
+      if (this.isfading && this.set_next) {
         const prev_indice = this.indice
 
-        if (this.orientation > 0.0) {
+        if (this.orientation >= 0.0) {
           this.indice++
         } else {
-          this.indice = this.indice > 0 ? this.indice - 1 : this.max
+          this.indice = this.indice > 0 ? this.indice - 1 : this.max - 1
         }
         // this.time = 0
         const id = this.indice % this.max
@@ -220,6 +220,7 @@ export class glImage {
         this.isfading = false
 
         // this.orientation = 0
+        // this.prev_orientation = 0
         this.scroll_density.y = 0
       }
     }

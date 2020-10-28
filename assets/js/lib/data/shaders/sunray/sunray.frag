@@ -140,7 +140,7 @@ float fbm(vec2 p){
    // factor = smoothstep(0.0, 1.0, factor);
     float final_depth = mix(depth, n_depth, factor);
 
-    vec2 displacement = u_mouse  *  final_depth * vec2(0.012, 0.015);
+    vec2 displacement = (.5 * u_mouse )  *  final_depth * vec2(0.022, 0.024);
     vec2 uv = pos + displacement;
     float intensity = 0.05;
 

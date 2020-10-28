@@ -153,7 +153,7 @@ export class glImage {
     if (this.scroll.y > 0) {
       this.orientation = 1
       this.set_next = true
-    } else {
+    } else if (this.scroll.y < 0) {
       this.orientation = -1
       this.set_next = true
     }
@@ -164,6 +164,9 @@ export class glImage {
 
     if (this.scroll.y < this.density && this.scroll.y > -this.density) {
       this.scroll_density.y += Math.abs(this.scroll.y)
+    }
+    if (this.scroll_density > 4) {
+
     }
   }
 
@@ -202,7 +205,7 @@ export class glImage {
     }
     // LOOK UP FOR ACTUAL IMAGE
     if (this.progression > 0.9) {
-      if (this.isfading && this.set_next) {
+      if (this.isfading) {
         const prev_indice = this.indice
 
         if (this.orientation > 0.0) {

@@ -44,7 +44,7 @@
     float n_depth =  texture2D(map_1,pos).r;
     float factor = u_progression;
     float final_depth = mix(depth, n_depth, factor);
-    vec2 displacement = (.5 * u_mouse ) *  final_depth * vec2(0.02, 0.022);
+    vec2 displacement = (.5 * u_mouse ) *  final_depth * vec2(0.025, 0.027);
 
     vec2 uv = pos + displacement  ;
 

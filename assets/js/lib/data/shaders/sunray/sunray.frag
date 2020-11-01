@@ -130,11 +130,11 @@ void main() {
   // factor = smoothstep(0.0, 1.0, factor);
   float final_depth = mix(depth, n_depth, factor);
 
-  vec2 displacement = (.5 * u_mouse )  *  final_depth * vec2(0.02, 0.02);
+  vec2 displacement = (.5 * u_mouse )  *  final_depth * vec2(u_intensity);
   vec2 uv = pos + displacement;
 
 
-  float intensity = u_intensity  * length( u_direction > 0. ? pos.x : pos.y ) ;
+  float intensity = 0.05 * length( u_direction > 0. ? pos.x : pos.y ) ;
 
   float displacement_out = factor * (   final_depth * intensity );
   vec2 dir_out = vec2(u_direction > 0. ? -displacement_out : 0., u_direction > 0. ? 0.: -displacement_out);

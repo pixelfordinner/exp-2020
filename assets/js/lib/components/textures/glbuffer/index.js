@@ -69,7 +69,7 @@ export class glImage {
 
     this.gl.uniform1f(this.progression_Location, 1.0)
     this.gl.uniform1f(this.direction_Location, 0.0)
-    this.gl.uniform1f(this.intensity_Location, 0.05)
+    this.gl.uniform1f(this.intensity_Location, 0.025)
   }
 
   initCanvas () {

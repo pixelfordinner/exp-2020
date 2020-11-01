@@ -2,7 +2,7 @@
 // Wind Vertex Shader
 ///////////////////////////
 
-attribute vec3 a_position;
+attribute vec2 a_position;
 varying vec2 vpos;
 varying vec2 pos;
 
@@ -20,7 +20,7 @@ void main() {
   // vpos = npos.xy * vec2(-1) + vec2(0.5);
   // vpos = a_position.xy * -.5 + vec2(.5);
   // a_position *= 2.;
-  vpos = ((a_position.xy * 2.));
+  vpos = ((a_position.xy * 1.));
 
   // vpos = a_position.xy*2.;
 

@@ -60,13 +60,16 @@ export class glImage {
     // specifics
 
     this.progression_Location = this.gl.getUniformLocation(this.shader, 'u_progression')
-
+    this.direction_Location = this.gl.getUniformLocation(this.shader, 'u_direction')
+    this.intensity_Location = this.gl.getUniformLocation(this.shader, 'u_intensity')
     // set uniform values
     this.gl.uniform2f(this.resolutionLocation, this.gl.canvas.width, this.gl.canvas.height)
     this.gl.uniform2f(this.mouseLocation, 0, 0)
     this.gl.uniform1f(this.timeLocation, this.time)
-    this.gl.uniform1f(this.isdepth_Location, 1.0)
+
     this.gl.uniform1f(this.progression_Location, 1.0)
+    this.gl.uniform1f(this.direction_Location, 0.0)
+    this.gl.uniform1f(this.intensity_Location, 0.05)
   }
 
   initCanvas () {
@@ -108,7 +111,7 @@ export class glImage {
     this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height)
     this.gl.useProgram(this.shader)
     this.gl.enableVertexAttribArray(this.positionAttributeLocation)
-    this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.positionBuffer)
+    // this.gl.bindBuffer(this.gl.ARRAY_BUFFER, this.positionBuffer)
     this.gl.vertexAttribPointer(this.positionAttributeLocation, 2, this.gl.FLOAT, false, 0, 0)
   }
 
@@ -182,6 +185,7 @@ export class glImage {
     const mpx = (this.mouse.shape.x - (this.canvas.width / 2)) / this.canvas.width
     const mpy = (this.mouse.shape.y - (this.canvas.height / 2)) / this.canvas.height
     this.gl.uniform2f(this.mouseLocation, mpx, mpy)
+    console.log(mpy)
   }
 
   onTick (delta) {
@@ -204,9 +208,9 @@ export class glImage {
       this.set_next = false
     }
     // LOOK UP FOR ACTUAL IMAGE
-    if (this.progression > 0.9) {
+    if (this.progression >= 0.9) {
       if (this.isfading) {
-        const prev_indice = this.indice
+        // const prev_indice = this.indice
 
         if (this.orientation > 0.0) {
           this.indice++
@@ -227,8 +231,9 @@ export class glImage {
         this.scroll_density.y = 0
       }
     }
-    if (this.progression > 0.9 && !this.isfading) {
+    if (this.progression >= 0.9 && !this.isfading) {
       this.progression = 0
+      // this.set_next = false
     }
 
     autoPlay(true)
@@ -238,14 +243,17 @@ export class glImage {
     }
 
     this.updatetransition(this.progression_plus)
+
     const p = { x: this.progression }
+    // const p = { x: this.animate }
 
     if (this.progression_plus >= 0.05) {
       this.time = 0
       this.isfading = true
       this.tween = new Tween(p)
-      this.tween.to({ x: 1 }, 400)
-      this.tween.easing(Easing.Elastic.InOut(10, 0))
+      // this.tween.easing(Easing.Quadratic.Out(10))
+      this.tween.to({ x: 1 }, 500)
+
       this.tween.on('update', x => {
         this.progression = x.x
       })
@@ -262,7 +270,7 @@ export class glImage {
     this.texture.update()
   }
 
-  setTexture (im, name, num, gl) {
+  setTexture (img, name, num, gl) {
     const texture = gl.createTexture()
     gl.activeTexture(gl.TEXTURE0 + num)
     gl.bindTexture(gl.TEXTURE_2D, texture)
@@ -271,7 +279,7 @@ export class glImage {
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
-    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, im)
+    gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, img)
 
     const imgLocation = gl.getUniformLocation(this.shader, name)
     gl.uniform1i(imgLocation, num)

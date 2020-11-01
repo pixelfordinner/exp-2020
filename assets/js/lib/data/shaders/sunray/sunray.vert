@@ -1,7 +1,7 @@
 ///////////////////////////
-// depth veret Shader
+// sunray vert Shader
 
-attribute vec3 a_position;
+attribute vec2 a_position;
 varying vec2 vpos;
 varying vec2 pos;
 

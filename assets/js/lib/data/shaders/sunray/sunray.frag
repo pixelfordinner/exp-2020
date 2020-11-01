@@ -1,12 +1,11 @@
 ///////////////////////////
-// depth frag Shader
+// sunray frag Shader
 ///////////////////////////
 
 precision highp float;
 
 varying vec2 vpos;
 varying vec2 pos;
-uniform vec2 u_resolution;
 uniform vec2 u_mouse;
 uniform float u_time;
 
@@ -18,11 +17,12 @@ uniform sampler2D img_1;
 uniform sampler2D map_1;
 
 // specifices uniforms
-uniform float isdepth;
-uniform float myindex;
-uniform float u_progression;
 
-float isfading = 0.;
+uniform float u_progression;
+uniform float u_direction;
+uniform float u_intensity;
+
+
 
 ///// NOISE /////
 float hash( float n ) {
@@ -120,6 +120,8 @@ vec4 effect(vec2 uv, vec2 pos,float time,float mask, float mask2, vec4 image, ve
 void main() {
   vec2 pos = vpos * vec2(0.5,-.5) + vec2(.5);
 
+  //vec2 pos = vpos * vec2(1,-1) + vec2(1);
+
   float depth = texture2D(map_0,pos).r;
   float n_depth =  texture2D(map_1,pos).r;
 
@@ -130,15 +132,20 @@ void main() {
 
   vec2 displacement = (.5 * u_mouse )  *  final_depth * vec2(0.02, 0.02);
   vec2 uv = pos + displacement;
-  float intensity = 0.05;
 
-  float displacement_out = factor * ( 1.*length(   uv.y ) *final_depth * intensity );
-  vec4 map =  texture2D(map_0, uv + vec2(0.,-displacement_out ));
-  vec4 image =   texture2D(img_0,uv + vec2(0.,-displacement_out ));
 
-  float displacement_in = (1.- factor) * (2.*length(   uv.y ) * final_depth* intensity );
-  vec4 next_image = texture2D(img_1,uv + vec2(0., -displacement_in ) );
-  vec4 next_map = texture2D(map_1, uv + vec2(0., -displacement_in ));
+  float intensity = u_intensity  * length( u_direction > 0. ? pos.x : pos.y ) ;
+
+  float displacement_out = factor * (   final_depth * intensity );
+  vec2 dir_out = vec2(u_direction > 0. ? -displacement_out : 0., u_direction > 0. ? 0.: -displacement_out);
+  vec4 map =  texture2D(map_0, uv + dir_out);
+  vec4 image =   texture2D(img_0,uv +dir_out);
+
+  float displacement_in = (1.- factor) * (final_depth* intensity );
+  vec2 dir_in = vec2(u_direction > 0. ? -displacement_in : 0., u_direction > 0.? 0. : -displacement_in);
+  vec4 next_image = texture2D(img_1,uv + dir_in );
+  vec4 next_map = texture2D(map_1, uv + dir_in);
+
 
 
   image = mix(image, next_image, factor);

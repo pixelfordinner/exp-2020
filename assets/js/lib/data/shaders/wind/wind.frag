@@ -19,7 +19,7 @@ uniform sampler2D map_1;
 
 
 uniform float u_progression;
-uniform float u_direction;
+uniform vec2 u_direction;
 uniform float u_intensity;
 
 
@@ -32,7 +32,6 @@ vec4 effect(vec2 uv, vec4 color) {
 
 void main() {
   vec2 pos = vpos * vec2(0.5, -.5) + vec2(.5);
-
   float depth = texture2D(map_0, pos).r;
   float n_depth = texture2D(map_1, pos).r;
   float factor = u_progression;
@@ -61,16 +60,23 @@ void main() {
   vec2 uv2 = pos + displacement + wind;
 
 
-  float intensity = 0.05 * length(u_direction > 0. ? pos.x : pos.y) ;
+
+  vec2 orientation =  vec2(0,1);
+
+  float intensity = u_direction.y > 0. ?  0.05 * (1.- length(u_direction.x > 0. ? pos.x : pos.y)) : 0.05 * length(u_direction.x > 0. ? pos.x : pos.y);
 
   float displacement_out = factor * (final_depth * intensity);
-  vec2 dir_out = vec2(u_direction > 0. ? -displacement_out : 0., u_direction > 0. ? 0.: -displacement_out);
+
+  vec2 dir_out = vec2(u_direction.x > 0. ? -displacement_out : 0., u_direction.x > 0. ? 0.: -displacement_out);
+
   vec4 map =  texture2D(map_0, uv + dir_out);
   vec4 image =   texture2D(img_0,uv2 +dir_out);
 
   float displacement_in = (1.- factor) * (final_depth* intensity );
-  vec2 dir_in = vec2(u_direction > 0. ? -displacement_in : 0., u_direction > 0.? 0. : -displacement_in);
+
+  vec2 dir_in = vec2(u_direction.x > 0. ? -displacement_in : 0., u_direction.x > 0.? 0. : -displacement_in);
   vec4 next_image = texture2D(img_1,uv2 + dir_in );
+
   vec4 next_map = texture2D(map_1, uv + dir_in);
 
   image = mix(image, next_image, factor);

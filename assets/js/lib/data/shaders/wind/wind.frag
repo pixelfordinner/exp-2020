@@ -22,6 +22,9 @@ uniform float u_progression;
 uniform vec2 u_direction;
 uniform float u_intensity;
 
+uniform float u_fadetime;
+uniform float u_fadespeed;
+
 
 vec4 effect(vec2 uv, vec4 color) {
   float vigneting = smoothstep(0.7, 1.0, (length(length(.55 * uv * uv) - vec2(0.))));
@@ -37,13 +40,13 @@ void main() {
 
   float force = smoothstep(0.0, .25, time) * 0.0025;
 
-  float force2 = smoothstep(0.0, .5, time);
+  float fade = smoothstep(0.0, u_fadespeed, u_fadetime);
 
 
   float depth = texture2D(map_0, pos).r;
   float n_depth = texture2D(map_1, pos).r;
   float factor = u_progression ;
-  float final_depth = mix(depth, n_depth, factor)*force2;
+  float final_depth = mix(depth, n_depth, factor)*fade;
   vec2 displacement = (.5 * u_mouse) * final_depth * vec2(u_intensity);
 
   vec2 uv = pos + displacement;

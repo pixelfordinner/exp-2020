@@ -62,6 +62,8 @@ export class glImage {
     this.progression_Location = this.gl.getUniformLocation(this.shader, 'u_progression')
     this.direction_Location = this.gl.getUniformLocation(this.shader, 'u_direction')
     this.intensity_Location = this.gl.getUniformLocation(this.shader, 'u_intensity')
+    this.fadetime_Location = this.gl.getUniformLocation(this.shader, 'u_fadetime')
+    this.fadespeed_Location = this.gl.getUniformLocation(this.shader, 'u_fadespeed')
     // set uniform values
     this.gl.uniform2f(this.resolutionLocation, this.gl.canvas.width, this.gl.canvas.height)
     this.gl.uniform2f(this.mouseLocation, 0, 0)
@@ -70,6 +72,8 @@ export class glImage {
     this.gl.uniform1f(this.progression_Location, 1.0)
     this.gl.uniform2f(this.direction_Location, 0.0, 0.0)
     this.gl.uniform1f(this.intensity_Location, 0.025)
+    this.gl.uniform1f(this.fadetime_Location, 0.0)
+    this.gl.uniform1f(this.fadespeed_Location, 0.25)
   }
 
   initCanvas () {
@@ -266,6 +270,9 @@ export class glImage {
     }
 
     this.time += 0.01
+    if (this.time < 1.0) {
+      this.gl.uniform1f(this.fadetime_Location, this.time)
+    }
     this.render()
     this.texture.update()
   }

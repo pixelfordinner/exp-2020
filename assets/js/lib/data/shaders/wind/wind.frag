@@ -32,10 +32,18 @@ vec4 effect(vec2 uv, vec4 color) {
 
 void main() {
   vec2 pos = vpos * vec2(0.5, -.5) + vec2(.5);
+
+  float time = u_time * 0.15;
+
+  float force = smoothstep(0.0, .25, time) * 0.0025;
+
+  float force2 = smoothstep(0.0, .5, time);
+
+
   float depth = texture2D(map_0, pos).r;
   float n_depth = texture2D(map_1, pos).r;
-  float factor = u_progression;
-  float final_depth = mix(depth, n_depth, factor);
+  float factor = u_progression ;
+  float final_depth = mix(depth, n_depth, factor)*force2;
   vec2 displacement = (.5 * u_mouse) * final_depth * vec2(u_intensity);
 
   vec2 uv = pos + displacement;
@@ -46,9 +54,6 @@ void main() {
   float mask2 = texture2D(map_0, uv).b;
   float n_mask2 = texture2D(map_1, uv).b;
 
-  float time = u_time * 0.25;
-
-  float force = smoothstep(0.0, .25, time) * 0.0025;
 
 
   vec2 wind = vec2(force * cos(20. * time + uv.x * 20.), 0.);
@@ -61,20 +66,20 @@ void main() {
 
 
 
-  vec2 orientation =  vec2(0,1);
+
 
   float intensity = u_direction.y > 0. ?  0.05 * (1.- length(u_direction.x > 0. ? pos.x : pos.y)) : 0.05 * length(u_direction.x > 0. ? pos.x : pos.y);
 
   float displacement_out = factor * (final_depth * intensity);
 
-  vec2 dir_out = vec2(u_direction.x > 0. ? -displacement_out : 0., u_direction.x > 0. ? 0.: -displacement_out);
+  vec2 dir_out = vec2(u_direction.x <= 0. ? -displacement_out : 0., u_direction.x > 0. ? 0.: -displacement_out);
 
   vec4 map =  texture2D(map_0, uv + dir_out);
   vec4 image =   texture2D(img_0,uv2 +dir_out);
 
   float displacement_in = (1.- factor) * (final_depth* intensity );
 
-  vec2 dir_in = vec2(u_direction.x > 0. ? -displacement_in : 0., u_direction.x > 0.? 0. : -displacement_in);
+  vec2 dir_in = vec2(u_direction.x <= 0. ? -displacement_in : 0., u_direction.x > 0.? 0. : -displacement_in);
   vec4 next_image = texture2D(img_1,uv2 + dir_in );
 
   vec4 next_map = texture2D(map_1, uv + dir_in);

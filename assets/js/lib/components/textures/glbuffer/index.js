@@ -270,7 +270,7 @@ export class glImage {
     }
 
     this.time += 0.01
-    if (this.time < 1.0) {
+    if (this.time < 10.0) {
       this.gl.uniform1f(this.fadetime_Location, this.time)
     }
     this.render()

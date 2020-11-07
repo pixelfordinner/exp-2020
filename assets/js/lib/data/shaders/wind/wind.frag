@@ -75,14 +75,14 @@ void main() {
 
   float displacement_out = factor * (final_depth * intensity);
 
-  vec2 dir_out = vec2(u_direction.x <= 0. ? -displacement_out : 0., u_direction.x <= 0. ? 0.: -displacement_out);
+  vec2 dir_out = vec2(u_direction.x > 0. ? -displacement_out : 0., u_direction.x > 0. ? 0.: -displacement_out);
 
   vec4 map =  texture2D(map_0, uv + dir_out);
   vec4 image =   texture2D(img_0,uv2 +dir_out);
 
   float displacement_in = (1.- factor) * (final_depth* intensity );
 
-  vec2 dir_in = vec2(u_direction.x <= 0. ? -displacement_in : 0., u_direction.x <= 0.? 0. : -displacement_in);
+  vec2 dir_in = vec2(u_direction.x > 0. ? -displacement_in : 0., u_direction.x > 0.? 0. : -displacement_in);
   vec4 next_image = texture2D(img_1,uv2 + dir_in );
 
   vec4 next_map = texture2D(map_1, uv + dir_in);

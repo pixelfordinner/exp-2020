@@ -27,8 +27,9 @@ uniform float u_fadespeed;
 
 
 vec4 effect(vec2 uv, vec4 color) {
-  float vigneting = smoothstep(0.7, 1.0, (length(length(.55 * uv * uv) - vec2(0.))));
-  color.xyz -= vigneting * 0.07;
+  vec2 sc = uv -vec2(0.5);
+  float vigneting = smoothstep( .8,0.0,length( sc * sc ));
+  color.xyz -= vigneting * 0.03;
   color = pow(color, vec4(1.05));
   return color;
 }

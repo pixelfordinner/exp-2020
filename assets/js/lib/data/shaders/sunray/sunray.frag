@@ -111,12 +111,16 @@ vec4 effect(vec2 uv, vec2 pos,float time,float mask, float mask2, vec4 image, ve
   color.xyz += max( 0., lightrays ) * vec3(0.9, 0.8, 0.7) * 0.15;
   color.xyz += vec3(cloud)*0.1;
 
-  float vigneting = smoothstep(0.7, 1.0, (length(length(.55 * uv * uv) - vec2(0.))));
+  vec2 sc = uv -vec2(0.5);
 
-  color.xyz -= vigneting * 0.07;
+  float vigneting = smoothstep( .8,0.0,length( sc * sc ));
+
+  color.xyz -= vigneting * 0.03;
 
   color = pow(color, vec4(1.05));
+ // color = vec4(vec3(vigneting), 1.);
   return color;
+
 }
 
 void main() {

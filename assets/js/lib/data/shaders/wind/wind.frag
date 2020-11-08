@@ -26,9 +26,10 @@ uniform float u_fadetime;
 uniform float u_fadespeed;
 
 
+
 vec4 effect(vec2 uv, vec4 color) {
   vec2 sc = uv -vec2(0.5);
-  float vigneting = smoothstep( .8,0.0,length( sc * sc ));
+  float vigneting = smoothstep( .8, 0.0, length( sc * sc ));
   color.xyz -= vigneting * 0.03;
   color = pow(color, vec4(1.05));
   return color;
@@ -37,7 +38,7 @@ vec4 effect(vec2 uv, vec4 color) {
 void main() {
   vec2 pos = vpos * vec2(0.5, -.5) + vec2(.5);
 
-  float time = u_time * 0.15;
+  float time = u_time * 0.25;
 
   float force = smoothstep(0.0, .25, time) * 0.0025;
 

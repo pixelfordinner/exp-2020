@@ -66,7 +66,7 @@ float clouds (vec2 uv, float time) {
   return result;
 }
 
-vec4 effect(vec2 uv, vec2 pos,float time,float mask, float mask2, vec4 image, vec4 color) {
+vec4 effect(vec2 uv, vec2 pos,float time,float mask, float mask2, vec4 image, vec4 color, float fade) {
   float rays =  3. * cos( time + uv.x * 5. - uv.y * 3.) * cos(-1. * time + uv.x * 10. - uv.y * 6.) + sin(time * 0.5 + uv.x * 100. - uv.y * 60.) * 2. * uv.y;
   rays = max(0. , rays);
   rays = min(1., rays);
@@ -107,14 +107,12 @@ vec4 effect(vec2 uv, vec2 pos,float time,float mask, float mask2, vec4 image, ve
   cloud = min(cloud, 1.);
 
   // lighning effect
-  color.xyz += max( 0., glights ) * vec3(0.9, 0.8, 0.7) *0.2;
-  color.xyz += max( 0., lightrays ) * vec3(0.9, 0.8, 0.7) * 0.15;
-  color.xyz += vec3(cloud)*0.1;
+  color.xyz += max( 0., glights ) * vec3(0.9, 0.8, 0.7) *0.2 * fade;
+  color.xyz += max( 0., lightrays ) * vec3(0.9, 0.8, 0.7) * 0.15 * fade;
+  color.xyz += vec3(cloud)*0.1*fade;
 
   vec2 sc = uv -vec2(0.5);
-
   float vigneting = smoothstep( .8,0.0,length( sc * sc ));
-
   color.xyz -= vigneting * 0.03;
 
   color = pow(color, vec4(1.05));
@@ -165,7 +163,7 @@ void main() {
   float mask2 = map.b;
 
   vec4 color = image;
-  color = effect(uv,pos, time, mask, mask2, image, color);
+  color = effect(uv,pos, time, mask, mask2, image, color, fade);
 
   gl_FragColor = color;
 }

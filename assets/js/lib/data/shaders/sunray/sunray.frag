@@ -56,11 +56,8 @@ float fbm(vec2 p){
 
 float clouds (vec2 uv, float time) {
 
-  time*= 5.;
+  time*= 4.;
   uv.x += time;
-  float nuv = fbm( uv );
-  uv.x += nuv * 0.7 * fbm(uv + vec2(0., cos(time)*3.));
-  uv.y -= nuv * 1.3 * fbm(4.+uv + vec2( sin(time)*3., 0.));
 
   float result = smoothstep(0.0, 0.99, fbm(uv));
   return result;
